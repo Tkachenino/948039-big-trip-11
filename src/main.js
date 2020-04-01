@@ -378,9 +378,9 @@ const dayList = siteBoardEvents.querySelector(`.trip-days`);
 
 render(dayList, createDayPointTemplate());
 
-const DayPoint = dayList.querySelector(`.trip-days__item`);
+const dayPoint = dayList.querySelector(`.trip-days__item`);
 
-render(DayPoint, createEventPointListTemplate());
+render(dayPoint, createEventPointListTemplate());
 
 const eventList = siteBoardEvents.querySelector(`.trip-events__list`);
 
