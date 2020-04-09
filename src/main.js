@@ -9,7 +9,11 @@ import {createDayPointTemplate} from "@/components/dayPointTemplate.js";
 import {createEventPointListTemplate} from "@/components/eventPointListTemplate.js";
 import {createPointEventTeplate} from "@/components/pointEventTemplate.js";
 
+import {generateTripPoints} from "@/mock/trip.js";
+
 const POINT_COUNT = 3;
+
+const trip = generateTripPoints(POINT_COUNT);
 
 const render = (container, content, place = `beforeend`) => {
   container.insertAdjacentHTML(place, content);
@@ -43,5 +47,5 @@ render(dayPoint, createEventPointListTemplate());
 const eventList = siteBoardEvents.querySelector(`.trip-events__list`);
 
 for (let i = 0; i < POINT_COUNT; i++) {
-  render(eventList, createPointEventTeplate());
+  render(eventList, createPointEventTeplate(trip[i]));
 }

@@ -1,12 +1,30 @@
-export const createPointEventTeplate = () => {
+const getOfferList = (offer) => {
+  return offer
+  .map((it) => {
+    const {title, cost} = it;
+    return (
+      `<li class="event__offer">
+            <span class="event__offer-title">${title}</span>
+            &plus;
+            &euro;&nbsp;<span class="event__offer-price">${cost}</span>
+           </li>`
+    );
+  }).slice(0, 3).join(`\n`);
+};
+
+export const createPointEventTeplate = (trip) => {
+  const {event, city, ownPrice, offer} = trip;
+
+  const isMoveCheck = [`Check-in`, `Sightseeing`, `Restaurant`].some((it) => it === event) ? `in` : `to`;
+  const isOfferCheck = !!offer;
+
   return (
-    `
-    <li class="trip-events__item">
+    `<li class="trip-events__item">
     <div class="event">
       <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${event}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">Taxi to Amsterdam</h3>
+      <h3 class="event__title">${event} ${isMoveCheck} ${city}</h3>
 
       <div class="event__schedule">
         <p class="event__time">
@@ -18,19 +36,16 @@ export const createPointEventTeplate = () => {
       </div>
 
       <p class="event__price">
-        &euro;&nbsp;<span class="event__price-value">20</span>
+        &euro;&nbsp;<span class="event__price-value">${ownPrice}</span>
       </p>
-
-      <h4 class="visually-hidden">Offers:</h4>
-      <ul class="event__selected-offers">
-        <li class="event__offer">
-          <span class="event__offer-title">Order Uber</span>
-          &plus;
-          &euro;&nbsp;<span class="event__offer-price">20</span>
-         </li>
-      </ul>
-
-      <button class="event__rollup-btn" type="button">
+      ${isOfferCheck ?
+      `<h4 class="visually-hidden">Offers:</h4>
+          <ul class="event__selected-offers">
+          ${getOfferList(offer)}
+          </ul>`
+      : ``
+    }
+        <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>
     </div>
