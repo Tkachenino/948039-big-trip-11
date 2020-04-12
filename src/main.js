@@ -33,7 +33,7 @@ render(siteInfoTrip, createTripCostTemplate());
 render(siteMenu, createMenuBarTemplate(), `afterend`);
 render(siteFilter, createMenuFilterTemplate(), `afterend`);
 render(siteBoardEvents, createPointsSortElementTemplate());
-render(siteBoardEvents, createFormEditorTemplate());
+render(siteBoardEvents, createFormEditorTemplate(trip[0]));
 render(siteBoardEvents, createDayListTemplate());
 
 const dayList = siteBoardEvents.querySelector(`.trip-days`);

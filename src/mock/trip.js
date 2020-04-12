@@ -1,4 +1,6 @@
-const EventList = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
+export const EventTransferList = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`];
+export const EventActivityList = [`Check-in`, `Sightseeing`, `Restaurant`];
+
 const CityList = [`Amsterdam`, `Chamonix`, `Geneva`];
 const OfferList = [
   {
@@ -37,19 +39,28 @@ const DescriptionList = [
 
 const getDescriptionString = () => {
   const targetList = new Array(Math.floor(1 + Math.random() * (5 - 1)));
-  targetList.fill(DescriptionList[Math.random() * DescriptionList.length]);
+  targetList.fill(DescriptionList[Math.floor(Math.random() * DescriptionList.length)]);
   return targetList;
 };
+
 const photos = [`../public/img/photos/1.jpg`, `../public/img/photos/2.jpg`];
+
+const getRandomDate = () => {
+  const timeTarget = new Date();
+  timeTarget.setMinutes(Math.floor(Math.random() * 1440));
+  return timeTarget;
+};
 
 export const generateTripPoint = () => {
   return {
-    event: EventList[Math.floor(Math.random() * EventList.length)],
+    event: Math.random() > 0.5 ? EventTransferList[Math.floor(Math.random() * EventTransferList.length)] : EventActivityList[Math.floor(Math.random() * EventActivityList.length)],
     city: CityList[Math.floor(Math.random() * CityList.length)],
     ownPrice: Math.floor(Math.random() * 100),
     offer: Math.random() > 0.005 ? OfferList.slice(1, Math.floor(Math.random() * OfferList.length)) : null,
     description: getDescriptionString(),
     photo: photos,
+    startDate: getRandomDate(),
+    finishDate: getRandomDate(),
   };
 };
 

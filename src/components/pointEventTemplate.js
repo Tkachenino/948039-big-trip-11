@@ -1,3 +1,5 @@
+import {getTime, getTimeDate, getDiffTime} from "@/util.js";
+
 const getOfferList = (offer) => {
   return offer
   .map((it) => {
@@ -13,7 +15,13 @@ const getOfferList = (offer) => {
 };
 
 export const createPointEventTeplate = (trip) => {
-  const {event, city, ownPrice, offer} = trip;
+  const {event, city, ownPrice, offer, startDate, finishDate} = trip;
+  const startTime = getTime(startDate);
+  const finishTime = getTime(finishDate);
+  const startDateTime = getTimeDate(startDate);
+  const finishDateTime = getTimeDate(finishDate);
+  const diffTime = getDiffTime(startDate, finishDate);
+
 
   const isMoveCheck = [`Check-in`, `Sightseeing`, `Restaurant`].some((it) => it === event) ? `in` : `to`;
   const isOfferCheck = !!offer;
@@ -28,11 +36,11 @@ export const createPointEventTeplate = (trip) => {
 
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+          <time class="event__start-time" datetime="${startDateTime}T${startTime}">${startTime}</time>
           &mdash;
-          <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+          <time class="event__end-time" datetime="${finishDateTime}T${finishTime}">${finishTime}</time>
         </p>
-        <p class="event__duration">30M</p>
+        <p class="event__duration">${diffTime}</p>
       </div>
 
       <p class="event__price">
