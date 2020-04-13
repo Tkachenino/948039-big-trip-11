@@ -2,15 +2,15 @@ export const EventTransferList = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `
 export const EventActivityList = [`Check-in`, `Sightseeing`, `Restaurant`];
 export const CityList = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Petersburg`];
 export const OfferList = [
-  {name: `luggage`, title: `Add luggage`, cost: `30`, isChecked: Math.random() > 0.5,
+  {name: `luggage`, title: `Add luggage`, cost: `30`, isChecked: true,
   },
-  {name: `comfort`, title: `Switch to comfort`, cost: `100`, isChecked: Math.random() > 0.5,
+  {name: `comfort`, title: `Switch to comfort`, cost: `100`, isChecked: true,
   },
-  {name: `meal`, title: `Add meal`, cost: `15`, isChecked: Math.random() > 0.5,
+  {name: `meal`, title: `Add meal`, cost: `15`, isChecked: true,
   },
-  {name: `train`, title: `Travel by train`, cost: `40`, isChecked: Math.random() > 0.5,
+  {name: `train`, title: `Travel by train`, cost: `40`, isChecked: true,
   },
-  {name: `seats`, title: `Choose seats`, cost: `30`, isChecked: Math.random() > 0.5,
+  {name: `seats`, title: `Choose seats`, cost: `30`, isChecked: true,
   }
 ];
 

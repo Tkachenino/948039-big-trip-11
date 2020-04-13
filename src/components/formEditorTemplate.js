@@ -1,5 +1,5 @@
 import {getTime, getEditTimeDate} from "@/util.js";
-import {EventTransferList, EventActivityList, CityList} from "@/mock/trip.js";
+import {EventTransferList, EventActivityList, CityList, OfferList} from "@/mock/trip.js";
 
 const getSliderList = (data) => {
   return data
@@ -22,13 +22,17 @@ const getCityList = (data) => {
   }).join(`\n`);
 };
 
-const getOfferList = (data) => {
+const getOfferList = (data, dataTrip) => {
+  let valueKey = [];
+  dataTrip.forEach((item) => {
+    valueKey.push(item.name);
+  });
   return data
   .map((it, index) => {
-    const chek = it.isChecked ? `checked` : ``;
+    const check = (valueKey.some((chekKey) => (chekKey === it.name))) ? `checked` : ``;
     return (
       `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${it.name}-${index}" type="checkbox" name="event-offer-${it.name}" ${chek}>
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${it.name}-${index}" type="checkbox" name="event-offer-${it.name}" ${check}>
         <label class="event__offer-label" for="event-offer-${it.name}-${index}">
           <span class="event__offer-title">${it.title}</span>
           &plus;
@@ -127,7 +131,7 @@ export const createFormEditorTemplate = (trip) => {
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
         <div class="event__available-offers">
-         ${getOfferList(offer)}
+         ${getOfferList(OfferList, offer)}
           </div>
         </div>
       </section>
