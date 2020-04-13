@@ -1,20 +1,57 @@
 import {getTime, getEditTimeDate} from "@/util.js";
-import {EventTransferList, EventActivityList} from "@/mock/trip.js";
+import {EventTransferList, EventActivityList, CityList} from "@/mock/trip.js";
 
 const getSliderList = (data) => {
   return data
-  .map((it) => {
+  .map((it, index) => {
     return (
       `<div class="event__type-item">
-        <input id="event-type-${it.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${it.toLowerCase()}">
-        <label class="event__type-label  event__type-label--${it.toLowerCase()}" for="event-type-${it.toLowerCase()}-1">${it}</label>
+        <input id="event-type-${it.toLowerCase()}-${index}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${it.toLowerCase()}">
+        <label class="event__type-label  event__type-label--${it.toLowerCase()}" for="event-type-${it.toLowerCase()}-${index}">${it}</label>
       </div>`
     );
   }).join(`\n`);
 };
 
+const getCityList = (data) => {
+  return data
+  .map((it) => {
+    return (
+      `<option value="${it}"></option>`
+    );
+  }).join(`\n`);
+};
+
+const getOfferList = (data) => {
+  return data
+  .map((it, index) => {
+    const chek = it.isChecked ? `checked` : ``;
+    return (
+      `<div class="event__offer-selector">
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${it.name}-${index}" type="checkbox" name="event-offer-${it.name}" ${chek}>
+        <label class="event__offer-label" for="event-offer-${it.name}-${index}">
+          <span class="event__offer-title">${it.title}</span>
+          &plus;
+          &euro;&nbsp;<span class="event__offer-price">${it.cost}</span>
+        </label>
+      </div>`
+    );
+  }).join(`\n`);
+};
+
+const getPhotoList = (data) => {
+  return data
+  .map((it) => {
+    return (
+      `<img class="event__photo" src="img/photos/${it}" alt="Event photo">`
+    );
+  }).join(`\n`);
+};
+
 export const createFormEditorTemplate = (trip) => {
-  const {event, city, ownPrice, /* offer,*/ startDate, finishDate} = trip;
+  const {event, city, ownPrice, offer, photo, startDate, finishDate} = trip;
+
+  const IsPhotoCheck = !!photo;
 
   const startTime = getTime(startDate);
   const finishTime = getTime(finishDate);
@@ -58,10 +95,7 @@ export const createFormEditorTemplate = (trip) => {
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
         <datalist id="destination-list-1">
-          <option value="Amsterdam"></option>
-          <option value="Geneva"></option>
-          <option value="Chamonix"></option>
-          <option value="Saint Petersburg"></option>
+          ${getCityList(CityList)}
         </datalist>
       </div>
 
@@ -80,9 +114,9 @@ export const createFormEditorTemplate = (trip) => {
       <div class="event__field-group  event__field-group--price">
         <label class="event__label" for="event-price-1">
           <span class="visually-hidden">Price</span>
-          &euro; ${ownPrice}
+          &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${ownPrice}">
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -93,49 +127,7 @@ export const createFormEditorTemplate = (trip) => {
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
         <div class="event__available-offers">
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-            <label class="event__offer-label" for="event-offer-luggage-1">
-              <span class="event__offer-title">Add luggage</span>
-              &plus;
-              &euro;&nbsp;<span class="event__offer-price">30</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-            <label class="event__offer-label" for="event-offer-comfort-1">
-              <span class="event__offer-title">Switch to comfort class</span>
-              &plus;
-              &euro;&nbsp;<span class="event__offer-price">100</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-            <label class="event__offer-label" for="event-offer-meal-1">
-              <span class="event__offer-title">Add meal</span>
-              &plus;
-              &euro;&nbsp;<span class="event__offer-price">15</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-            <label class="event__offer-label" for="event-offer-seats-1">
-              <span class="event__offer-title">Choose seats</span>
-              &plus;
-              &euro;&nbsp;<span class="event__offer-price">5</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-            <label class="event__offer-label" for="event-offer-train-1">
-              <span class="event__offer-title">Travel by train</span>
-              &plus;
-              &euro;&nbsp;<span class="event__offer-price">40</span>
-            </label>
+         ${getOfferList(offer)}
           </div>
         </div>
       </section>
@@ -144,15 +136,11 @@ export const createFormEditorTemplate = (trip) => {
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
 
-        <div class="event__photos-container">
-          <div class="event__photos-tape">
-            <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
-            <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
-            <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
-            <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
-            <img class="event__photo" src="img/photos/5.jpg" alt="Event photo">
-          </div>
+        ${IsPhotoCheck ? `<div class="event__photos-container">
+        <div class="event__photos-tape">
+          ${getPhotoList(photo)}
         </div>
+      </div>` : ``}
       </section>
     </section>
   </form>

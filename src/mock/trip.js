@@ -1,29 +1,21 @@
 export const EventTransferList = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`];
 export const EventActivityList = [`Check-in`, `Sightseeing`, `Restaurant`];
-
-const CityList = [`Amsterdam`, `Chamonix`, `Geneva`];
-const OfferList = [
-  {
-    title: `add luggage`,
-    cost: `30`,
+export const CityList = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Petersburg`];
+export const OfferList = [
+  {name: `luggage`, title: `Add luggage`, cost: `30`, isChecked: Math.random() > 0.5,
   },
-  {
-    title: `switch to comfort`,
-    cost: `100`,
+  {name: `comfort`, title: `Switch to comfort`, cost: `100`, isChecked: Math.random() > 0.5,
   },
-  {
-    title: `add meal`,
-    cost: `15`,
+  {name: `meal`, title: `Add meal`, cost: `15`, isChecked: Math.random() > 0.5,
   },
-  {
-    title: `travel by train`,
-    cost: `40`,
+  {name: `train`, title: `Travel by train`, cost: `40`, isChecked: Math.random() > 0.5,
   },
-  {
-    title: `choose seats`,
-    cost: `30`,
+  {name: `seats`, title: `Choose seats`, cost: `30`, isChecked: Math.random() > 0.5,
   }
 ];
+
+const DESCRIPTION_LENGHT = 5;
+
 const DescriptionList = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
@@ -32,18 +24,19 @@ const DescriptionList = [
   `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`,
   `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`,
   `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`,
-  `Sed sed nisi sed augue convallis suscipit in sed felis.`, `Aliquam erat volutpat.`,
+  `Sed sed nisi sed augue convallis suscipit in sed felis.`,
+  `Aliquam erat volutpat.`,
   `Nunc fermentum tortor ac porta dapibus.`,
   `In rutrum ac purus sit amet tempus.`
 ];
 
 const getDescriptionString = () => {
-  const targetList = new Array(Math.floor(1 + Math.random() * (5 - 1)));
+  const targetList = new Array(Math.floor(1 + Math.random() * (DESCRIPTION_LENGHT - 1)));
   targetList.fill(DescriptionList[Math.floor(Math.random() * DescriptionList.length)]);
   return targetList;
 };
 
-const photos = [`../public/img/photos/1.jpg`, `../public/img/photos/2.jpg`];
+const photos = [`1.jpg`, `2.jpg`];
 
 const getRandomDate = () => {
   const timeTarget = new Date();
@@ -56,9 +49,9 @@ export const generateTripPoint = () => {
     event: Math.random() > 0.5 ? EventTransferList[Math.floor(Math.random() * EventTransferList.length)] : EventActivityList[Math.floor(Math.random() * EventActivityList.length)],
     city: CityList[Math.floor(Math.random() * CityList.length)],
     ownPrice: Math.floor(Math.random() * 100),
-    offer: Math.random() > 0.005 ? OfferList.slice(1, Math.floor(Math.random() * OfferList.length)) : null,
+    offer: Math.random() > 0.00005 ? OfferList.slice(0, Math.floor(Math.random() * OfferList.length)) : null,
     description: getDescriptionString(),
-    photo: photos,
+    photo: Math.random() > 0.5 ? photos : null,
     startDate: getRandomDate(),
     finishDate: getRandomDate(),
   };
