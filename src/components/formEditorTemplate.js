@@ -24,9 +24,9 @@ const getCityList = (data) => {
 
 const getOfferList = (data, dataTrip) => {
   let valueKey = [];
-  dataTrip.forEach((item) => {
+  for (const item of dataTrip) {
     valueKey.push(item.name);
-  });
+  }
   return data
   .map((it, index) => {
     const check = (valueKey.some((chekKey) => (chekKey === it.name))) ? `checked` : ``;
@@ -140,7 +140,8 @@ export const createFormEditorTemplate = (trip) => {
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${description}</p>
 
-        ${IsPhotoCheck ? `<div class="event__photos-container">
+        ${IsPhotoCheck ?
+      `<div class="event__photos-container">
         <div class="event__photos-tape">
           ${getPhotoList(photo)}
         </div>

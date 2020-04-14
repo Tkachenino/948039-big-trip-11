@@ -42,15 +42,17 @@ const getRandomIntegerNumber = (min, max) => {
   return min + Math.floor(Math.random() * (max - min));
 };
 
-
-const getDescriptionString = (count) => {
-  const EventDescripList = new Set();
-  while (EventDescripList.size <= getRandomIntegerNumber(1, count)) {
-    EventDescripList.add(getRandomArrayItem(DescriptionList));
+const getRandomIntegers = (min, max, data) => {
+  const integers = new Set();
+  while (integers.size <= getRandomIntegerNumber(min, max)) {
+    integers.add(getRandomArrayItem(data));
   }
-  const string = Array.from(EventDescripList).join(` `);
-  return `` + string;
+  return Array.from(integers);
+};
 
+
+const getDescriptionString = () => {
+  return getRandomIntegers(1, DESCRIPTION_LENGHT, DescriptionList).join(` `);
 };
 
 const getRandomDate = () => {
@@ -72,9 +74,9 @@ export const generateTripPoint = () => {
     event: Math.random() > 0.5 ? EventTransferList[Math.floor(Math.random() * EventTransferList.length)] : EventActivityList[Math.floor(Math.random() * EventActivityList.length)],
     city: CityList[Math.floor(Math.random() * CityList.length)],
     ownPrice: Math.floor(Math.random() * 100),
-    offer: Math.random() > 0.01 ? OfferList.slice(0, Math.floor(Math.random() * OfferList.length)) : null,
-    description: getDescriptionString(DESCRIPTION_LENGHT),
-    photo: Math.random() > 0.1 ? photos.slice(0, Math.floor(Math.random() * photos.length)) : null,
+    offer: Math.random() > 0.1 ? getRandomIntegers(0, OfferList.length, OfferList) : ``,
+    description: getDescriptionString(),
+    photo: Math.random() > 0.1 ? getRandomIntegers(1, photos.length, photos) : null,
     startDate: eventDate.startTimeTarget,
     finishDate: eventDate.endTimeTarget,
   };
