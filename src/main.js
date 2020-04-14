@@ -15,6 +15,19 @@ const POINT_COUNT = 5;
 
 const trip = generateTripPoints(POINT_COUNT);
 
+const tripS = trip.reduce(function (obj, event) {
+  const day = event.startDate.getDate();
+
+  if (!obj.hasOwnProperty(day)) {
+    obj[day] = [];
+  }
+
+  obj[day].push(event);
+  return obj;
+}, {});
+
+const tripValue = Object.values(tripS);
+
 const render = (container, content, place = `beforeend`) => {
   container.insertAdjacentHTML(place, content);
 };
@@ -38,14 +51,29 @@ render(siteBoardEvents, createDayListTemplate());
 
 const dayList = siteBoardEvents.querySelector(`.trip-days`);
 
-render(dayList, createDayPointTemplate());
+let counter = 1;
 
-const dayPoint = dayList.querySelector(`.trip-days__item`);
+for (const dayCount of tripValue) {
+  render(dayList, createDayPointTemplate(counter, dayCount));
+  counter++;
 
-render(dayPoint, createEventPointListTemplate());
+  const dayPoint = dayList.querySelector(`.trip-days__item`);
 
-const eventList = siteBoardEvents.querySelector(`.trip-events__list`);
+  render(dayPoint, createEventPointListTemplate());
 
-for (let i = 0; i < POINT_COUNT; i++) {
-  render(eventList, createPointEventTeplate(trip[i]));
+  const eventList = siteBoardEvents.querySelector(`.trip-events__list`);
+  for (let q = 0; q < dayCount.length; q++) {
+    render(eventList, createPointEventTeplate(dayCount[q]));
+  }
 }
+// render(dayList, createDayPointTemplate());
+
+// const dayPoint = dayList.querySelector(`.trip-days__item`);
+
+// render(dayPoint, createEventPointListTemplate());
+
+// const eventList = siteBoardEvents.querySelector(`.trip-events__list`);
+
+// for (let i = 0; i < POINT_COUNT; i++) {
+//   render(eventList, createPointEventTeplate(trip[i]));
+// }
