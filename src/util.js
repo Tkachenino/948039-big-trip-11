@@ -1,3 +1,7 @@
+const MILLISEC_PER_MIN = 60000;
+const MILLISEC_PER_HOUR = MILLISEC_PER_MIN * 60;
+const MILLISEC_PER_DAY = MILLISEC_PER_HOUR * 24;
+
 const castTimeFormat = (value) => {
   return value < 10 ? `0${value}` : String(value);
 };
@@ -19,13 +23,14 @@ export const getEditTimeDate = (date) => {
   const year = castTimeFormat(date.getFullYear() % 2000);
   const month = castTimeFormat(date.getMonth() + 1);
   const day = date.getDate();
-  return `${year}/${month}/${day}`;
+  return `${day}/${month}/${year}`;
 };
 
 export const getDiffTime = (dateStart, dateFinish) => {
-  const day = Math.abs(dateFinish.getDate() - dateStart.getDate());
-  const hour = Math.abs(dateFinish.getHours() - dateStart.getHours());
-  const minute = Math.abs(dateFinish.getMinutes() - dateStart.getMinutes());
+  const diffDate = dateFinish - dateStart;
+  const day = Math.floor(diffDate / MILLISEC_PER_DAY);
+  const hour = Math.floor(diffDate % MILLISEC_PER_DAY / MILLISEC_PER_HOUR);
+  const minute = Math.floor(diffDate % MILLISEC_PER_DAY % MILLISEC_PER_HOUR / MILLISEC_PER_MIN);
   if (day) {
     return `${day}D ${hour}H ${minute}M`;
   } else if (hour) {
