@@ -11,7 +11,7 @@ import {createPointEventTeplate} from "@/components/pointEventTemplate.js";
 
 import {generateTripPoints} from "@/mock/trip.js";
 
-const POINT_COUNT = 3;
+const POINT_COUNT = 5;
 
 const trip = generateTripPoints(POINT_COUNT);
 

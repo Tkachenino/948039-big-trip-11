@@ -85,5 +85,7 @@ export const generateTripPoint = () => {
 export const generateTripPoints = (count) => {
   return new Array(count)
   .fill(``)
-  .map(generateTripPoint);
+  .map(generateTripPoint).sort((a, b) => {
+    return a.startDate - b.startDate;
+  });
 };
