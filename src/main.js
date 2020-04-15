@@ -11,7 +11,7 @@ import {createPointEventTeplate} from "@/components/pointEventTemplate.js";
 
 import {generateTripPoints} from "@/mock/trip.js";
 
-const POINT_COUNT = 5;
+const POINT_COUNT = 25;
 
 const trip = generateTripPoints(POINT_COUNT);
 
@@ -38,11 +38,11 @@ const siteMenu = siteControls.querySelector(`h2:nth-child(1)`);
 const siteFilter = siteControls.querySelector(`h2:nth-child(2)`);
 const siteBoardEvents = document.querySelector(`.trip-events`);
 
-render(siteMainElement, createTripInfoTemplate(), `afterbegin`);
+render(siteMainElement, createTripInfoTemplate(tripValue, trip), `afterbegin`);
 
 const siteInfoTrip = siteMainElement.querySelector(`.trip-info`);
 
-render(siteInfoTrip, createTripCostTemplate());
+render(siteInfoTrip, createTripCostTemplate(trip));
 render(siteMenu, createMenuBarTemplate(), `afterend`);
 render(siteFilter, createMenuFilterTemplate(), `afterend`);
 render(siteBoardEvents, createPointsSortElementTemplate());
@@ -51,29 +51,19 @@ render(siteBoardEvents, createDayListTemplate());
 
 const dayList = siteBoardEvents.querySelector(`.trip-days`);
 
-let counter = 1;
+let counter = 0;
 
 for (const dayCount of tripValue) {
   render(dayList, createDayPointTemplate(counter, dayCount));
-  counter++;
 
-  const dayPoint = dayList.querySelector(`.trip-days__item`);
+  const dayPoint = dayList.querySelectorAll(`.trip-days__item`)[counter];
 
   render(dayPoint, createEventPointListTemplate());
 
-  const eventList = siteBoardEvents.querySelector(`.trip-events__list`);
+  const eventList = siteBoardEvents.querySelectorAll(`.trip-events__list`)[counter];
+
   for (let q = 0; q < dayCount.length; q++) {
     render(eventList, createPointEventTeplate(dayCount[q]));
   }
+  counter++;
 }
-// render(dayList, createDayPointTemplate());
-
-// const dayPoint = dayList.querySelector(`.trip-days__item`);
-
-// render(dayPoint, createEventPointListTemplate());
-
-// const eventList = siteBoardEvents.querySelector(`.trip-events__list`);
-
-// for (let i = 0; i < POINT_COUNT; i++) {
-//   render(eventList, createPointEventTeplate(trip[i]));
-// }

@@ -1,16 +1,16 @@
 export const EventTransferList = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`];
 export const EventActivityList = [`Check-in`, `Sightseeing`, `Restaurant`];
-export const CityList = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Petersburg`];
+export const CityList = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Petersburg`, `Moscow`, `Nigniy Novgorod`];
 export const OfferList = [
-  {name: `luggage`, title: `Add luggage`, cost: `30`,
+  {name: `luggage`, title: `Add luggage`, cost: 30,
   },
-  {name: `comfort`, title: `Switch to comfort`, cost: `100`,
+  {name: `comfort`, title: `Switch to comfort`, cost: 100,
   },
-  {name: `meal`, title: `Add meal`, cost: `15`,
+  {name: `meal`, title: `Add meal`, cost: 15,
   },
-  {name: `train`, title: `Travel by train`, cost: `40`,
+  {name: `train`, title: `Travel by train`, cost: 40,
   },
-  {name: `seats`, title: `Choose seats`, cost: `30`,
+  {name: `seats`, title: `Choose seats`, cost: 30,
   }
 ];
 
