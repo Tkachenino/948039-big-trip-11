@@ -1,4 +1,4 @@
-import {getTime, getTimeDate, getDiffTime} from "@/util.js";
+import {getTime, getTimeDate, getDiffTime} from "@/utils.js";
 
 const getOfferList = (offer) => {
   return offer

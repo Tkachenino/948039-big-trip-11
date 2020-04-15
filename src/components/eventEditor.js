@@ -1,4 +1,4 @@
-import {getTime, getEditTimeDate} from "@/util.js";
+import {getTime, getEditTimeDate} from "@/utils.js";
 import {EventTransferList, EventActivityList, CityList, OfferList} from "@/mock/trip.js";
 
 const getSliderList = (data) => {
