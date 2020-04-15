@@ -9,7 +9,7 @@ import {createDayPointTemplate} from "@/components/dayCounter.js";
 import {createEventPointListTemplate} from "@/components/eventList.js";
 import {createPointEventTeplate} from "@/components/event.js";
 
-import {generateTripPoints} from "@/mock/trip.js";
+import {generateTripPoints} from "@/mock/eventData.js";
 
 const POINT_COUNT = 25;
 

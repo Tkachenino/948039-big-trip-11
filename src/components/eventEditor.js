@@ -1,5 +1,5 @@
 import {getTime, getEditTimeDate} from "@/utils.js";
-import {EventTransferList, EventActivityList, CityList, OfferList} from "@/mock/trip.js";
+import {EventTransferList, EventActivityList, CityList, OfferList} from "@/mock/eventData.js";
 
 const getSliderList = (data) => {
   return data
@@ -52,8 +52,8 @@ const getPhotoList = (data) => {
   }).join(`\n`);
 };
 
-export const createFormEditorTemplate = (trip) => {
-  const {event, city, ownPrice, offer, photo, description, startDate, finishDate} = trip;
+export const createFormEditorTemplate = (data) => {
+  const {event, city, ownPrice, offer, photo, description, startDate, finishDate} = data;
 
   const IsPhotoCheck = !!photo;
 
