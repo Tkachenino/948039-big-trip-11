@@ -1,3 +1,5 @@
+import {Component} from "@/utils.js";
+
 export const createTripCostTemplate = (date) => {
   const totalCost = date.reduce((accum, item) => {
     let totalOfferCost = 0;
@@ -16,3 +18,14 @@ export const createTripCostTemplate = (date) => {
   </p>`
   );
 };
+
+export class Cost extends Component {
+  constructor(cost) {
+    super();
+    this._cost = cost;
+  }
+
+  getTemplate() {
+    return createTripCostTemplate(this._cost);
+  }
+}

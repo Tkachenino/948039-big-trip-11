@@ -1,4 +1,6 @@
 import {MONTH} from "@/const.js";
+import {Component} from "@/utils.js";
+
 
 export const createDayPointTemplate = (counter, date) => {
   const month = date[0].startDate.getMonth();
@@ -13,3 +15,15 @@ export const createDayPointTemplate = (counter, date) => {
     </li>`
   );
 };
+
+export class DayCounter extends Component {
+  constructor(counter, event) {
+    super();
+    this._counter = counter;
+    this._event = event;
+  }
+
+  getTemplate() {
+    return createDayPointTemplate(this._counter, this._event);
+  }
+}

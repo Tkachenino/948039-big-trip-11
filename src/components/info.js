@@ -1,4 +1,5 @@
 import {MONTH} from "@/const.js";
+import {Component} from "@/utils.js";
 
 const getCityList = (city) => {
   if (city.length < 3) {
@@ -33,3 +34,15 @@ export const createTripInfoTemplate = (dateGroup, date) => {
   </section>`
   );
 };
+
+export class Info extends Component {
+  constructor(eventGroup, events) {
+    super();
+    this._eventGroup = eventGroup;
+    this._events = events;
+  }
+
+  getTemplate() {
+    return createTripInfoTemplate(this._eventGroup, this._events);
+  }
+}

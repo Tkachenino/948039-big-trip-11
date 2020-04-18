@@ -1,4 +1,4 @@
-import {getTime, getTimeDate, getDiffTime} from "@/utils.js";
+import {getTime, getTimeDate, getDiffTime, Component} from "@/utils.js";
 
 const getOfferList = (offer) => {
   return offer
@@ -60,3 +60,14 @@ export const createPointEventTeplate = (trip) => {
   </li>`
   );
 };
+
+export class Event extends Component {
+  constructor(event) {
+    super();
+    this._event = event;
+  }
+
+  getTemplate() {
+    return createPointEventTeplate(this._event);
+  }
+}

@@ -1,3 +1,5 @@
+import {Component} from "@/utils.js";
+
 export const createMenuFilterTemplate = () => {
   return (
     `<form class="trip-filters" action="#" method="get">
@@ -20,3 +22,9 @@ export const createMenuFilterTemplate = () => {
   </form>`
   );
 };
+
+export class Filter extends Component {
+  getTemplate() {
+    return createMenuFilterTemplate();
+  }
+}

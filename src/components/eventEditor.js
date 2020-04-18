@@ -1,4 +1,4 @@
-import {getTime, getEditTimeDate} from "@/utils.js";
+import {getTime, getEditTimeDate, Component} from "@/utils.js";
 import {EventTransferList, EventActivityList, CityList, OfferList} from "@/mock/eventData.js";
 
 const getSliderList = (data) => {
@@ -66,8 +66,7 @@ export const createFormEditorTemplate = (data) => {
   const isMoveCheck = [`Check-in`, `Sightseeing`, `Restaurant`].some((it) => it === event) ? `in` : `to`;
 
   return (
-    `
-    <form class="trip-events__item  event  event--edit" action="#" method="post">
+    `<form class="trip-events__item  event  event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -75,24 +74,17 @@ export const createFormEditorTemplate = (data) => {
           <img class="event__type-icon" width="17" height="17" src="img/icons//${event.toLowerCase()}.png" alt="Event type icon">
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Transfer</legend>
-
             ${getSliderList(EventTransferList)}
-
           </fieldset>
-
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Activity</legend>
-
             ${getSliderList(EventActivityList)}
-
           </fieldset>
         </div>
       </div>
-
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
         ${event}  ${isMoveCheck}
@@ -102,7 +94,6 @@ export const createFormEditorTemplate = (data) => {
           ${getCityList(CityList)}
         </datalist>
       </div>
-
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">
           From
@@ -114,7 +105,6 @@ export const createFormEditorTemplate = (data) => {
         </label>
         <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishDateTime} ${finishTime}">
       </div>
-
       <div class="event__field-group  event__field-group--price">
         <label class="event__label" for="event-price-1">
           <span class="visually-hidden">Price</span>
@@ -122,24 +112,20 @@ export const createFormEditorTemplate = (data) => {
         </label>
         <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${ownPrice}">
       </div>
-
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Cancel</button>
     </header>
     <section class="event__details">
       <section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
         <div class="event__available-offers">
          ${getOfferList(OfferList, offer)}
           </div>
         </div>
       </section>
-
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${description}</p>
-
         ${IsPhotoCheck ?
       `<div class="event__photos-container">
         <div class="event__photos-tape">
@@ -148,7 +134,17 @@ export const createFormEditorTemplate = (data) => {
       </div>` : ``}
       </section>
     </section>
-  </form>
-  `
+  </form>`
   );
 };
+
+export class EventEditor extends Component {
+  constructor(event) {
+    super();
+    this._event = event;
+  }
+
+  getTemplate() {
+    return createFormEditorTemplate(this._event);
+  }
+}
