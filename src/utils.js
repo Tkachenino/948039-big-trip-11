@@ -2,6 +2,13 @@ const MILLISEC_PER_MIN = 60000;
 const MILLISEC_PER_HOUR = MILLISEC_PER_MIN * 60;
 const MILLISEC_PER_DAY = MILLISEC_PER_HOUR * 24;
 
+export const RenderPosition = {
+  BEFOREBEGIN: `beforebegin`,
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`,
+  AFTEREND: `afterend`,
+};
+
 const castTimeFormat = (value) => {
   return value < 10 ? `0${value}` : String(value);
 };
@@ -39,5 +46,49 @@ export const getDiffTime = (dateStart, dateFinish) => {
     return `${minute}M`;
   } else {
     return ``;
+  }
+};
+
+const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
+export class Component {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.BEFOREBEGIN:
+      container.before(element);
+      break;
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+    case RenderPosition.AFTEREND:
+      container.after(element);
+      break;
   }
 };
