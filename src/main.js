@@ -8,10 +8,11 @@ import {DayList as DayListComponent} from "@/components/dayList.js";
 import {DayCounter as DayCounterComponent} from "@/components/dayCounter.js";
 import {EventList as EventListComponent} from "@/components/eventList.js";
 import {Event as EventComponent} from "@/components/event.js";
+import {NoEvent as NoEventComponent} from "@/components/noEvent.js";
 import {render, RenderPosition} from "@/utils.js";
 import {generateTripPoints} from "@/mock/eventData.js";
 
-const POINT_COUNT = 25;
+const POINT_COUNT = 20;
 let counter = 0;
 const tripList = generateTripPoints(POINT_COUNT);
 
@@ -29,27 +30,46 @@ const groupTripList = tripList.reduce(function (obj, event) {
 const tripValue = Object.values(groupTripList);
 
 const renderEvent = (eventListComponent, event) => {
-  const onMoreInfoButtonClick = () => {
+  const showMoreInfo = () => {
     eventListComponent.replaceChild(eventEditorComponent.getElement(), eventComponent.getElement());
   };
 
-  const onSaveButtonClick = (evt) => {
-    evt.preventDefault();
+  const onEscKeyDowm = (evt) => {
+    if (evt.key === `Escape`) {
+      hideMoreInfo();
+      document.removeEventListener(`keydown`, onEscKeyDowm);
+    }
+  };
+
+  const hideMoreInfo = () => {
     eventListComponent.replaceChild(eventComponent.getElement(), eventEditorComponent.getElement());
   };
 
   const eventComponent = new EventComponent(event);
   const moreInfoButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
-  moreInfoButton.onclick = onMoreInfoButtonClick;
+  moreInfoButton.addEventListener(`click`, () => {
+    showMoreInfo();
+    document.addEventListener(`keydown`, onEscKeyDowm);
+  });
 
   const eventEditorComponent = new EventEditorComponent(event);
-  const saveFrom = eventEditorComponent.getElement();
-  saveFrom.onsubmit = onSaveButtonClick;
+  const eventForm = eventEditorComponent.getElement();
+  eventForm.addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    hideMoreInfo();
+    document.removeEventListener(`keydown`, onEscKeyDowm);
+  });
 
   render(eventListComponent, eventComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
 const renderDayList = (boardComponent, groupEvent) => {
+  const IsHasEvent = (groupEvent.length === 0);
+
+  if (IsHasEvent) {
+    render(boardComponent, new NoEventComponent().getElement(), RenderPosition.BEFOREEND);
+    return;
+  }
   render(boardComponent, new SortComponent().getElement(), RenderPosition.BEFOREEND);
   render(boardComponent, new DayListComponent().getElement(), RenderPosition.BEFOREEND);
 
