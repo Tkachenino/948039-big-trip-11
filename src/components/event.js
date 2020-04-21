@@ -1,4 +1,6 @@
-import {getTime, getTimeDate, getDiffTime, Component} from "@/utils.js";
+import {getTime, getTimeDate, getDiffTime} from "@/utils/common.js";
+import {AbstractComponent as Component} from "@/components/abstractComponent.js";
+
 
 const getOfferList = (offer) => {
   return offer
@@ -69,5 +71,10 @@ export class Event extends Component {
 
   getTemplate() {
     return createPointEventTeplate(this._event);
+  }
+
+  setMoreInfoButtonHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+    .addEventListener(`click`, handler);
   }
 }

@@ -1,5 +1,5 @@
 import {MONTH} from "@/const.js";
-import {Component} from "@/utils.js";
+import {AbstractComponent as Component} from "@/components/abstractComponent.js";
 
 const getCityList = (city) => {
   if (city.length < 3) {

@@ -1,4 +1,5 @@
-import {getTime, getEditTimeDate, Component} from "@/utils.js";
+import {getTime, getEditTimeDate} from "@/utils/common.js";
+import {AbstractComponent as Component} from "@/components/abstractComponent.js";
 import {EventTransferList, EventActivityList, CityList, OfferList} from "@/mock/eventData.js";
 
 const getSliderList = (data) => {
@@ -146,5 +147,10 @@ export class EventEditor extends Component {
 
   getTemplate() {
     return createFormEditorTemplate(this._event);
+  }
+
+  setSubmitFormHandler(handler) {
+    this.getElement()
+    .addEventListener(`submit`, handler);
   }
 }

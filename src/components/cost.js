@@ -1,4 +1,4 @@
-import {Component} from "@/utils.js";
+import {AbstractComponent as Component} from "@/components/abstractComponent.js";
 
 export const createTripCostTemplate = (date) => {
   const totalCost = date.reduce((accum, item) => {
