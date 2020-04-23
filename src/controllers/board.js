@@ -98,13 +98,17 @@ export class TripController {
     renderByGroup(this._dayListComponent, groupEvent);
 
     this._sortComponent.setTypeSortHandler((sortType) => {
+      this._sortComponent.getElement().querySelector(`.trip-sort__item--day`).innerHTML = ``;
       this._dayListComponent.innerHTML = ``;
       if (sortType === SortType.EVENT) {
+        this._sortComponent.getElement().querySelector(`.trip-sort__item--day`).innerHTML = `Day`;
         return renderByGroup(this._dayListComponent, groupEvent);
       }
-      const isSorted = `isSorted`;
+
       const sortedEvents = getSortedEvent(sortType, events);
-      render(this._dayListComponent, new DayCounterComponent(isSorted, isSorted), RenderPosition.BEFOREEND);
+
+      render(this._dayListComponent, new DayCounterComponent(), RenderPosition.BEFOREEND);
+
       const dayPoint = this._dayListComponent.querySelector(`.trip-days__item`);
 
       render(dayPoint, new EventListComponent(), RenderPosition.BEFOREEND);
