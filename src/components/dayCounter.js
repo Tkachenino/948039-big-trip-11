@@ -3,6 +3,15 @@ import {AbstractComponent as Component} from "@/components/abstractComponent.js"
 
 
 export const createDayPointTemplate = (counter, date) => {
+  if (counter === `isSorted` && date === `isSorted`) {
+    return (
+      `<li class="trip-days__item  day">
+        <div class="day__info">
+        </div>
+      </li>`
+    );
+  }
+
   const month = date[0].startDate.getMonth();
   const day = date[0].startDate.getDate();
 

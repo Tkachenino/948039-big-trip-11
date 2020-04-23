@@ -41,4 +41,4 @@ render(siteFilter, new FilterComponent(), RenderPosition.AFTEREND);
 const siteBoardEvents = document.querySelector(`.trip-events`);
 const boardController = new TripController(siteBoardEvents);
 
-boardController.render(tripValue);
+boardController.render(tripValue, tripList);
