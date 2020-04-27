@@ -8,7 +8,6 @@ import {generateTripPoints} from "@/mock/eventData.js";
 
 const POINT_COUNT = 20;
 const tripList = generateTripPoints(POINT_COUNT);
-
 const groupTripList = tripList.reduce(function (obj, event) {
   const day = event.startDate.getDate();
 
@@ -20,8 +19,7 @@ const groupTripList = tripList.reduce(function (obj, event) {
   return obj;
 }, {});
 
-const tripValue = Object.values(groupTripList);
-
+const tripValue = Object.values(groupTripList).sort((a, b) => a[0].startDate - b[0].startDate);
 
 const siteMainElement = document.querySelector(`.trip-main`);
 

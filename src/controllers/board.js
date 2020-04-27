@@ -42,21 +42,18 @@ const renderEvent = (eventListComponent, event) => {
 };
 
 const renderByGroup = (container, groupEvent) => {
-  let counter = 0;
-  for (const dayCount of groupEvent) {
-    render(container, new DayCounterComponent(counter, dayCount), RenderPosition.BEFOREEND);
+  for (let i = 0; i < groupEvent.length; i++) {
+    render(container, new DayCounterComponent(i, groupEvent[i]), RenderPosition.BEFOREEND);
 
-    const dayPoint = container.querySelectorAll(`.trip-days__item`)[counter];
+    const dayPoint = container.querySelectorAll(`.trip-days__item`)[i];
 
     render(dayPoint, new EventListComponent(), RenderPosition.BEFOREEND);
 
-    const eventList = container.querySelectorAll(`.trip-events__list`)[counter];
+    const eventList = container.querySelectorAll(`.trip-events__list`)[i];
 
-    dayCount.forEach((event) => {
+    groupEvent[i].forEach((event) => {
       renderEvent(eventList, event);
     });
-
-    counter++;
   }
 };
 
