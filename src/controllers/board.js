@@ -1,45 +1,11 @@
-import {Event as EventComponent} from "@/components/event.js";
-import {EventEditor as EventEditorComponent} from "@/components/eventEditor.js";
 import {NoEvent as NoEventComponent} from "@/components/noEvent.js";
 import {Sort as SortComponent, SortType} from "@/components/sort.js";
 import {DayList as DayListComponent} from "@/components/dayList.js";
 import {EventList as EventListComponent} from "@/components/eventList.js";
 import {DayCounter as DayCounterComponent} from "@/components/dayCounter.js";
+import {PointController} from "@/controllers/event.js";
 
-import {render, replace, RenderPosition} from "@/utils/render.js";
-
-
-const renderEvent = (eventListComponent, event) => {
-  const showMoreInfo = () => {
-    replace(eventEditorComponent, eventComponent);
-  };
-
-  const onEscKeyDowm = (evt) => {
-    if (evt.key === `Escape`) {
-      hideMoreInfo();
-      document.removeEventListener(`keydown`, onEscKeyDowm);
-    }
-  };
-
-  const hideMoreInfo = () => {
-    replace(eventComponent, eventEditorComponent);
-  };
-
-  const eventComponent = new EventComponent(event);
-  eventComponent.setMoreInfoButtonHandler(() => {
-    showMoreInfo();
-    document.addEventListener(`keydown`, onEscKeyDowm);
-  });
-
-  const eventEditorComponent = new EventEditorComponent(event);
-  eventEditorComponent.setSubmitFormHandler((evt) => {
-    evt.preventDefault();
-    hideMoreInfo();
-    document.removeEventListener(`keydown`, onEscKeyDowm);
-  });
-
-  render(eventListComponent, eventComponent, RenderPosition.BEFOREEND);
-};
+import {render, RenderPosition} from "@/utils/render.js";
 
 const renderByGroup = (container, groupEvent) => {
   for (let i = 0; i < groupEvent.length; i++) {
@@ -52,7 +18,8 @@ const renderByGroup = (container, groupEvent) => {
     const eventList = container.querySelectorAll(`.trip-events__list`)[i];
 
     groupEvent[i].forEach((event) => {
-      renderEvent(eventList, event);
+      const pointController = new PointController(eventList);
+      pointController.render(event);
     });
   }
 };
@@ -112,7 +79,8 @@ export class TripController {
 
       const eventList = this._dayListComponent.querySelector(`.trip-events__list`);
       return sortedEvents.forEach((event) => {
-        renderEvent(eventList, event);
+        const pointController = new PointController(eventList);
+        pointController.render(event);
       });
     });
   }
