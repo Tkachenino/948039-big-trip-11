@@ -41,13 +41,25 @@ const getSortedEvent = (sortType, events) => {
 export class TripController {
   constructor(container) {
     this._container = container;
+
+    this._groupEvent = [];
+    this._events = [];
     this._noEventComponent = new NoEventComponent();
     this._sortComponent = new SortComponent();
     this._dayListComponent = new DayListComponent();
+
+    this._sortElement = this._sortComponent.getElement();
+
+    this._onSortTypeChange = this._onSortTypeChange.bind(this);
+
+    this._sortComponent.setTypeSortHandler(this._onSortTypeChange);
   }
 
   render(groupEvent, events) {
-    const IsHasEvent = (groupEvent.length === 0);
+    this._groupEvent = groupEvent;
+    this._events = events;
+
+    const IsHasEvent = (this._groupEvent.length === 0);
 
     if (IsHasEvent) {
       render(this._container, this._noEventComponent, RenderPosition.BEFOREEND);
@@ -59,29 +71,29 @@ export class TripController {
 
     this._dayListComponent = this._dayListComponent.getElement();
 
-    renderByGroup(this._dayListComponent, groupEvent);
+    renderByGroup(this._dayListComponent, this._groupEvent);
+  }
 
-    this._sortComponent.setTypeSortHandler((sortType) => {
-      this._sortComponent.getElement().querySelector(`.trip-sort__item--day`).innerHTML = ``;
-      this._dayListComponent.innerHTML = ``;
-      if (sortType === SortType.EVENT) {
-        this._sortComponent.getElement().querySelector(`.trip-sort__item--day`).innerHTML = `Day`;
-        return renderByGroup(this._dayListComponent, groupEvent);
-      }
+  _onSortTypeChange(sortType) {
+    this._sortElement.querySelector(`.trip-sort__item--day`).innerHTML = ``;
+    this._dayListComponent.innerHTML = ``;
+    if (sortType === SortType.EVENT) {
+      this._sortElement.querySelector(`.trip-sort__item--day`).innerHTML = `Day`;
+      return renderByGroup(this._dayListComponent, this._groupEvent);
+    }
 
-      const sortedEvents = getSortedEvent(sortType, events);
+    const sortedEvents = getSortedEvent(sortType, this._events);
 
-      render(this._dayListComponent, new DayCounterComponent(), RenderPosition.BEFOREEND);
+    render(this._dayListComponent, new DayCounterComponent(), RenderPosition.BEFOREEND);
 
-      const dayPoint = this._dayListComponent.querySelector(`.trip-days__item`);
+    const dayPoint = this._dayListComponent.querySelector(`.trip-days__item`);
 
-      render(dayPoint, new EventListComponent(), RenderPosition.BEFOREEND);
+    render(dayPoint, new EventListComponent(), RenderPosition.BEFOREEND);
 
-      const eventList = this._dayListComponent.querySelector(`.trip-events__list`);
-      return sortedEvents.forEach((event) => {
-        const pointController = new PointController(eventList);
-        pointController.render(event);
-      });
+    const eventList = this._dayListComponent.querySelector(`.trip-events__list`);
+    return sortedEvents.forEach((event) => {
+      const pointController = new PointController(eventList);
+      pointController.render(event);
     });
   }
 }
