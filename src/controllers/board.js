@@ -7,7 +7,7 @@ import {PointController} from "@/controllers/event.js";
 
 import {render, RenderPosition} from "@/utils/render.js";
 
-const renderByGroup = (container, groupEvent) => {
+const renderByGroup = (container, groupEvent, onDataChange) => {
   for (let i = 0; i < groupEvent.length; i++) {
     render(container, new DayCounterComponent(i, groupEvent[i]), RenderPosition.BEFOREEND);
 
@@ -18,7 +18,7 @@ const renderByGroup = (container, groupEvent) => {
     const eventList = container.querySelectorAll(`.trip-events__list`)[i];
 
     groupEvent[i].forEach((event) => {
-      const pointController = new PointController(eventList);
+      const pointController = new PointController(eventList, onDataChange);
       pointController.render(event);
     });
   }
@@ -44,6 +44,9 @@ export class TripController {
 
     this._groupEvent = [];
     this._events = [];
+
+    this._onDataChange = this._onDataChange.bind(this);
+
     this._noEventComponent = new NoEventComponent();
     this._sortComponent = new SortComponent();
     this._dayListComponent = new DayListComponent();
@@ -71,7 +74,19 @@ export class TripController {
 
     this._dayListComponent = this._dayListComponent.getElement();
 
-    renderByGroup(this._dayListComponent, this._groupEvent);
+    renderByGroup(this._dayListComponent, this._groupEvent, this._onDataChange);
+  }
+
+  _onDataChange(taskController, oldData, newData) {
+    const index = this._events.findIndex((it) => it === oldData);
+
+    if (index === -1) {
+      return;
+    }
+
+    this._events = [].concat(this._events.slice(0, index), newData, this._events.slice(index + 1));
+
+    taskController.render(this._events[index]);
   }
 
   _onSortTypeChange(sortType) {
@@ -79,7 +94,7 @@ export class TripController {
     this._dayListComponent.innerHTML = ``;
     if (sortType === SortType.EVENT) {
       this._sortElement.querySelector(`.trip-sort__item--day`).innerHTML = `Day`;
-      return renderByGroup(this._dayListComponent, this._groupEvent);
+      return renderByGroup(this._dayListComponent, this._groupEvent, this._onDataChange);
     }
 
     const sortedEvents = getSortedEvent(sortType, this._events);
@@ -92,7 +107,7 @@ export class TripController {
 
     const eventList = this._dayListComponent.querySelector(`.trip-events__list`);
     return sortedEvents.forEach((event) => {
-      const pointController = new PointController(eventList);
+      const pointController = new PointController(eventList, this._onDataChange);
       pointController.render(event);
     });
   }

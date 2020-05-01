@@ -79,6 +79,7 @@ export const generateTripPoint = () => {
     photo: Math.random() > 0.1 ? getRandomIntegers(1, photos.length, photos) : null,
     startDate: eventDate.startTimeTarget,
     finishDate: eventDate.endTimeTarget,
+    favoriteFlag: Math.random() > 0.5 ? true : false,
   };
 };
 

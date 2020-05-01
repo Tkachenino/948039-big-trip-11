@@ -3,13 +3,13 @@ import {EventEditor as EventEditorComponent} from "@/components/eventEditor.js";
 import {render, replace, RenderPosition} from "@/utils/render.js";
 
 export class PointController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
+    this._onDataChange = onDataChange;
     this._eventComponent = null;
     this._eventEditorComponent = null;
 
     this._onEscKeyDowm = this._onEscKeyDowm.bind(this);
-
   }
 
   render(event) {
@@ -26,6 +26,12 @@ export class PointController {
       evt.preventDefault();
       this._hideMoreInfo();
       document.removeEventListener(`keydown`, this._onEscKeyDowm);
+    });
+
+    this._eventEditorComponent.setFavoriteHandler(() => {
+      this._onDataChange(this, event, Object.assign({}, event, {
+        favoriteFlag: !event.favoriteFlag,
+      }));
     });
 
     render(this._container, this._eventComponent, RenderPosition.BEFOREEND);

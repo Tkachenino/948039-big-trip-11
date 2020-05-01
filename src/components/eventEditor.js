@@ -1,6 +1,6 @@
 import {getTime, getEditTimeDate} from "@/utils/common.js";
-import {AbstractComponent as Component} from "@/components/abstractComponent.js";
-import {EventTransferList, EventActivityList, CityList, OfferList} from "@/mock/eventData.js";
+import {AbstractSmartComponent as SmartComponent} from "@/components/abstractSmartComponent.js";
+import {EventTransferList, EventActivityList, CityList} from "@/mock/eventData.js";
 
 const getSliderList = (data, event) => {
   return data
@@ -24,17 +24,15 @@ const getCityList = (data) => {
   }).join(`\n`);
 };
 
-const getOfferList = (data, dataTrip) => {
-  let valueKey = [];
-  for (const item of dataTrip) {
-    valueKey.push(item.name);
+const getOfferList = (data) => {
+  if (data === ``) {
+    return ``;
   }
   return data
   .map((it, index) => {
-    const check = (valueKey.some((chekKey) => (chekKey === it.name))) ? `checked` : ``;
     return (
       `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${it.name}-${index}" type="checkbox" name="event-offer-${it.name}" ${check}>
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${it.name}-${index}" type="checkbox" name="event-offer-${it.name}" checked>
         <label class="event__offer-label" for="event-offer-${it.name}-${index}">
           <span class="event__offer-title">${it.title}</span>
           &plus;
@@ -46,15 +44,16 @@ const getOfferList = (data, dataTrip) => {
 };
 
 export const createFormEditorTemplate = (data) => {
-  const {event, city, ownPrice, offer, startDate, finishDate} = data;
+  const {event, city, ownPrice, offer, startDate, finishDate, favoriteFlag} = data;
 
   const startTime = getTime(startDate);
   const finishTime = getTime(finishDate);
   const startDateTime = getEditTimeDate(startDate);
   const finishDateTime = getEditTimeDate(finishDate);
 
-
+  const isFavorite = favoriteFlag ? `checked` : ``;
   const isMoveCheck = [`Check-in`, `Sightseeing`, `Restaurant`].some((it) => it === event) ? `in` : `to`;
+  const isOffer = offer !== `` ? true : false;
 
   return (
     `<form class="event  event--edit" action="#" method="post">
@@ -116,7 +115,7 @@ export const createFormEditorTemplate = (data) => {
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
 
-        <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" checked>
+        <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite}>
         <label class="event__favorite-btn" for="event-favorite-1">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -130,22 +129,33 @@ export const createFormEditorTemplate = (data) => {
       </header>
 
       <section class="event__details">
-        <section class="event__section  event__section--offers">
+        ${isOffer ? `<section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
           <div class="event__available-offers">
-          ${getOfferList(OfferList, offer)}
+          ${getOfferList(offer)}
           </div>
-        </section>
+        </section>` : ``
+    }
       </section>
     </form>`
   );
 };
 
-export class EventEditor extends Component {
+export class EventEditor extends SmartComponent {
   constructor(event) {
     super();
     this._event = event;
+    this._favoriteHandler = null;
+    this._sumbitHandler = null;
+  }
+
+  rerender() {
+    super.rerender();
+  }
+
+  recoveryListener() {
+    this.setFavoriteHandler(this._favoriteHandler);
+    this.setSubmitFormHandler(this._sumbitHandler);
   }
 
   getTemplate() {
@@ -155,5 +165,15 @@ export class EventEditor extends Component {
   setSubmitFormHandler(handler) {
     this.getElement()
     .addEventListener(`submit`, handler);
+
+    this._sumbitHandler = handler;
+  }
+
+  setFavoriteHandler(handler) {
+    this.getElement()
+    .querySelector(`.event__favorite-btn`)
+    .addEventListener(`click`, handler);
+
+    this._favoriteHandler = handler;
   }
 }

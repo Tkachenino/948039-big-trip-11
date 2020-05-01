@@ -6,7 +6,7 @@ import {render, RenderPosition} from "@/utils/render.js";
 import {TripController} from "@/controllers/board.js";
 import {generateTripPoints} from "@/mock/eventData.js";
 
-const POINT_COUNT = 20;
+const POINT_COUNT = 5;
 const tripList = generateTripPoints(POINT_COUNT);
 const groupTripList = tripList.reduce(function (obj, event) {
   const day = event.startDate.getDate();
