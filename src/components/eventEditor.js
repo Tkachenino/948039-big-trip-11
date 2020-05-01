@@ -151,6 +151,7 @@ export class EventEditor extends SmartComponent {
 
   rerender() {
     super.rerender();
+    this.recoveryListener();
   }
 
   recoveryListener() {
