@@ -25,16 +25,17 @@ export const createPointEventTeplate = (trip) => {
   const diffTime = getDiffTime(startDate, finishDate);
 
 
-  const isMoveCheck = [`Check-in`, `Sightseeing`, `Restaurant`].some((it) => it === event) ? `in` : `to`;
+  const isMoveCheck = [`check-in`, `sightseeing`, `restaurant`].some((it) => it === event) ? `in` : `to`;
   const isOfferCheck = !!offer;
+  const getUpperLetter = (events) => events[0].toUpperCase() + events.slice(1);
 
   return (
     `<li class="trip-events__item">
     <div class="event">
       <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/${event.toLowerCase()}.png" alt="Event type icon">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${event}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${event} ${isMoveCheck} ${city}</h3>
+      <h3 class="event__title">${getUpperLetter(event)} ${isMoveCheck} ${city}</h3>
 
       <div class="event__schedule">
         <p class="event__time">

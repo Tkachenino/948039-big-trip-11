@@ -3,9 +3,8 @@ import {EventEditor as EventEditorComponent} from "@/components/eventEditor.js";
 import {render, replace, RenderPosition} from "@/utils/render.js";
 
 export class PointController {
-  constructor(container, onDataChange) {
+  constructor(container) {
     this._container = container;
-    this._onDataChange = onDataChange;
     this._eventComponent = null;
     this._eventEditorComponent = null;
 
@@ -30,6 +29,23 @@ export class PointController {
 
     this._eventEditorComponent.setFavoriteHandler(() => {
       event.favoriteFlag = !event.favoriteFlag;
+      this._eventEditorComponent.rerender();
+    });
+
+    this._eventEditorComponent.setLessInfoButtonHandler(() => {
+      this._hideMoreInfo();
+      document.removeEventListener(`keydown`, this._onEscKeyDowm);
+    });
+
+    this._eventEditorComponent.setTypeEventHandler((evt) => {
+      const label = evt.target.value;
+      event.event = label;
+      this._eventEditorComponent.rerender();
+    });
+
+    this._eventEditorComponent.setCityHandler((evt) => {
+      const city = evt.target.value;
+      event.city = city;
       this._eventEditorComponent.rerender();
     });
 

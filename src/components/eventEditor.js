@@ -52,8 +52,10 @@ export const createFormEditorTemplate = (data) => {
   const finishDateTime = getEditTimeDate(finishDate);
 
   const isFavorite = favoriteFlag ? `checked` : ``;
-  const isMoveCheck = [`Check-in`, `Sightseeing`, `Restaurant`].some((it) => it === event) ? `in` : `to`;
+  const isMoveCheck = [`check-in`, `sightseeing`, `restaurant`].some((it) => it === event) ? `in` : `to`;
   const isOffer = offer !== `` ? true : false;
+  const getUpperLetter = (events) => events[0].toUpperCase() + events.slice(1);
+
 
   return (
     `<form class="event  event--edit" action="#" method="post">
@@ -61,7 +63,7 @@ export const createFormEditorTemplate = (data) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${event.toLowerCase()}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${event}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -84,7 +86,7 @@ export const createFormEditorTemplate = (data) => {
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-          ${event}  ${isMoveCheck}
+          ${getUpperLetter(event)}  ${isMoveCheck}
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
           <datalist id="destination-list-1">
@@ -157,6 +159,9 @@ export class EventEditor extends SmartComponent {
   recoveryListener() {
     this.setFavoriteHandler(this._favoriteHandler);
     this.setSubmitFormHandler(this._sumbitHandler);
+    this.setLessInfoButtonHandler(this._lessInfoHandler);
+    this.setTypeEventHandler(this._typeEventHandler);
+    this.setCityHandler(this._typeCityHandler);
   }
 
   getTemplate() {
@@ -170,11 +175,35 @@ export class EventEditor extends SmartComponent {
     this._sumbitHandler = handler;
   }
 
+  setLessInfoButtonHandler(handler) {
+    this.getElement()
+    .querySelector(`.event__rollup-btn`)
+    .addEventListener(`click`, handler);
+
+    this._lessInfoHandler = handler;
+  }
+
   setFavoriteHandler(handler) {
     this.getElement()
     .querySelector(`.event__favorite-btn`)
     .addEventListener(`click`, handler);
 
     this._favoriteHandler = handler;
+  }
+
+  setTypeEventHandler(handler) {
+    this.getElement()
+    .querySelector(`.event__type-list`)
+    .addEventListener(`change`, handler);
+
+    this._typeEventHandler = handler;
+  }
+
+  setCityHandler(handler) {
+    this.getElement()
+    .querySelector(`.event__field-group`)
+    .addEventListener(`change`, handler);
+
+    this._typeCityHandler = handler;
   }
 }
