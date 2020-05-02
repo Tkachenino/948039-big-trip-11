@@ -27,14 +27,14 @@ export class PointController {
       document.removeEventListener(`keydown`, this._onEscKeyDowm);
     });
 
-    this._eventEditorComponent.setFavoriteHandler(() => {
-      event.favoriteFlag = !event.favoriteFlag;
-      this._eventEditorComponent.rerender();
-    });
-
     this._eventEditorComponent.setLessInfoButtonHandler(() => {
       this._hideMoreInfo();
       document.removeEventListener(`keydown`, this._onEscKeyDowm);
+    });
+
+    this._eventEditorComponent.setFavoriteHandler(() => {
+      event.favoriteFlag = !event.favoriteFlag;
+      this._eventEditorComponent.rerender();
     });
 
     this._eventEditorComponent.setTypeEventHandler((evt) => {

@@ -4,10 +4,12 @@ import {DayList as DayListComponent} from "@/components/dayList.js";
 import {EventList as EventListComponent} from "@/components/eventList.js";
 import {DayCounter as DayCounterComponent} from "@/components/dayCounter.js";
 import {PointController} from "@/controllers/event.js";
+import {getGroupList} from "@/utils/common.js";
 
 import {render, RenderPosition} from "@/utils/render.js";
 
-const renderByGroup = (container, groupEvent, onDataChange) => {
+const renderByGroup = (container, events) => {
+  const groupEvent = getGroupList(events);
   for (let i = 0; i < groupEvent.length; i++) {
     render(container, new DayCounterComponent(i, groupEvent[i]), RenderPosition.BEFOREEND);
 
@@ -18,7 +20,7 @@ const renderByGroup = (container, groupEvent, onDataChange) => {
     const eventList = container.querySelectorAll(`.trip-events__list`)[i];
 
     groupEvent[i].forEach((event) => {
-      const pointController = new PointController(eventList, onDataChange);
+      const pointController = new PointController(eventList);
       pointController.render(event);
     });
   }
@@ -45,8 +47,6 @@ export class TripController {
     this._groupEvent = [];
     this._events = [];
 
-    this._onDataChange = this._onDataChange.bind(this);
-
     this._noEventComponent = new NoEventComponent();
     this._sortComponent = new SortComponent();
     this._dayListComponent = new DayListComponent();
@@ -58,11 +58,10 @@ export class TripController {
     this._sortComponent.setTypeSortHandler(this._onSortTypeChange);
   }
 
-  render(groupEvent, events) {
-    this._groupEvent = groupEvent;
+  render(events) {
     this._events = events;
 
-    const IsHasEvent = (this._groupEvent.length === 0);
+    const IsHasEvent = (this._events.length === 0);
 
     if (IsHasEvent) {
       render(this._container, this._noEventComponent, RenderPosition.BEFOREEND);
@@ -74,19 +73,7 @@ export class TripController {
 
     this._dayListComponent = this._dayListComponent.getElement();
 
-    renderByGroup(this._dayListComponent, this._groupEvent, this._onDataChange);
-  }
-
-  _onDataChange(taskController, oldData, newData) {
-    const index = this._events.findIndex((it) => it === oldData);
-
-    if (index === -1) {
-      return;
-    }
-
-    this._events = [].concat(this._events.slice(0, index), newData, this._events.slice(index + 1));
-
-    taskController.render(this._events[index]);
+    renderByGroup(this._dayListComponent, this._events);
   }
 
   _onSortTypeChange(sortType) {
@@ -94,7 +81,7 @@ export class TripController {
     this._dayListComponent.innerHTML = ``;
     if (sortType === SortType.EVENT) {
       this._sortElement.querySelector(`.trip-sort__item--day`).innerHTML = `Day`;
-      return renderByGroup(this._dayListComponent, this._groupEvent, this._onDataChange);
+      return renderByGroup(this._dayListComponent, this._events);
     }
 
     const sortedEvents = getSortedEvent(sortType, this._events);
@@ -107,7 +94,7 @@ export class TripController {
 
     const eventList = this._dayListComponent.querySelector(`.trip-events__list`);
     return sortedEvents.forEach((event) => {
-      const pointController = new PointController(eventList, this._onDataChange);
+      const pointController = new PointController(eventList);
       pointController.render(event);
     });
   }

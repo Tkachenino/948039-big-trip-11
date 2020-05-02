@@ -1,4 +1,5 @@
 import {MONTH} from "@/const.js";
+import {getGroupList} from "@/utils/common.js";
 import {AbstractComponent as Component} from "@/components/abstractComponent.js";
 
 const getCityList = (city) => {
@@ -8,16 +9,16 @@ const getCityList = (city) => {
     return city[0] + ` &mdash; ... &mdash; ` + city[city.length - 1];
   }
 };
-const createTripInfoTemplate = (dateGroup, date) => {
+const createTripInfoTemplate = (data) => {
   let eventCityList = new Set();
 
-  for (const event of date) {
+  for (const event of data) {
     eventCityList.add(event.city);
   }
   eventCityList = Array.from(eventCityList);
 
   const cityList = getCityList(eventCityList);
-
+  const dateGroup = getGroupList(data);
   const monthStart = (dateGroup[0] === undefined) ? `` : dateGroup[0][0].startDate.getMonth();
   const dayStart = (dateGroup[0] === undefined) ? `` : dateGroup[0][0].startDate.getDate();
   const monthEnd = (dateGroup[dateGroup.length - 1] === undefined) ? `` : dateGroup[dateGroup.length - 1][0].startDate.getMonth();
