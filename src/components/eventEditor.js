@@ -151,11 +151,6 @@ export class EventEditor extends SmartComponent {
     this._sumbitHandler = null;
   }
 
-  rerender() {
-    super.rerender();
-    this.recoveryListener();
-  }
-
   recoveryListener() {
     this.setFavoriteHandler(this._favoriteHandler);
     this.setSubmitFormHandler(this._sumbitHandler);
