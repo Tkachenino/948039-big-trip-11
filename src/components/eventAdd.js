@@ -145,18 +145,7 @@ export class EventEditor extends Component {
   constructor(event) {
     super();
     this._event = event;
-    this._favoriteHandler = null;
-    this._sumbitHandler = null;
   }
-
-  recoveryListener() {
-    this.setFavoriteHandler(this._favoriteHandler);
-    this.setSubmitFormHandler(this._sumbitHandler);
-    this.setLessInfoButtonHandler(this._lessInfoHandler);
-    this.setTypeEventHandler(this._typeEventHandler);
-    this.setCityHandler(this._typeCityHandler);
-  }
-
 
   getTemplate() {
     return createFormEditorTemplate(this._event);
@@ -165,31 +154,5 @@ export class EventEditor extends Component {
   setSubmitFormHandler(handler) {
     this.getElement()
     .addEventListener(`submit`, handler);
-
-    this._sumbitHandler = handler;
-  }
-
-  setFavoriteHandler(handler) {
-    this.getElement()
-    .querySelector(`.event__favorite-btn`)
-    .addEventListener(`click`, handler);
-
-    this._favoriteHandler = handler;
-  }
-
-  setTypeEventHandler(handler) {
-    this.getElement()
-    .querySelector(`.event__type-list`)
-    .addEventListener(`change`, handler);
-
-    this._typeEventHandler = handler;
-  }
-
-  setCityHandler(handler) {
-    this.getElement()
-    .querySelector(`.event__field-group`)
-    .addEventListener(`change`, handler);
-
-    this._typeCityHandler = handler;
   }
 }
