@@ -1,5 +1,5 @@
-export const EventTransferList = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`];
-export const EventActivityList = [`Check-in`, `Sightseeing`, `Restaurant`];
+export const EventTransferList = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
+export const EventActivityList = [`check-in`, `sightseeing`, `restaurant`];
 export const CityList = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Petersburg`, `Moscow`, `Nigniy Novgorod`];
 export const OfferList = [
   {name: `luggage`, title: `Add luggage`, cost: 30,
@@ -79,6 +79,7 @@ export const generateTripPoint = () => {
     photo: Math.random() > 0.1 ? getRandomIntegers(1, photos.length, photos) : null,
     startDate: eventDate.startTimeTarget,
     finishDate: eventDate.endTimeTarget,
+    favoriteFlag: Math.random() > 0.5 ? true : false,
   };
 };
 

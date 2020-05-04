@@ -41,3 +41,18 @@ export const getDiffTime = (dateStart, dateFinish) => {
     return ``;
   }
 };
+
+export const getGroupList = (items) => {
+  const groupList = items.reduce(function (obj, event) {
+    const day = event.startDate.getDate();
+
+    if (!obj.hasOwnProperty(day)) {
+      obj[day] = [];
+    }
+
+    obj[day].push(event);
+    return obj;
+  }, {});
+
+  return Object.values(groupList).sort((a, b) => a[0].startDate - b[0].startDate);
+};

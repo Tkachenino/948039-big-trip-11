@@ -6,26 +6,11 @@ import {render, RenderPosition} from "@/utils/render.js";
 import {TripController} from "@/controllers/board.js";
 import {generateTripPoints} from "@/mock/eventData.js";
 
-const POINT_COUNT = 20;
+const POINT_COUNT = 5;
 const tripList = generateTripPoints(POINT_COUNT);
-
-const groupTripList = tripList.reduce(function (obj, event) {
-  const day = event.startDate.getDate();
-
-  if (!obj.hasOwnProperty(day)) {
-    obj[day] = [];
-  }
-
-  obj[day].push(event);
-  return obj;
-}, {});
-
-const tripValue = Object.values(groupTripList);
-
-
 const siteMainElement = document.querySelector(`.trip-main`);
 
-render(siteMainElement, new InfoComponent(tripValue, tripList), RenderPosition.AFTERBEGIN);
+render(siteMainElement, new InfoComponent(tripList), RenderPosition.AFTERBEGIN);
 
 const siteInfoTrip = siteMainElement.querySelector(`.trip-info`);
 
@@ -41,4 +26,4 @@ render(siteFilter, new FilterComponent(), RenderPosition.AFTEREND);
 const siteBoardEvents = document.querySelector(`.trip-events`);
 const boardController = new TripController(siteBoardEvents);
 
-boardController.render(tripValue, tripList);
+boardController.render(tripList);
