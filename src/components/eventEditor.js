@@ -2,6 +2,9 @@ import {getTime, getEditTimeDate} from "@/utils/common.js";
 import {AbstractSmartComponent as SmartComponent} from "@/components/abstractSmartComponent.js";
 import {EventTransferList, EventActivityList, CityList} from "@/mock/eventData.js";
 
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
+
 const getSliderList = (data, event) => {
   return data
   .map((it, index) => {
@@ -149,6 +152,9 @@ export class EventEditor extends SmartComponent {
     this._event = event;
     this._favoriteHandler = null;
     this._sumbitHandler = null;
+
+    this._flatpickr = null;
+    this._applyFlatpickr();
   }
 
   recoveryListener() {
@@ -200,5 +206,30 @@ export class EventEditor extends SmartComponent {
     .addEventListener(`change`, handler);
 
     this._typeCityHandler = handler;
+  }
+
+  _applyFlatpickr() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    const dateStartElement = this.getElement().querySelector(`input[name=event-start-time]`);
+    this._flatpickr = flatpickr(dateStartElement, {
+      altInput: true,
+      enableTime: true,
+      allowInput: true,
+      altFormat: `d/m/y H:i`,
+      defaultDate: this._event.startDate,
+    });
+
+    const dateEndElement = this.getElement().querySelector(`input[name=event-end-time]`);
+    this._flatpickr = flatpickr(dateEndElement, {
+      altInput: true,
+      enableTime: true,
+      allowInput: true,
+      altFormat: `d/m/y H:i`,
+      defaultDate: this._event.finishDate,
+    });
   }
 }
