@@ -1,4 +1,3 @@
-import {getTime, getEditTimeDate} from "@/utils/common.js";
 import {AbstractSmartComponent as SmartComponent} from "@/components/abstractSmartComponent.js";
 import {EventTransferList, EventActivityList, CityList} from "@/mock/eventData.js";
 
@@ -47,12 +46,8 @@ const getOfferList = (data) => {
 };
 
 export const createFormEditorTemplate = (data) => {
-  const {event, city, ownPrice, offer, startDate, finishDate, favoriteFlag} = data;
+  const {event, city, ownPrice, offer, favoriteFlag} = data;
 
-  const startTime = getTime(startDate);
-  const finishTime = getTime(finishDate);
-  const startDateTime = getEditTimeDate(startDate);
-  const finishDateTime = getEditTimeDate(finishDate);
 
   const isFavorite = favoriteFlag ? `checked` : ``;
   const isMoveCheck = [`check-in`, `sightseeing`, `restaurant`].some((it) => it === event) ? `in` : `to`;
@@ -101,12 +96,12 @@ export const createFormEditorTemplate = (data) => {
           <label class="visually-hidden" for="event-start-time-1">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDateTime} ${startTime}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishDateTime} ${finishTime}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="">
         </div>
 
         <div class="event__field-group  event__field-group--price">
