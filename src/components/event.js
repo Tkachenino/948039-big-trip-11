@@ -1,4 +1,4 @@
-import {getTime, getTimeDate, getDiffTime} from "@/utils/common.js";
+import {formatTime, formatDateTime, getDiffTime} from "@/utils/common.js";
 import {AbstractComponent as Component} from "@/components/abstractComponent.js";
 
 
@@ -18,10 +18,10 @@ const getOfferList = (offer) => {
 
 export const createPointEventTeplate = (trip) => {
   const {event, city, ownPrice, offer, startDate, finishDate} = trip;
-  const startTime = getTime(startDate);
-  const finishTime = getTime(finishDate);
-  const startDateTime = getTimeDate(startDate);
-  const finishDateTime = getTimeDate(finishDate);
+  const startTime = formatTime(startDate);
+  const finishTime = formatTime(finishDate);
+  const startDateTime = formatDateTime(startDate);
+  const finishDateTime = formatDateTime(finishDate);
   const diffTime = getDiffTime(startDate, finishDate);
 
 

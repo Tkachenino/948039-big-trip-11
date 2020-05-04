@@ -1,6 +1,8 @@
-import {getTime, getEditTimeDate} from "@/utils/common.js";
 import {AbstractSmartComponent as SmartComponent} from "@/components/abstractSmartComponent.js";
 import {EventTransferList, EventActivityList, CityList} from "@/mock/eventData.js";
+
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
 
 const getSliderList = (data, event) => {
   return data
@@ -44,12 +46,8 @@ const getOfferList = (data) => {
 };
 
 export const createFormEditorTemplate = (data) => {
-  const {event, city, ownPrice, offer, startDate, finishDate, favoriteFlag} = data;
+  const {event, city, ownPrice, offer, favoriteFlag} = data;
 
-  const startTime = getTime(startDate);
-  const finishTime = getTime(finishDate);
-  const startDateTime = getEditTimeDate(startDate);
-  const finishDateTime = getEditTimeDate(finishDate);
 
   const isFavorite = favoriteFlag ? `checked` : ``;
   const isMoveCheck = [`check-in`, `sightseeing`, `restaurant`].some((it) => it === event) ? `in` : `to`;
@@ -98,12 +96,12 @@ export const createFormEditorTemplate = (data) => {
           <label class="visually-hidden" for="event-start-time-1">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDateTime} ${startTime}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishDateTime} ${finishTime}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -149,6 +147,9 @@ export class EventEditor extends SmartComponent {
     this._event = event;
     this._favoriteHandler = null;
     this._sumbitHandler = null;
+
+    this._flatpickr = null;
+    this._applyFlatpickr();
   }
 
   recoveryListener() {
@@ -200,5 +201,30 @@ export class EventEditor extends SmartComponent {
     .addEventListener(`change`, handler);
 
     this._typeCityHandler = handler;
+  }
+
+  _applyFlatpickr() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    const dateStartElement = this.getElement().querySelector(`input[name=event-start-time]`);
+    this._flatpickr = flatpickr(dateStartElement, {
+      altInput: true,
+      enableTime: true,
+      allowInput: true,
+      altFormat: `d/m/y H:i`,
+      defaultDate: this._event.startDate,
+    });
+
+    const dateEndElement = this.getElement().querySelector(`input[name=event-end-time]`);
+    this._flatpickr = flatpickr(dateEndElement, {
+      altInput: true,
+      enableTime: true,
+      allowInput: true,
+      altFormat: `d/m/y H:i`,
+      defaultDate: this._event.finishDate,
+    });
   }
 }
