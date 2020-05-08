@@ -5,16 +5,20 @@ import {Filter as FilterComponent} from "@/components/filter.js";
 import {render, RenderPosition} from "@/utils/render.js";
 import {TripController} from "@/controllers/board.js";
 import {generateTripPoints} from "@/mock/eventData.js";
+import {Points as PointsModel} from "@/models/points.js";
 
 const POINT_COUNT = 5;
-const tripList = generateTripPoints(POINT_COUNT);
+const events = generateTripPoints(POINT_COUNT);
+const pointsModel = new PointsModel();
+pointsModel.setPoints(events);
+
 const siteMainElement = document.querySelector(`.trip-main`);
 
-render(siteMainElement, new InfoComponent(tripList), RenderPosition.AFTERBEGIN);
+render(siteMainElement, new InfoComponent(pointsModel), RenderPosition.AFTERBEGIN);
 
 const siteInfoTrip = siteMainElement.querySelector(`.trip-info`);
 
-render(siteInfoTrip, new CostComponent(tripList), RenderPosition.BEFOREEND);
+render(siteInfoTrip, new CostComponent(pointsModel), RenderPosition.BEFOREEND);
 
 const siteControls = siteMainElement.querySelector(`.trip-controls`);
 const siteMenu = siteControls.querySelector(`h2:nth-child(1)`);
@@ -24,6 +28,6 @@ render(siteMenu, new MenuComponent(), RenderPosition.AFTEREND);
 render(siteFilter, new FilterComponent(), RenderPosition.AFTEREND);
 
 const siteBoardEvents = document.querySelector(`.trip-events`);
-const boardController = new TripController(siteBoardEvents);
+const boardController = new TripController(siteBoardEvents, pointsModel);
 
-boardController.render(tripList);
+boardController.render();

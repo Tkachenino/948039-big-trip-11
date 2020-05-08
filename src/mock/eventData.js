@@ -71,6 +71,7 @@ const getRandomDate = () => {
 export const generateTripPoint = () => {
   const eventDate = getRandomDate();
   return {
+    id: Math.random(),
     event: Math.random() > 0.5 ? EventTransferList[Math.floor(Math.random() * EventTransferList.length)] : EventActivityList[Math.floor(Math.random() * EventActivityList.length)],
     city: CityList[Math.floor(Math.random() * CityList.length)],
     ownPrice: Math.floor(Math.random() * 100),

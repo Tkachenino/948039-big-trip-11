@@ -44,10 +44,11 @@ const getSortedEvent = (sortType, events) => {
 };
 
 export class TripController {
-  constructor(container) {
+  constructor(container, pointsModel) {
     this._container = container;
+    this._pointsModel = pointsModel;
 
-    this._events = [];
+    // this._events = [];
 
     this._showedEventControllers = [];
 
@@ -63,10 +64,10 @@ export class TripController {
     this._sortComponent.setTypeSortHandler(this._onSortTypeChange);
   }
 
-  render(events) {
-    this._events = events;
+  render() {
+    const events = this._pointsModel.getPoints();
 
-    const IsHasEvent = (this._events.length === 0);
+    const IsHasEvent = (events.length === 0);
 
     if (IsHasEvent) {
       render(this._container, this._noEventComponent, RenderPosition.BEFOREEND);
@@ -78,11 +79,12 @@ export class TripController {
 
     this._dayListComponent = this._dayListComponent.getElement();
 
-    const newEvent = renderByGroup(this._dayListComponent, this._events, this._onViewChange);
+    const newEvent = renderByGroup(this._dayListComponent, events, this._onViewChange);
     this._showedEventControllers = this._showedEventControllers.concat(newEvent);
   }
 
   _onSortTypeChange(sortType) {
+    const events = this._pointsModel.getPoints();
     const showingControllers = [];
     this._showedEventControllers = [];
 
@@ -90,11 +92,11 @@ export class TripController {
     this._dayListComponent.innerHTML = ``;
     if (sortType === SortType.EVENT) {
       this._sortElement.querySelector(`.trip-sort__item--day`).innerHTML = `Day`;
-      const newEvent = renderByGroup(this._dayListComponent, this._events, this._onViewChange);
+      const newEvent = renderByGroup(this._dayListComponent, events, this._onViewChange);
       this._showedEventControllers = this._showedEventControllers.concat(newEvent);
     }
 
-    const sortedEvents = getSortedEvent(sortType, this._events);
+    const sortedEvents = getSortedEvent(sortType, events);
 
     render(this._dayListComponent, new DayCounterComponent(), RenderPosition.BEFOREEND);
 

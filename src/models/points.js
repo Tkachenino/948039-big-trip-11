@@ -1,9 +1,38 @@
 export class Points {
-  constructor(points) {
-    this.points = points;
+  constructor() {
+    this._events = [];
+
+    this._dataChangeHandlers = [];
   }
 
-  getPoints() {}
+  getPoints() {
+    return this._events;
+  }
 
-  setPoints() {}
+  setPoints(events) {
+    this._events = Array.from(events);
+    this._callHandlers(this._dataChangeHandlers);
+  }
+
+  updateEvent(id, event) {
+    const index = this._events.findIndex((it) => it.id === id);
+
+    if (index === -1) {
+      return false;
+    }
+
+    this._events = [].concat(this._events.slice(0, index), event, this._events.slice(index + 1));
+
+    this._callHandlers(this._dataChangeHandlers);
+
+    return true;
+  }
+
+  setDataChangeHandler(handler) {
+    this._dataChangeHandlers.push(handler);
+  }
+
+  _callHandlers(handlers) {
+    handlers.forEach((handler) => handler());
+  }
 }
