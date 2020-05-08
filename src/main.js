@@ -1,9 +1,9 @@
 import {Info as InfoComponent} from "@/components/info.js";
 import {Cost as CostComponent} from "@/components/cost.js";
 import {Menu as MenuComponent} from "@/components/menu.js";
-import {Filter as FilterComponent} from "@/components/filter.js";
 import {render, RenderPosition} from "@/utils/render.js";
 import {TripController} from "@/controllers/board.js";
+import {FilterController} from "@/controllers/filter.js";
 import {generateTripPoints} from "@/mock/eventData.js";
 import {Points as PointsModel} from "@/models/points.js";
 
@@ -25,7 +25,8 @@ const siteMenu = siteControls.querySelector(`h2:nth-child(1)`);
 const siteFilter = siteControls.querySelector(`h2:nth-child(2)`);
 
 render(siteMenu, new MenuComponent(), RenderPosition.AFTEREND);
-render(siteFilter, new FilterComponent(), RenderPosition.AFTEREND);
+const filterController = new FilterController(siteFilter);
+filterController.render();
 
 const siteBoardEvents = document.querySelector(`.trip-events`);
 const boardController = new TripController(siteBoardEvents, pointsModel);

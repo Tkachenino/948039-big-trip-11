@@ -5,7 +5,6 @@ export const RenderPosition = {
   AFTEREND: `afterend`,
 };
 
-
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;

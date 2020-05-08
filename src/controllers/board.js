@@ -48,8 +48,6 @@ export class TripController {
     this._container = container;
     this._pointsModel = pointsModel;
 
-    // this._events = [];
-
     this._showedEventControllers = [];
 
     this._noEventComponent = new NoEventComponent();
