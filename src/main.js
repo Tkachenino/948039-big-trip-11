@@ -25,7 +25,7 @@ const siteMenu = siteControls.querySelector(`h2:nth-child(1)`);
 const siteFilter = siteControls.querySelector(`h2:nth-child(2)`);
 
 render(siteMenu, new MenuComponent(), RenderPosition.AFTEREND);
-const filterController = new FilterController(siteFilter);
+const filterController = new FilterController(siteFilter, pointsModel);
 filterController.render();
 
 const siteBoardEvents = document.querySelector(`.trip-events`);

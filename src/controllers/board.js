@@ -58,8 +58,10 @@ export class TripController {
 
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
 
     this._sortComponent.setTypeSortHandler(this._onSortTypeChange);
+    this._pointsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   render() {
@@ -109,6 +111,21 @@ export class TripController {
       showingControllers.push(pointController);
     });
     this._showedEventControllers = this._showedEventControllers.concat(showingControllers);
+  }
+
+  _removeEvents() {
+    this._showedEventControllers.forEach((eventController) => eventController.destroy());
+    this._showedEventControllers = [];
+  }
+
+  _updateEvents() {
+    this._removeEvents();
+    const newEvent = renderByGroup(this._dayListComponent, this._pointsModel.getPoints(), this._onViewChange);
+    this._showedEventControllers = this._showedEventControllers.concat(newEvent);
+  }
+
+  _onFilterChange() {
+    this._updateEvents();
   }
 
   _onViewChange() {

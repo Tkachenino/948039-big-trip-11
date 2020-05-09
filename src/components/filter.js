@@ -1,5 +1,5 @@
 import {AbstractComponent as Component} from "@/components/abstractComponent.js";
-import {filters} from "@/const.js";
+import {FilterType} from "@/const.js";
 
 const createFilter = (filtersList) => {
   return Object.values(filtersList).map((filter) => {
@@ -16,7 +16,7 @@ const createFilter = (filtersList) => {
 export const createMenuFilterTemplate = () => {
   return (
     `<form class="trip-filters" action="#" method="get">
-    ${createFilter(filters)}
+    ${createFilter(FilterType)}
     <button class="visually-hidden" type="submit">Accept filter</button>
   </form>`
   );
@@ -25,5 +25,12 @@ export const createMenuFilterTemplate = () => {
 export class Filter extends Component {
   getTemplate() {
     return createMenuFilterTemplate();
+  }
+
+  setFilterChangeHandler(handler) {
+    this.getElement().addEventListener(`change`, (evt) => {
+      const filterName = evt.target.value;
+      handler(filterName);
+    });
   }
 }

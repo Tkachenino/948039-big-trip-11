@@ -58,7 +58,7 @@ const getDescriptionString = () => {
 const getRandomDate = () => {
   const startTimeTarget = new Date();
   const endTimeTarget = new Date();
-  const randomDate = Math.floor(Math.random() * 7 * 24 * 60);
+  const randomDate = Math.random() > 0.5 ? -Math.floor(Math.random() * 7 * 24 * 60) : Math.floor(Math.random() * 7 * 24 * 60);
   const randomDuration = Math.floor(Math.random() * 36 * 60);
   startTimeTarget.setMinutes(randomDate);
   endTimeTarget.setMinutes(randomDate + randomDuration);
