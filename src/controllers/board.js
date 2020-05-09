@@ -114,6 +114,8 @@ export class TripController {
   }
 
   _removeEvents() {
+    const dayPoint = this._dayListComponent.querySelectorAll(`.trip-days__item`);
+    dayPoint.forEach((day) => day.remove());
     this._showedEventControllers.forEach((eventController) => eventController.destroy());
     this._showedEventControllers = [];
   }

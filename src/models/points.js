@@ -7,7 +7,7 @@ export class Points {
     this._activeFilterType = FilterType.EVERYTHING;
 
     this._dataChangeHandlers = [];
-    this._filterChangeHadnlers = [];
+    this._filterChangeHandlers = [];
   }
 
   getPoints() {
@@ -22,7 +22,6 @@ export class Points {
   setFilter(filterType) {
     this._activeFilterType = filterType;
     this._callHandlers(this._filterChangeHandlers);
-    console.log(this._activeFilterType);
   }
 
   updateEvent(id, event) {
@@ -44,7 +43,7 @@ export class Points {
   }
 
   setFilterChangeHandler(handler) {
-    this._filterChangeHadnlers.push(handler);
+    this._filterChangeHandlers.push(handler);
   }
 
   _callHandlers(handlers) {
