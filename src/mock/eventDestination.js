@@ -1,3 +1,5 @@
+export const CityList = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Petersburg`, `Moscow`, `Nigniy Novgorod`];
+
 const DESCRIPTION_LENGHT = 6;
 
 const DescriptionList = [

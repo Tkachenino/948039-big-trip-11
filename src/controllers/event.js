@@ -8,9 +8,10 @@ const Mode = {
 };
 
 export class PointController {
-  constructor(container, onViewChange) {
+  constructor(container, onViewChange, onDataChange) {
     this._container = container;
     this._onViewChange = onViewChange;
+    this._onDataChange = onDataChange;
     this._mode = Mode.DEFAULT;
     this._eventComponent = null;
     this._eventEditorComponent = null;
@@ -45,8 +46,11 @@ export class PointController {
     });
 
     this._eventEditorComponent.setFavoriteHandler(() => {
-      event.favoriteFlag = !event.favoriteFlag;
-      this._eventEditorComponent.rerender();
+      this._onDataChange(this, event, Object.assign({}, event, {
+        favoriteFlag: !event.favoriteFlag,
+      }));
+      // event.favoriteFlag = !event.favoriteFlag;
+      // this._eventEditorComponent.rerender();
     });
 
     this._eventEditorComponent.setTypeEventHandler((evt) => {

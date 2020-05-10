@@ -8,7 +8,7 @@ import {getGroupList} from "@/utils/common.js";
 
 import {render, RenderPosition} from "@/utils/render.js";
 
-const renderByGroup = (container, events, onViewChange) => {
+const renderByGroup = (container, events, onViewChange, onDataChange) => {
   const groupEvent = getGroupList(events);
   const showingControllers = [];
   for (let i = 0; i < groupEvent.length; i++) {
@@ -21,7 +21,7 @@ const renderByGroup = (container, events, onViewChange) => {
     const eventList = container.querySelectorAll(`.trip-events__list`)[i];
 
     groupEvent[i].forEach((event) => {
-      const pointController = new PointController(eventList, onViewChange);
+      const pointController = new PointController(eventList, onViewChange, onDataChange);
       pointController.render(event);
       showingControllers.push(pointController);
     });
@@ -57,6 +57,8 @@ export class TripController {
     this._sortElement = this._sortComponent.getElement();
 
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
+
+    this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
 
@@ -79,7 +81,7 @@ export class TripController {
 
     this._dayListComponent = this._dayListComponent.getElement();
 
-    const newEvent = renderByGroup(this._dayListComponent, events, this._onViewChange);
+    const newEvent = renderByGroup(this._dayListComponent, events, this._onViewChange, this._onFilterChange);
     this._showedEventControllers = this._showedEventControllers.concat(newEvent);
   }
 
@@ -92,7 +94,7 @@ export class TripController {
     this._dayListComponent.innerHTML = ``;
     if (sortType === SortType.EVENT) {
       this._sortElement.querySelector(`.trip-sort__item--day`).innerHTML = `Day`;
-      const newEvent = renderByGroup(this._dayListComponent, events, this._onViewChange);
+      const newEvent = renderByGroup(this._dayListComponent, events, this._onViewChange, this._onFilterChange);
       this._showedEventControllers = this._showedEventControllers.concat(newEvent);
     }
 
@@ -106,7 +108,7 @@ export class TripController {
 
     const eventList = this._dayListComponent.querySelector(`.trip-events__list`);
     sortedEvents.forEach((event) => {
-      const pointController = new PointController(eventList, this._onViewChange);
+      const pointController = new PointController(eventList, this._onViewChange, this._onFilterChange);
       pointController.render(event);
       showingControllers.push(pointController);
     });
@@ -122,8 +124,20 @@ export class TripController {
 
   _updateEvents() {
     this._removeEvents();
-    const newEvent = renderByGroup(this._dayListComponent, this._pointsModel.getPoints(), this._onViewChange);
+    const newEvent = renderByGroup(this._dayListComponent, this._pointsModel.getPoints(), this._onViewChange, this._onFilterChange);
     this._showedEventControllers = this._showedEventControllers.concat(newEvent);
+  }
+
+  _onDataChange(eventController, oldData, newData) {
+    const events = this._pointsModel.getPoints();
+    const index = events.findIndex((it) => it === oldData);
+    if (index === -1) {
+      return;
+    }
+
+    events = [].concat(this._events.clice(0, index), newData, this._events.slice(index + 1));
+
+    eventController.render(this._events[index]);
   }
 
   _onFilterChange() {
