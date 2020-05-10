@@ -81,7 +81,7 @@ export class TripController {
 
     this._dayListComponent = this._dayListComponent.getElement();
 
-    const newEvent = renderByGroup(this._dayListComponent, events, this._onViewChange, this._onFilterChange);
+    const newEvent = renderByGroup(this._dayListComponent, events, this._onViewChange, this._onDataChange);
     this._showedEventControllers = this._showedEventControllers.concat(newEvent);
   }
 
@@ -94,7 +94,7 @@ export class TripController {
     this._dayListComponent.innerHTML = ``;
     if (sortType === SortType.EVENT) {
       this._sortElement.querySelector(`.trip-sort__item--day`).innerHTML = `Day`;
-      const newEvent = renderByGroup(this._dayListComponent, events, this._onViewChange, this._onFilterChange);
+      const newEvent = renderByGroup(this._dayListComponent, events, this._onViewChange, this._onDataChange);
       this._showedEventControllers = this._showedEventControllers.concat(newEvent);
     }
 
@@ -108,7 +108,7 @@ export class TripController {
 
     const eventList = this._dayListComponent.querySelector(`.trip-events__list`);
     sortedEvents.forEach((event) => {
-      const pointController = new PointController(eventList, this._onViewChange, this._onFilterChange);
+      const pointController = new PointController(eventList, this._onViewChange, this._onDataChange);
       pointController.render(event);
       showingControllers.push(pointController);
     });
@@ -124,20 +124,15 @@ export class TripController {
 
   _updateEvents() {
     this._removeEvents();
-    const newEvent = renderByGroup(this._dayListComponent, this._pointsModel.getPoints(), this._onViewChange, this._onFilterChange);
+    const newEvent = renderByGroup(this._dayListComponent, this._pointsModel.getPoints(), this._onViewChange, this._onDataChange);
     this._showedEventControllers = this._showedEventControllers.concat(newEvent);
   }
 
   _onDataChange(eventController, oldData, newData) {
-    const events = this._pointsModel.getPoints();
-    const index = events.findIndex((it) => it === oldData);
-    if (index === -1) {
-      return;
+    const isSuccess = this._pointsModel.updateEvent(oldData.id, newData);
+    if (isSuccess) {
+      eventController.render(newData);
     }
-
-    events = [].concat(this._events.clice(0, index), newData, this._events.slice(index + 1));
-
-    eventController.render(this._events[index]);
   }
 
   _onFilterChange() {

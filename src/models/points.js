@@ -34,7 +34,6 @@ export class Points {
     this._events = [].concat(this._events.slice(0, index), event, this._events.slice(index + 1));
 
     this._callHandlers(this._dataChangeHandlers);
-
     return true;
   }
 
