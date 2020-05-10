@@ -46,10 +46,19 @@ const getOfferList = (data) => {
   }).join(`\n`);
 };
 
+const getPhotoList = (data) => {
+  return data
+  .map((it) => {
+    return (
+      `<img class="event__photo" src="img/photos/${it}" alt="Event photo">`
+    );
+  }).join(`\n`);
+};
+
 export const createFormEditorTemplate = (data) => {
-  const {event, city, ownPrice, offer, favoriteFlag} = data;
+  const {event, city, ownPrice, offer, description, photo, favoriteFlag} = data;
 
-
+  const IsPhotoCheck = !!photo;
   const isFavorite = favoriteFlag ? `checked` : ``;
   const isMoveCheck = [`check-in`, `sightseeing`, `restaurant`].some((it) => it === event) ? `in` : `to`;
   const isOffer = offer !== `` ? true : false;
@@ -137,6 +146,16 @@ export const createFormEditorTemplate = (data) => {
           </div>
         </section>` : ``
     }
+      <section class="event__section  event__section--destination">
+        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+        <p class="event__destination-description">${description}</p>
+        ${IsPhotoCheck ?
+      `<div class="event__photos-container">
+        <div class="event__photos-tape">
+          ${getPhotoList(photo)}
+        </div>
+    </div>` : ``}
+    </section>
       </section>
     </form>`
   );
@@ -244,6 +263,6 @@ export class EventEditor extends SmartComponent {
   getData() {
     const form = this.getElement();
     const formData = new FormData(form);
-    console.log(parseFormData(formData));
+    return parseFormData(formData);
   }
 }
