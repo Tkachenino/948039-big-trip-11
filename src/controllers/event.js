@@ -49,19 +49,33 @@ export class PointController {
       this._onDataChange(this, event, Object.assign({}, event, {
         favoriteFlag: !event.favoriteFlag,
       }));
-      // event.favoriteFlag = !event.favoriteFlag;
-      // this._eventEditorComponent.rerender();
+    });
+
+    this._eventEditorComponent.setPriceHandler((evt) => {
+      const price = evt.target.value;
+      this._eventEditorComponent._eventPrice = price;
+      this._eventEditorComponent.rerender();
+    });
+
+    this._eventEditorComponent.setDataStartHandler((evt) => {
+      const dataStart = evt.target.value;
+      this._eventEditorComponent._eventStartData = new Date(dataStart);
+    });
+
+    this._eventEditorComponent.setDataEndHandler((evt) => {
+      const dataEnd = evt.target.value;
+      this._eventEditorComponent._eventEndData = new Date(dataEnd);
     });
 
     this._eventEditorComponent.setTypeEventHandler((evt) => {
       const label = evt.target.value;
-      event.event = label;
+      this._eventEditorComponent._eventType = label;
       this._eventEditorComponent.rerender();
     });
 
     this._eventEditorComponent.setCityHandler((evt) => {
       const city = evt.target.value;
-      event.city = city;
+      this._eventEditorComponent._eventCity = city;
       this._eventEditorComponent.rerender();
     });
 
@@ -86,6 +100,7 @@ export class PointController {
   }
 
   _hideMoreInfo() {
+    this._eventEditorComponent.reset();
     replace(this._eventComponent, this._eventEditorComponent);
     this._mode = Mode.DEFAULT;
   }

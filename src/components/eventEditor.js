@@ -55,12 +55,13 @@ const getPhotoList = (data) => {
   }).join(`\n`);
 };
 
-export const createFormEditorTemplate = (data) => {
-  const {event, city, ownPrice, offer, description, photo, favoriteFlag} = data;
+export const createFormEditorTemplate = (data, option = {}) => {
+  const {offer, description, photo, favoriteFlag} = data;
+  const {eventType, eventCity, eventPrice} = option;
 
   const IsPhotoCheck = !!photo;
   const isFavorite = favoriteFlag ? `checked` : ``;
-  const isMoveCheck = [`check-in`, `sightseeing`, `restaurant`].some((it) => it === event) ? `in` : `to`;
+  const isMoveCheck = [`check-in`, `sightseeing`, `restaurant`].some((it) => it === eventType) ? `in` : `to`;
   const isOffer = offer !== `` ? true : false;
   const getUpperLetter = (events) => events[0].toUpperCase() + events.slice(1);
 
@@ -71,7 +72,7 @@ export const createFormEditorTemplate = (data) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${event}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${eventType}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -79,14 +80,14 @@ export const createFormEditorTemplate = (data) => {
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Transfer</legend>
 
-              ${getSliderList(EventTransferList, event)}
+              ${getSliderList(EventTransferList, eventType)}
 
             </fieldset>
 
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Activity</legend>
 
-              ${getSliderList(EventActivityList, event)}
+              ${getSliderList(EventActivityList, eventType)}
 
             </fieldset>
           </div>
@@ -94,9 +95,9 @@ export const createFormEditorTemplate = (data) => {
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-          ${getUpperLetter(event)}  ${isMoveCheck}
+          ${getUpperLetter(eventType)}  ${isMoveCheck}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${eventCity}" list="destination-list-1">
           <datalist id="destination-list-1">
             ${getCityList(CityList)}
           </datalist>
@@ -119,7 +120,7 @@ export const createFormEditorTemplate = (data) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${ownPrice}">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${eventPrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -176,9 +177,16 @@ const parseFormData = (formData) => {
 export class EventEditor extends SmartComponent {
   constructor(event) {
     super();
+
     this._event = event;
     this._favoriteHandler = null;
     this._sumbitHandler = null;
+
+    this._eventType = event.event;
+    this._eventCity = event.city;
+    this._eventPrice = event.ownPrice;
+    this._eventStartData = event.startDate;
+    this._eventEndData = event.finishDate;
 
     this._flatpickr = null;
     this._applyFlatpickr();
@@ -190,10 +198,19 @@ export class EventEditor extends SmartComponent {
     this.setLessInfoButtonHandler(this._lessInfoHandler);
     this.setTypeEventHandler(this._typeEventHandler);
     this.setCityHandler(this._typeCityHandler);
+    this.setPriceHandler(this._priceHandler);
+    this.setDataStartHandler(this._dataStartHandler);
+    this.setDataEndHandler(this._dataEndHandler);
   }
 
   getTemplate() {
-    return createFormEditorTemplate(this._event);
+    return createFormEditorTemplate(this._event, {
+      eventType: this._eventType,
+      eventCity: this._eventCity,
+      eventPrice: this._eventPrice,
+      eventStartData: this._eventStartData,
+      eventEndData: this._eventEndData,
+    });
   }
 
   setSubmitFormHandler(handler) {
@@ -217,6 +234,30 @@ export class EventEditor extends SmartComponent {
     .addEventListener(`click`, handler);
 
     this._favoriteHandler = handler;
+  }
+
+  setDataEndHandler(handler) {
+    this.getElement()
+    .querySelector(`input[name="event-end-time"]`)
+    .addEventListener(`change`, handler);
+
+    this._dataEndHandler = handler;
+  }
+
+  setDataStartHandler(handler) {
+    this.getElement()
+    .querySelector(`input[name="event-start-time"]`)
+    .addEventListener(`change`, handler);
+
+    this._dataStartHandler = handler;
+  }
+
+  setPriceHandler(handler) {
+    this.getElement()
+    .querySelector(`.event__input--price`)
+    .addEventListener(`change`, handler);
+
+    this._priceHandler = handler;
   }
 
   setTypeEventHandler(handler) {
@@ -247,7 +288,7 @@ export class EventEditor extends SmartComponent {
       enableTime: true,
       allowInput: true,
       altFormat: `d/m/y H:i`,
-      defaultDate: this._event.startDate,
+      defaultDate: this._eventStartData,
     });
 
     const dateEndElement = this.getElement().querySelector(`input[name=event-end-time]`);
@@ -256,8 +297,20 @@ export class EventEditor extends SmartComponent {
       enableTime: true,
       allowInput: true,
       altFormat: `d/m/y H:i`,
-      defaultDate: this._event.finishDate,
+      defaultDate: this._eventEndData,
     });
+  }
+
+  reset() {
+    const event = this._event;
+
+    this._eventType = event.event;
+    this._eventCity = event.city;
+    this._eventPrice = event.ownPrice;
+    this._eventStartData = event.startDate;
+    this._eventEndData = event.finishDate;
+
+    this.rerender();
   }
 
   getData() {
