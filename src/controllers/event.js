@@ -19,6 +19,9 @@ export class PointController {
   }
 
   render(event) {
+    const oldEventComponent = this._eventComponent;
+    const oldEventEditCompontent = this._eventEditorComponent;
+
     this._eventComponent = new EventComponent(event);
     this._eventEditorComponent = new EventEditorComponent(event);
 
@@ -30,6 +33,8 @@ export class PointController {
 
     this._eventEditorComponent.setSubmitFormHandler((evt) => {
       evt.preventDefault();
+      this._eventEditorComponent.getData();
+
       this._hideMoreInfo();
       document.removeEventListener(`keydown`, this._onEscKeyDowm);
     });
@@ -56,7 +61,12 @@ export class PointController {
       this._eventEditorComponent.rerender();
     });
 
-    render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
+    if (oldEventComponent && oldEventEditCompontent) {
+      replace(this._eventComponent, oldEventComponent);
+      replace(this._eventEditorComponent, oldEventEditCompontent);
+    } else {
+      render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
+    }
   }
 
   destroy() {

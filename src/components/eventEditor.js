@@ -4,6 +4,7 @@ import {EventTransferList, EventActivityList, CityList} from "@/mock/eventData.j
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 
+
 const getSliderList = (data, event) => {
   return data
   .map((it, index) => {
@@ -141,6 +142,18 @@ export const createFormEditorTemplate = (data) => {
   );
 };
 
+const parseFormData = (formData) => {
+  const startData = formData.get(`event-start-time`);
+  const endData = formData.get(`event-end-time`);
+  return {
+    event: formData.get(`event-type`),
+    city: formData.get(`event-destination`),
+    startDate: new Date(startData),
+    finishDate: new Date(endData),
+    favoriteFlag: formData.get(`event-favorite`) === `on` ? true : false,
+  };
+};
+
 export class EventEditor extends SmartComponent {
   constructor(event) {
     super();
@@ -167,8 +180,8 @@ export class EventEditor extends SmartComponent {
   setSubmitFormHandler(handler) {
     this.getElement()
     .addEventListener(`submit`, handler);
-
     this._sumbitHandler = handler;
+    this. getData();
   }
 
   setLessInfoButtonHandler(handler) {
@@ -226,5 +239,11 @@ export class EventEditor extends SmartComponent {
       altFormat: `d/m/y H:i`,
       defaultDate: this._event.finishDate,
     });
+  }
+
+  getData() {
+    const form = this.getElement();
+    const formData = new FormData(form);
+    console.log(parseFormData(formData));
   }
 }
