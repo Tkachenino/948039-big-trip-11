@@ -1,6 +1,9 @@
 import {AbstractSmartComponent as SmartComponent} from "@/components/abstractSmartComponent.js";
 import {EventTransferList, EventActivityList, CityList} from "@/mock/eventData.js";
 
+import {DateDistantion} from "@/mock/eventDestination.js";
+import {DateOffers} from "@/mock/eventOffer.js";
+
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 
@@ -50,14 +53,21 @@ const getPhotoList = (data) => {
   return data
   .map((it) => {
     return (
-      `<img class="event__photo" src="img/photos/${it}" alt="Event photo">`
+      `<img class="event__photo" src="${it}" alt="Event photo">`
     );
   }).join(`\n`);
 };
 
 export const createFormEditorTemplate = (data, option = {}) => {
-  const {offer, description, photo, favoriteFlag} = data;
+  const {favoriteFlag} = data;
   const {eventType, eventCity, eventPrice} = option;
+
+  const indexCIty = DateDistantion.findIndex((it) => it.name === eventCity);
+  const description = DateDistantion[indexCIty].description;
+  const photo = DateDistantion[indexCIty].pictures;
+
+  const indexOffer = DateOffers.findIndex((it) => it.type === eventType);
+  const offer = DateOffers[indexOffer].offers;
 
   const IsPhotoCheck = !!photo;
   const isFavorite = favoriteFlag ? `checked` : ``;
@@ -67,7 +77,7 @@ export const createFormEditorTemplate = (data, option = {}) => {
 
 
   return (
-    `<form class="event  event--edit" action="#" method="post">
+    `<form class="event  event--edit trip-events__item" action="#" method="post" autocomplete="off">
       <header class="event__header">
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -170,6 +180,7 @@ const parseFormData = (formData) => {
     city: formData.get(`event-destination`),
     startDate: new Date(startData),
     finishDate: new Date(endData),
+    ownPrice: formData.get(`event-price`),
     favoriteFlag: formData.get(`event-favorite`) === `on` ? true : false,
   };
 };

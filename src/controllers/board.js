@@ -3,7 +3,7 @@ import {Sort as SortComponent, SortType} from "@/components/sort.js";
 import {DayList as DayListComponent} from "@/components/dayList.js";
 import {EventList as EventListComponent} from "@/components/eventList.js";
 import {DayCounter as DayCounterComponent} from "@/components/dayCounter.js";
-import {PointController, EmptyEvent} from "@/controllers/event.js";
+import {PointController, EmptyEvent, Mode as EventControllerMode} from "@/controllers/event.js";
 import {getGroupList} from "@/utils/common.js";
 
 import {render, RenderPosition} from "@/utils/render.js";
@@ -22,7 +22,7 @@ const renderByGroup = (container, events, onViewChange, onDataChange) => {
 
     groupEvent[i].forEach((event) => {
       const pointController = new PointController(eventList, onViewChange, onDataChange);
-      pointController.render(event);
+      pointController.render(event, EventControllerMode.DEFAULT);
       showingControllers.push(pointController);
     });
   }
@@ -47,6 +47,7 @@ export class TripController {
   constructor(container, pointsModel) {
     this._container = container;
     this._pointsModel = pointsModel;
+    this._creatingEvent = null;
 
     this._showedEventControllers = [];
 
@@ -109,10 +110,20 @@ export class TripController {
     const eventList = this._dayListComponent.querySelector(`.trip-events__list`);
     sortedEvents.forEach((event) => {
       const pointController = new PointController(eventList, this._onViewChange, this._onDataChange);
-      pointController.render(event);
+      pointController.render(event, EventControllerMode.DEFAULT);
       showingControllers.push(pointController);
     });
     this._showedEventControllers = this._showedEventControllers.concat(showingControllers);
+  }
+
+  createEvent() {
+    if (this._creatingEvent) {
+      return;
+    }
+
+    const eventListElement = document.querySelector(`.trip-events__trip-sort`);
+    this._creatingEvent = new PointController(eventListElement, this._onViewChange, this._onDataChange);
+    this._creatingEvent.render(EmptyEvent, EventControllerMode.ADDING);
   }
 
   _removeEvents() {
@@ -130,15 +141,14 @@ export class TripController {
 
   _onDataChange(eventController, oldData, newData) {
     if (oldData === EmptyEvent) {
-      this._creatingTask = null;
+      this._creatingEvent = null;
       if (newData === null) {
         eventController.destroy();
         this._updateEvents();
       } else {
-        this._pointsModel.addTask(newData);
-        eventController.render(newData);
-
+        this._pointsModel.addEvent(newData);
         this._showedEventControllers = [].concat(eventController, this._showedEventControllers);
+        this._updateEvents();
       }
     } else if (newData === null) {
       this._pointsModel.removeTask(oldData.id);
@@ -146,14 +156,9 @@ export class TripController {
     } else {
       const isSuccess = this._pointsModel.updateEvent(oldData.id, newData);
       if (isSuccess) {
-        eventController.render(newData);
+        eventController.render(newData, EventControllerMode.DEFAULT);
       }
     }
-
-    // const isSuccess = this._pointsModel.updateEvent(oldData.id, newData);
-    // if (isSuccess) {
-    //   eventController.render(newData);
-    // }
   }
 
   _onFilterChange() {

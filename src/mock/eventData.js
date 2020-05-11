@@ -14,23 +14,6 @@ export const OfferList = [
   }
 ];
 
-const DESCRIPTION_LENGHT = 6;
-
-const DescriptionList = [
-  `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
-  `Cras aliquet varius magna, non porta ligula feugiat eget.`,
-  `Fusce tristique felis at fermentum pharetra.`,
-  `Aliquam id orci ut lectus varius viverra.`,
-  `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`,
-  `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`,
-  `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`,
-  `Sed sed nisi sed augue convallis suscipit in sed felis.`,
-  `Aliquam erat volutpat.`,
-  `Nunc fermentum tortor ac porta dapibus.`,
-  `In rutrum ac purus sit amet tempus.`
-];
-
-const photos = [`1.jpg`, `2.jpg`, `3.jpg`, `4.jpg`, `5.jpg`];
 
 const getRandomArrayItem = (array) => {
   const randomIndex = getRandomIntegerNumber(0, array.length);
@@ -50,10 +33,6 @@ const getRandomIntegers = (min, max, data) => {
   return Array.from(integers);
 };
 
-
-const getDescriptionString = () => {
-  return getRandomIntegers(1, DESCRIPTION_LENGHT, DescriptionList).join(` `);
-};
 
 const getRandomDate = () => {
   const startTimeTarget = new Date();
@@ -76,8 +55,8 @@ export const generateTripPoint = () => {
     city: CityList[Math.floor(Math.random() * CityList.length)],
     ownPrice: Math.floor(Math.random() * 100),
     offer: Math.random() > 0.1 ? getRandomIntegers(0, OfferList.length, OfferList) : ``,
-    description: getDescriptionString(),
-    photo: Math.random() > 0.1 ? getRandomIntegers(1, photos.length, photos) : null,
+    // description: getDescriptionString(),
+    // photo: Math.random() > 0.1 ? getRandomIntegers(1, photos.length, photos) : null,
     startDate: eventDate.startTimeTarget,
     finishDate: eventDate.endTimeTarget,
     favoriteFlag: Math.random() > 0.5 ? true : false,

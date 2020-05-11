@@ -1,6 +1,6 @@
 import {Info as InfoComponent} from "@/components/info.js";
 import {Cost as CostComponent} from "@/components/cost.js";
-import {Menu as MenuComponent} from "@/components/menu.js";
+import {Menu as MenuComponent, MenuItem} from "@/components/menu.js";
 import {render, RenderPosition} from "@/utils/render.js";
 import {TripController} from "@/controllers/board.js";
 import {FilterController} from "@/controllers/filter.js";
@@ -24,7 +24,9 @@ const siteControls = siteMainElement.querySelector(`.trip-controls`);
 const siteMenu = siteControls.querySelector(`h2:nth-child(1)`);
 const siteFilter = siteControls.querySelector(`h2:nth-child(2)`);
 
-render(siteMenu, new MenuComponent(), RenderPosition.AFTEREND);
+const menuComponent = new MenuComponent();
+
+render(siteMenu, menuComponent, RenderPosition.AFTEREND);
 const filterController = new FilterController(siteFilter, pointsModel);
 filterController.render();
 
@@ -32,3 +34,13 @@ const siteBoardEvents = document.querySelector(`.trip-events`);
 const boardController = new TripController(siteBoardEvents, pointsModel);
 
 boardController.render();
+
+
+menuComponent.setOnChange((menuItem) => {
+  switch (menuItem) {
+    case MenuItem.NEW_EVENT:
+      menuComponent.setActiveItem(MenuItem.EVENTS);
+      boardController.createEvent();
+      break;
+  }
+});

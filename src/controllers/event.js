@@ -3,12 +3,19 @@ import {EventEditor as EventEditorComponent} from "@/components/eventEditor.js";
 import {render, replace, remove, RenderPosition} from "@/utils/render.js";
 
 export const Mode = {
+  ADDING: `adding`,
   DEFAULT: `default`,
   EDIT: `edit`,
 };
 
 export const EmptyEvent = {
-
+  event: `taxi`,
+  city: `Amsterdam`,
+  ownPrice: ``,
+  offer: ``,
+  startDate: ``,
+  finishDate: ``,
+  favoriteFlag: false,
 };
 
 export class PointController {
@@ -23,9 +30,10 @@ export class PointController {
     this._onEscKeyDowm = this._onEscKeyDowm.bind(this);
   }
 
-  render(event) {
+  render(event, mode) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditCompontent = this._eventEditorComponent;
+    this._mode = mode;
 
     this._eventComponent = new EventComponent(event);
     this._eventEditorComponent = new EventEditorComponent(event);
@@ -38,9 +46,9 @@ export class PointController {
 
     this._eventEditorComponent.setSubmitFormHandler((evt) => {
       evt.preventDefault();
-      this._eventEditorComponent.getData();
-
-      this._hideMoreInfo();
+      const data = this._eventEditorComponent.getData();
+      this._onDataChange(this, event, data);
+      // this._hideMoreInfo();
       document.removeEventListener(`keydown`, this._onEscKeyDowm);
     });
 
@@ -88,11 +96,24 @@ export class PointController {
       this._onDataChange(this, event, null);
     });
 
-    if (oldEventComponent && oldEventEditCompontent) {
-      replace(this._eventComponent, oldEventComponent);
-      replace(this._eventEditorComponent, oldEventEditCompontent);
-    } else {
-      render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
+    switch (mode) {
+      case Mode.DEFAULT:
+        if (oldEventComponent && oldEventEditCompontent) {
+          replace(this._eventComponent, oldEventComponent);
+          replace(this._eventEditorComponent, oldEventEditCompontent);
+          this._hideMoreInfo();
+        } else {
+          render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
+        }
+        break;
+      case Mode.ADDING:
+        if (oldEventComponent && oldEventEditCompontent) {
+          remove(oldEventComponent);
+          remove(oldEventEditCompontent);
+        }
+        document.addEventListener(`keydown`, this._onEscKeyDowm);
+        render(this._container, this._eventEditorComponent, RenderPosition.AFTEREND);
+        break;
     }
   }
 
@@ -116,6 +137,10 @@ export class PointController {
 
   _onEscKeyDowm(evt) {
     if (evt.key === `Escape`) {
+      if (this._mode === Mode.ADDING) {
+        this._onDataChange(this, EmptyEvent, null);
+      }
+
       this._hideMoreInfo();
       document.removeEventListener(`keydown`, this._onEscKeyDowm);
     }

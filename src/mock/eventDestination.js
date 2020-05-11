@@ -1,4 +1,4 @@
-export const CityList = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Petersburg`, `Moscow`, `Nigniy Novgorod`];
+import {CityList} from "@/mock/eventData.js";
 
 const DESCRIPTION_LENGHT = 6;
 
@@ -38,17 +38,16 @@ const getRandomIntegers = (min, max, data) => {
 const getDescriptionString = () => {
   return getRandomIntegers(1, DESCRIPTION_LENGHT, DescriptionList).join(` `);
 };
+const photos = [`${`http://picsum.photos/300/200?r=` + Math.random()}`, `${`http://picsum.photos/300/200?r=` + Math.random()}`, `${`http://picsum.photos/300/200?r=` + Math.random()}`, `${`http://picsum.photos/300/200?r=` + Math.random()}`];
 
-
-export const generateTripDestination = () => {
-  return {
-    description: getDescriptionString(),
-    name: `Chamonix`,
-    pictures: [
-      {
-        src: `http://picsum.photos/300/200?r=0.0762563005163317`,
-        description: `Chamonix parliament building`
-      }
-    ]
-  };
+const generateTripDestination = (city) => {
+  return city.map((it) => {
+    return {
+      description: getDescriptionString(),
+      name: it,
+      pictures: Math.random() > 0.1 ? getRandomIntegers(1, photos.length, photos) : null,
+    };
+  });
 };
+
+export const DateDistantion = generateTripDestination(CityList);
