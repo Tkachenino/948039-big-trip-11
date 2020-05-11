@@ -83,6 +83,11 @@ export class PointController {
       this._eventEditorComponent.rerender();
     });
 
+    this._eventEditorComponent.setDeleteButtonClickHandler((evt) => {
+      evt.preventDefault();
+      this._onDataChange(this, event, null);
+    });
+
     if (oldEventComponent && oldEventEditCompontent) {
       replace(this._eventComponent, oldEventComponent);
       replace(this._eventEditorComponent, oldEventEditCompontent);

@@ -181,6 +181,7 @@ export class EventEditor extends SmartComponent {
     this._event = event;
     this._favoriteHandler = null;
     this._sumbitHandler = null;
+    this._deleteButtonClickHandler = null;
 
     this._eventType = event.event;
     this._eventCity = event.city;
@@ -192,6 +193,15 @@ export class EventEditor extends SmartComponent {
     this._applyFlatpickr();
   }
 
+  removeElement() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    super.removeElement();
+  }
+
   recoveryListener() {
     this.setFavoriteHandler(this._favoriteHandler);
     this.setSubmitFormHandler(this._sumbitHandler);
@@ -201,6 +211,7 @@ export class EventEditor extends SmartComponent {
     this.setPriceHandler(this._priceHandler);
     this.setDataStartHandler(this._dataStartHandler);
     this.setDataEndHandler(this._dataEndHandler);
+    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
   }
 
   getTemplate() {
@@ -218,6 +229,14 @@ export class EventEditor extends SmartComponent {
     .addEventListener(`submit`, handler);
     this._sumbitHandler = handler;
     this. getData();
+  }
+
+  setDeleteButtonClickHandler(handler) {
+    this.getElement()
+    .querySelector(`.event__reset-btn`)
+    .addEventListener(`click`, handler);
+
+    this._deleteButtonClickHandler = handler;
   }
 
   setLessInfoButtonHandler(handler) {

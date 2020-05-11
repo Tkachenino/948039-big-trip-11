@@ -3,7 +3,7 @@ import {Sort as SortComponent, SortType} from "@/components/sort.js";
 import {DayList as DayListComponent} from "@/components/dayList.js";
 import {EventList as EventListComponent} from "@/components/eventList.js";
 import {DayCounter as DayCounterComponent} from "@/components/dayCounter.js";
-import {PointController} from "@/controllers/event.js";
+import {PointController, EmptyEvent} from "@/controllers/event.js";
 import {getGroupList} from "@/utils/common.js";
 
 import {render, RenderPosition} from "@/utils/render.js";
@@ -129,10 +129,31 @@ export class TripController {
   }
 
   _onDataChange(eventController, oldData, newData) {
-    const isSuccess = this._pointsModel.updateEvent(oldData.id, newData);
-    if (isSuccess) {
-      eventController.render(newData);
+    if (oldData === EmptyEvent) {
+      this._creatingTask = null;
+      if (newData === null) {
+        eventController.destroy();
+        this._updateEvents();
+      } else {
+        this._pointsModel.addTask(newData);
+        eventController.render(newData);
+
+        this._showedEventControllers = [].concat(eventController, this._showedEventControllers);
+      }
+    } else if (newData === null) {
+      this._pointsModel.removeTask(oldData.id);
+      this._updateEvents();
+    } else {
+      const isSuccess = this._pointsModel.updateEvent(oldData.id, newData);
+      if (isSuccess) {
+        eventController.render(newData);
+      }
     }
+
+    // const isSuccess = this._pointsModel.updateEvent(oldData.id, newData);
+    // if (isSuccess) {
+    //   eventController.render(newData);
+    // }
   }
 
   _onFilterChange() {
