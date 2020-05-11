@@ -2,9 +2,13 @@ import {Event as EventComponent} from "@/components/event.js";
 import {EventEditor as EventEditorComponent} from "@/components/eventEditor.js";
 import {render, replace, remove, RenderPosition} from "@/utils/render.js";
 
-const Mode = {
+export const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
+};
+
+export const EmptyEvent = {
+
 };
 
 export class PointController {
