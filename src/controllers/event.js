@@ -48,7 +48,6 @@ export class PointController {
       evt.preventDefault();
       const data = this._eventEditorComponent.getData();
       this._onDataChange(this, event, data);
-      // this._hideMoreInfo();
       document.removeEventListener(`keydown`, this._onEscKeyDowm);
     });
 
