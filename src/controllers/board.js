@@ -163,6 +163,7 @@ export class TripController {
       const isSuccess = this._pointsModel.updateEvent(oldData.id, newData);
       if (isSuccess) {
         eventController.render(newData, EventControllerMode.DEFAULT);
+        this._updateEvents();
       }
     }
   }
