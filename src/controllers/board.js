@@ -177,4 +177,12 @@ export class TripController {
   _onViewChange() {
     this._showedEventControllers.forEach((controller) => controller.setDefaultView());
   }
+
+  hide() {
+    this._container.hide();
+  }
+
+  show() {
+    this._container.show();
+  }
 }
