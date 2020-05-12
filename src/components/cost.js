@@ -20,12 +20,13 @@ export const createTripCostTemplate = (date) => {
 };
 
 export class Cost extends Component {
-  constructor(cost) {
+  constructor(pointsModel) {
     super();
-    this._cost = cost;
+    this._pointsModel = pointsModel;
   }
 
   getTemplate() {
-    return createTripCostTemplate(this._cost);
+    const events = this._pointsModel.getPoints();
+    return createTripCostTemplate(events);
   }
 }

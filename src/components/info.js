@@ -38,13 +38,13 @@ const createTripInfoTemplate = (data) => {
 };
 
 export class Info extends Component {
-  constructor(eventGroup, events) {
+  constructor(pointsModel) {
     super();
-    this._eventGroup = eventGroup;
-    this._events = events;
+    this._pointsModel = pointsModel;
   }
 
   getTemplate() {
-    return createTripInfoTemplate(this._eventGroup, this._events);
+    const events = this._pointsModel.getPoints();
+    return createTripInfoTemplate(events);
   }
 }
