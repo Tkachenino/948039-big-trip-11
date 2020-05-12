@@ -22,9 +22,8 @@ export class Menu extends Component {
 
   setActiveItem(menuItem) {
     const item = document.querySelector(`#${menuItem}`);
-
     if (item) {
-      item.checked = true;
+      item.disabled = true;
     }
   }
 

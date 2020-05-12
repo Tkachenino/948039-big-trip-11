@@ -120,7 +120,6 @@ export class TripController {
     if (this._creatingEvent) {
       return;
     }
-
     const eventListElement = document.querySelector(`.trip-events__trip-sort`);
     this._creatingEvent = new PointController(eventListElement, this._onViewChange, this._onDataChange);
     this._creatingEvent.render(EmptyEvent, EventControllerMode.ADDING);
@@ -145,10 +144,12 @@ export class TripController {
       if (newData === null) {
         eventController.destroy();
         this._updateEvents();
+        document.querySelector(`#control__new-event`).disabled = false;
       } else {
         this._pointsModel.addEvent(newData);
         this._showedEventControllers = [].concat(eventController, this._showedEventControllers);
         this._updateEvents();
+        document.querySelector(`#control__new-event`).disabled = false;
       }
     } else if (newData === null) {
       this._pointsModel.removeTask(oldData.id);

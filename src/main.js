@@ -39,7 +39,7 @@ boardController.render();
 menuComponent.setOnChange((menuItem) => {
   switch (menuItem) {
     case MenuItem.NEW_EVENT:
-      menuComponent.setActiveItem(MenuItem.EVENTS);
+      menuComponent.setActiveItem(MenuItem.NEW_EVENT);
       boardController.createEvent();
       break;
   }

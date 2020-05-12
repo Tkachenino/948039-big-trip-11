@@ -110,6 +110,7 @@ export class PointController {
           remove(oldEventComponent);
           remove(oldEventEditCompontent);
         }
+        this._onViewChange();
         document.addEventListener(`keydown`, this._onEscKeyDowm);
         render(this._container, this._eventEditorComponent, RenderPosition.AFTEREND);
         break;
