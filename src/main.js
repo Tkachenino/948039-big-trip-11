@@ -6,6 +6,7 @@ import {TripController} from "@/controllers/board.js";
 import {FilterController} from "@/controllers/filter.js";
 import {generateTripPoints} from "@/mock/eventData.js";
 import {Points as PointsModel} from "@/models/points.js";
+import {Statistic as StatisticComponent} from "@/components/Statistics.js";
 
 const POINT_COUNT = 5;
 const events = generateTripPoints(POINT_COUNT);
@@ -34,6 +35,9 @@ const siteBoardEvents = document.querySelector(`.trip-events`);
 const boardController = new TripController(siteBoardEvents, pointsModel);
 
 boardController.render();
+
+const statistics = new StatisticComponent(pointsModel);
+render(siteBoardEvents, statistics, RenderPosition.BEFOREEND);
 
 
 menuComponent.setOnChange((menuItem) => {
