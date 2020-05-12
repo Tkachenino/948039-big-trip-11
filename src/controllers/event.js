@@ -10,7 +10,7 @@ export const Mode = {
 
 export const EmptyEvent = {
   event: `taxi`,
-  city: `Amsterdam`,
+  city: ``,
   ownPrice: ``,
   offer: ``,
   startDate: ``,

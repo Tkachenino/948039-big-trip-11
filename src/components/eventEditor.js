@@ -62,14 +62,17 @@ export const createFormEditorTemplate = (data, option = {}) => {
   const {favoriteFlag} = data;
   const {eventType, eventCity, eventPrice} = option;
 
-  const indexCIty = DateDistantion.findIndex((it) => it.name === eventCity);
-  const description = DateDistantion[indexCIty].description;
-  const photo = DateDistantion[indexCIty].pictures;
+  const isDescription = (eventCity === ``) ? true : false;
+
+  const indexCIty = !isDescription ? DateDistantion.findIndex((it) => it.name === eventCity) : null;
+  const descriptionS = !isDescription ? DateDistantion[indexCIty].description : ``;
+  const photo = !isDescription ? DateDistantion[indexCIty].pictures : null;
+  const IsPhotoCheck = !!photo;
 
   const indexOffer = DateOffers.findIndex((it) => it.type === eventType);
   const offer = DateOffers[indexOffer].offers;
 
-  const IsPhotoCheck = !!photo;
+
   const isFavorite = favoriteFlag ? `checked` : ``;
   const isMoveCheck = [`check-in`, `sightseeing`, `restaurant`].some((it) => it === eventType) ? `in` : `to`;
   const isOffer = offer !== `` ? true : false;
@@ -130,7 +133,7 @@ export const createFormEditorTemplate = (data, option = {}) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${eventPrice}">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${eventPrice}" pattern="^[ 0-9]+$">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -157,16 +160,17 @@ export const createFormEditorTemplate = (data, option = {}) => {
           </div>
         </section>` : ``
     }
-      <section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${description}</p>
-        ${IsPhotoCheck ?
+      ${isDescription ? `` : `<section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      <p class="event__destination-description">${descriptionS}</p>
+      ${IsPhotoCheck ?
       `<div class="event__photos-container">
-        <div class="event__photos-tape">
-          ${getPhotoList(photo)}
-        </div>
-    </div>` : ``}
-    </section>
+      <div class="event__photos-tape">
+        ${getPhotoList(photo)}
+      </div>
+  </div>` : ``}
+  </section>`}
+
       </section>
     </form>`
   );
@@ -302,7 +306,12 @@ export class EventEditor extends SmartComponent {
     this.getElement()
     .querySelector(`.event__field-group`)
     .addEventListener(`change`, handler);
-
+    const input = this.getElement().querySelector(`.event__input--destination`);
+    if (CityList.find((it) => it === input.value)) {
+      input.setCustomValidity(``);
+    } else {
+      input.setCustomValidity(`Выберите город из списка предложенных`);
+    }
     this._typeCityHandler = handler;
   }
 
