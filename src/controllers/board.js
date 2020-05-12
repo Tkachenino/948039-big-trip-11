@@ -5,6 +5,7 @@ import {EventList as EventListComponent} from "@/components/eventList.js";
 import {DayCounter as DayCounterComponent} from "@/components/dayCounter.js";
 import {PointController, EmptyEvent, Mode as EventControllerMode} from "@/controllers/event.js";
 import {getGroupList} from "@/utils/common.js";
+import {FilterType} from "@/const.js";
 
 import {render, RenderPosition} from "@/utils/render.js";
 
@@ -120,6 +121,10 @@ export class TripController {
     if (this._creatingEvent) {
       return;
     }
+
+    this._pointsModel.setFilter(FilterType.EVERYTHING);
+    document.querySelector(`#filter-everything`).checked = true;
+    this._onFilterChange();
     const eventListElement = document.querySelector(`.trip-events__trip-sort`);
     this._creatingEvent = new PointController(eventListElement, this._onViewChange, this._onDataChange);
     this._creatingEvent.render(EmptyEvent, EventControllerMode.ADDING);
@@ -163,6 +168,8 @@ export class TripController {
   }
 
   _onFilterChange() {
+    this._onSortTypeChange(SortType.EVENT);
+    document.querySelector(`#sort-event`).checked = true;
     this._updateEvents();
   }
 

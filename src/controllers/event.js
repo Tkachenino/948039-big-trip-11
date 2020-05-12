@@ -57,9 +57,7 @@ export class PointController {
     });
 
     this._eventEditorComponent.setFavoriteHandler(() => {
-      this._onDataChange(this, event, Object.assign({}, event, {
-        favoriteFlag: !event.favoriteFlag,
-      }));
+      event.favoriteFlag = !event.favoriteFlag;
     });
 
     this._eventEditorComponent.setPriceHandler((evt) => {
