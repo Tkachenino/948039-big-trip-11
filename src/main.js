@@ -37,14 +37,25 @@ const boardController = new TripController(siteBoardEvents, pointsModel);
 boardController.render();
 
 const statistics = new StatisticComponent(pointsModel);
-render(siteBoardEvents, statistics, RenderPosition.BEFOREEND);
-
+render(siteBoardEvents, statistics, RenderPosition.AFTEREND);
+statistics.hide();
 
 menuComponent.setOnChange((menuItem) => {
   switch (menuItem) {
     case MenuItem.NEW_EVENT:
       menuComponent.setActiveItem(MenuItem.NEW_EVENT);
+      boardController.showBlock();
+      statistics.hide();
       boardController.createEvent();
       break;
+    case MenuItem.STATISTICS:
+      menuComponent.setActiveItem(MenuItem.STATISTICS);
+      boardController.hideBlock();
+      statistics.show();
+      break;
+    case MenuItem.EVENTS:
+      menuComponent.setActiveItem(MenuItem.EVENTS);
+      statistics.hide();
+      boardController.showBlock();
   }
 });

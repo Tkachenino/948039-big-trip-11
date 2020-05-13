@@ -178,11 +178,11 @@ export class TripController {
     this._showedEventControllers.forEach((controller) => controller.setDefaultView());
   }
 
-  hide() {
-    this._container.hide();
+  hideBlock() {
+    this._container.classList.add(`visually-hidden`);
   }
 
-  show() {
-    this._container.show();
+  showBlock() {
+    this._container.classList.remove(`visually-hidden`);
   }
 }
