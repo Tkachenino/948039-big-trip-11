@@ -6,7 +6,7 @@ import {TripController} from "@/controllers/board.js";
 import {FilterController} from "@/controllers/filter.js";
 import {generateTripPoints} from "@/mock/eventData.js";
 import {Points as PointsModel} from "@/models/points.js";
-import {Statistic as StatisticComponent} from "@/components/Statistics.js";
+import {Statistic as StatisticComponent} from "@/components/statistics.js";
 
 const POINT_COUNT = 5;
 const events = generateTripPoints(POINT_COUNT);
