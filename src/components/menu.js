@@ -21,10 +21,27 @@ export class Menu extends Component {
   }
 
   setActiveItem(menuItem) {
-    const item = document.querySelector(`#${menuItem}`);
-    if (item) {
-      item.disabled = true;
+    const newEventBtn = document.querySelector(`#control__new-event`);
+    const tableBtn = document.querySelector(`#control__events`);
+    const statsBtn = document.querySelector(`#control__statistic`);
+    switch (menuItem) {
+      case MenuItem.NEW_EVENT:
+        newEventBtn.disabled = true;
+        tableBtn.classList.add(`trip-tabs__btn--active`);
+        statsBtn.classList.remove(`trip-tabs__btn--active`);
+        break;
+      case MenuItem.STATISTICS:
+        tableBtn.classList.remove(`trip-tabs__btn--active`);
+        statsBtn.classList.add(`trip-tabs__btn--active`);
+        break;
+      case MenuItem.EVENTS:
+        tableBtn.classList.add(`trip-tabs__btn--active`);
+        statsBtn.classList.remove(`trip-tabs__btn--active`);
+        break;
     }
+    // if (item) {
+    //   item.disabled = true;
+    // }
   }
 
   setOnChange(handler) {
