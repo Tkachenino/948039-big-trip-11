@@ -11,7 +11,7 @@ export const Mode = {
 export const EmptyEvent = {
   event: `taxi`,
   city: ``,
-  ownPrice: ``,
+  ownPrice: 0,
   offer: [],
   startDate: ``,
   finishDate: ``,

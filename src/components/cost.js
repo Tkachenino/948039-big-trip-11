@@ -4,12 +4,11 @@ export const createTripCostTemplate = (date) => {
   const totalCost = date.reduce((accum, item) => {
     let totalOfferCost = 0;
 
-    if (item.offer !== ``) {
+    if (item.offer !== []) {
       totalOfferCost = item.offer.reduce((acc, i) => {
         return acc + i.cost;
       }, 0);
     }
-
     return accum + item.ownPrice + totalOfferCost;
   }, 0);
   return (

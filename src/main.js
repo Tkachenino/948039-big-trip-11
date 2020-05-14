@@ -1,9 +1,11 @@
-import {Info as InfoComponent} from "@/components/info.js";
-import {Cost as CostComponent} from "@/components/cost.js";
+// import {Info as InfoComponent} from "@/components/info.js";
+// import {Cost as CostComponent} from "@/components/cost.js";
 import {Menu as MenuComponent, MenuItem} from "@/components/menu.js";
 import {render, RenderPosition} from "@/utils/render.js";
 import {TripController} from "@/controllers/board.js";
 import {FilterController} from "@/controllers/filter.js";
+import {CostController} from "@/controllers/cost.js";
+import {InfoController} from "@/controllers/info.js";
 import {generateTripPoints} from "@/mock/eventData.js";
 import {Points as PointsModel} from "@/models/points.js";
 import {Statistic as StatisticComponent} from "@/components/statistics.js";
@@ -15,11 +17,16 @@ pointsModel.setPoints(events);
 
 const siteMainElement = document.querySelector(`.trip-main`);
 
-render(siteMainElement, new InfoComponent(pointsModel), RenderPosition.AFTERBEGIN);
+const infoController = new InfoController(siteMainElement, pointsModel);
+infoController.render();
+// render(siteMainElement, new InfoComponent(pointsModel), RenderPosition.AFTERBEGIN);
 
 const siteInfoTrip = siteMainElement.querySelector(`.trip-info`);
 
-render(siteInfoTrip, new CostComponent(pointsModel), RenderPosition.BEFOREEND);
+const costController = new CostController(siteInfoTrip, pointsModel);
+costController.render();
+
+// render(siteInfoTrip, new CostComponent(pointsModel), RenderPosition.BEFOREEND);
 
 const siteControls = siteMainElement.querySelector(`.trip-controls`);
 const siteMenu = siteControls.querySelector(`h2:nth-child(1)`);

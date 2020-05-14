@@ -52,25 +52,6 @@ const getOfferList = (offerEvent, data) => {
   }).join(`\n`);
 };
 
-// const getOfferList = (data) => {
-//   if (data === ``) {
-//     return ``;
-//   }
-//   return data
-//   .map((it, index) => {
-//     return (
-//       `<div class="event__offer-selector">
-//           <input class="event__offer-checkbox  visually-hidden" id="event-offer-${it.name}-${index}" type="checkbox" name="event-offer-${it.name}" checked>
-//         <label class="event__offer-label" for="event-offer-${it.name}-${index}">
-//           <span class="event__offer-title">${it.title}</span>
-//           &plus;
-//           &euro;&nbsp;<span class="event__offer-price">${it.cost}</span>
-//         </label>
-//       </div>`
-//     );
-//   }).join(`\n`);
-// };
-
 const getPhotoList = (data) => {
   return data
   .map((it) => {
@@ -93,16 +74,11 @@ export const createFormEditorTemplate = (data, option = {}) => {
 
   const indexOffer = DateOffers.findIndex((it) => it.type === eventType);
   const offerEvent = DateOffers[indexOffer].offers;
-  // console.log(offerEvent);
-  // console.log(offer);
-  // console.log(eventType);
-
 
   const isFavorite = favoriteFlag ? `checked` : ``;
   const isMoveCheck = [`check-in`, `sightseeing`, `restaurant`].some((it) => it === eventType) ? `in` : `to`;
   const isOffer = offerEvent !== `` ? true : false;
   const getUpperLetter = (events) => events[0].toUpperCase() + events.slice(1);
-
 
   return (
     `<form class="event  event--edit trip-events__item" action="#" method="post" autocomplete="off">
@@ -237,7 +213,7 @@ const parseFormData = (formData) => {
     city: formData.get(`event-destination`),
     startDate: new Date(startData),
     finishDate: new Date(endData),
-    ownPrice: formData.get(`event-price`),
+    ownPrice: Number(formData.get(`event-price`)),
     favoriteFlag: formData.get(`event-favorite`) === `on` ? true : false,
     offer: getCheckedOffers(),
   };
