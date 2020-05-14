@@ -28,12 +28,10 @@ const createTripInfoTemplate = (data) => {
   const IsHasEvent = (dateGroup[0] === undefined) ? `` : `${monthStart} ${dayStart}&nbsp;&mdash;&nbsp;${IsSameMonth}${dayEnd}`;
 
   return (
-    `<section class="trip-main__trip-info  trip-info">
-    <div class="trip-info__main">
+    `<div class="trip-info__main">
       <h1 class="trip-info__title">${cityList}</h1>
       <p class="trip-info__dates">${IsHasEvent}</p>
-    </div>
-  </section>`
+    </div>`
   );
 };
 

@@ -7,9 +7,9 @@ export class InfoController {
     this._pointsModel = pointsModel;
     this._infoComponent = null;
 
-    this._onDataChange = this._onDataChange.bind(this);
+    this._onDataInfoChange = this._onDataInfoChange.bind(this);
 
-    this._pointsModel.setDataChangeHandler(this._onDataChange);
+    this._pointsModel.setDataChangeHandler(this._onDataInfoChange);
   }
 
   render() {
@@ -25,7 +25,7 @@ export class InfoController {
     }
   }
 
-  _onDataChange() {
+  _onDataInfoChange() {
     this.render();
   }
 }

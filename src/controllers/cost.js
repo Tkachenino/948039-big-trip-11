@@ -7,9 +7,9 @@ export class CostController {
     this._pointsModel = pointsModel;
     this._costComponent = null;
 
-    this._onDataChange = this._onDataChange.bind(this);
+    this._onDataCostChange = this._onDataCostChange.bind(this);
 
-    this._pointsModel.setDataChangeHandler(this._onDataChange);
+    this._pointsModel.setDataChangeHandler(this._onDataCostChange);
   }
 
   render() {
@@ -25,7 +25,7 @@ export class CostController {
     }
   }
 
-  _onDataChange() {
+  _onDataCostChange() {
     this.render();
   }
 }

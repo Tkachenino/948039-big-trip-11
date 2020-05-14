@@ -1,6 +1,7 @@
 // import {Info as InfoComponent} from "@/components/info.js";
 // import {Cost as CostComponent} from "@/components/cost.js";
 import {Menu as MenuComponent, MenuItem} from "@/components/menu.js";
+import {InfoWrapper as InfoWrapperComponent} from "@/components/infoWrapper.js";
 import {render, RenderPosition} from "@/utils/render.js";
 import {TripController} from "@/controllers/board.js";
 import {FilterController} from "@/controllers/filter.js";
@@ -16,14 +17,17 @@ const pointsModel = new PointsModel();
 pointsModel.setPoints(events);
 
 const siteMainElement = document.querySelector(`.trip-main`);
+const infoWrapperComponent = new InfoWrapperComponent();
 
-const infoController = new InfoController(siteMainElement, pointsModel);
+render(siteMainElement, infoWrapperComponent, RenderPosition.AFTERBEGIN);
+
+const infoWrapper = document.querySelector(`.trip-info`);
+
+const infoController = new InfoController(infoWrapper, pointsModel);
 infoController.render();
 // render(siteMainElement, new InfoComponent(pointsModel), RenderPosition.AFTERBEGIN);
 
-const siteInfoTrip = siteMainElement.querySelector(`.trip-info`);
-
-const costController = new CostController(siteInfoTrip, pointsModel);
+const costController = new CostController(infoWrapper, pointsModel);
 costController.render();
 
 // render(siteInfoTrip, new CostComponent(pointsModel), RenderPosition.BEFOREEND);
