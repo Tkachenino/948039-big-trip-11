@@ -12,7 +12,7 @@ export const EmptyEvent = {
   event: `taxi`,
   city: ``,
   ownPrice: ``,
-  offer: ``,
+  offer: [],
   startDate: ``,
   finishDate: ``,
   favoriteFlag: false,

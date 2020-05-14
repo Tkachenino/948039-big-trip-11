@@ -30,15 +30,18 @@ const getCityList = (data) => {
   }).join(`\n`);
 };
 
-const getOfferList = (data) => {
-  if (data === ``) {
-    return ``;
-  }
-  return data
+const getOfferList = (offerEvent, data) => {
+  let IsChecked = [];
+  return offerEvent
   .map((it, index) => {
+    if (data === []) {
+      IsChecked = false;
+    } else {
+      IsChecked = data.some((item) => JSON.stringify(item) === JSON.stringify(it));
+    }
     return (
       `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${it.name}-${index}" type="checkbox" name="event-offer-${it.name}" checked>
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${it.name}-${index}" type="checkbox" name="event-offer-${it.name}" ${IsChecked ? `checked` : ``} value="2">
         <label class="event__offer-label" for="event-offer-${it.name}-${index}">
           <span class="event__offer-title">${it.title}</span>
           &plus;
@@ -48,6 +51,25 @@ const getOfferList = (data) => {
     );
   }).join(`\n`);
 };
+
+// const getOfferList = (data) => {
+//   if (data === ``) {
+//     return ``;
+//   }
+//   return data
+//   .map((it, index) => {
+//     return (
+//       `<div class="event__offer-selector">
+//           <input class="event__offer-checkbox  visually-hidden" id="event-offer-${it.name}-${index}" type="checkbox" name="event-offer-${it.name}" checked>
+//         <label class="event__offer-label" for="event-offer-${it.name}-${index}">
+//           <span class="event__offer-title">${it.title}</span>
+//           &plus;
+//           &euro;&nbsp;<span class="event__offer-price">${it.cost}</span>
+//         </label>
+//       </div>`
+//     );
+//   }).join(`\n`);
+// };
 
 const getPhotoList = (data) => {
   return data
@@ -59,7 +81,7 @@ const getPhotoList = (data) => {
 };
 
 export const createFormEditorTemplate = (data, option = {}) => {
-  const {favoriteFlag} = data;
+  const {offer, favoriteFlag} = data;
   const {eventType, eventCity, eventPrice} = option;
 
   const isDescription = (eventCity === ``) ? true : false;
@@ -70,12 +92,15 @@ export const createFormEditorTemplate = (data, option = {}) => {
   const IsPhotoCheck = !!photo;
 
   const indexOffer = DateOffers.findIndex((it) => it.type === eventType);
-  const offer = DateOffers[indexOffer].offers;
+  const offerEvent = DateOffers[indexOffer].offers;
+  // console.log(offerEvent);
+  // console.log(offer);
+  // console.log(eventType);
 
 
   const isFavorite = favoriteFlag ? `checked` : ``;
   const isMoveCheck = [`check-in`, `sightseeing`, `restaurant`].some((it) => it === eventType) ? `in` : `to`;
-  const isOffer = offer !== `` ? true : false;
+  const isOffer = offerEvent !== `` ? true : false;
   const getUpperLetter = (events) => events[0].toUpperCase() + events.slice(1);
 
 
@@ -156,7 +181,7 @@ export const createFormEditorTemplate = (data, option = {}) => {
         ${isOffer ? `<section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
           <div class="event__available-offers">
-          ${getOfferList(offer)}
+          ${getOfferList(offerEvent, offer)}
           </div>
         </section>` : ``
     }
@@ -177,8 +202,36 @@ export const createFormEditorTemplate = (data, option = {}) => {
 };
 
 const parseFormData = (formData) => {
+  const getNamesCheckedOffers = () => {
+    let offers = [];
+    const subStrLength = `event-offer-`.length;
+    for (let pairKeyValue of formData.entries()) {
+      if (pairKeyValue[0].indexOf(`event-offer-`) !== -1) {
+        offers.push(pairKeyValue[0].substring(subStrLength));
+      }
+    }
+    return offers;
+  };
+
+  const getCheckedOffers = () => {
+    const checkedOffers = [];
+    const checkedOffersNames = getNamesCheckedOffers();
+    const currentOffersGroup = DateOffers.find((offerGroup) => {
+      return offerGroup.type === formData.get(`event-type`);
+    });
+    checkedOffersNames.forEach((checkedOfferName) => {
+      for (let offer of currentOffersGroup.offers) {
+        if (checkedOfferName === offer.name) {
+          checkedOffers.push(offer);
+        }
+      }
+    });
+    return checkedOffers;
+  };
+
   const startData = formData.get(`event-start-time`);
   const endData = formData.get(`event-end-time`);
+
   return {
     event: formData.get(`event-type`),
     city: formData.get(`event-destination`),
@@ -186,6 +239,7 @@ const parseFormData = (formData) => {
     finishDate: new Date(endData),
     ownPrice: formData.get(`event-price`),
     favoriteFlag: formData.get(`event-favorite`) === `on` ? true : false,
+    offer: getCheckedOffers(),
   };
 };
 

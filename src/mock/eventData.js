@@ -54,7 +54,7 @@ export const generateTripPoint = () => {
     event: Math.random() > 0.5 ? EventTransferList[Math.floor(Math.random() * EventTransferList.length)] : EventActivityList[Math.floor(Math.random() * EventActivityList.length)],
     city: CityList[Math.floor(Math.random() * CityList.length)],
     ownPrice: Math.floor(Math.random() * 100),
-    offer: Math.random() > 0.1 ? getRandomIntegers(0, OfferList.length, OfferList) : ``,
+    offer: Math.random() > 0.1 ? getRandomIntegers(0, OfferList.length, OfferList) : [],
     // description: getDescriptionString(),
     // photo: Math.random() > 0.1 ? getRandomIntegers(1, photos.length, photos) : null,
     startDate: eventDate.startTimeTarget,

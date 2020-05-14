@@ -13,30 +13,11 @@ const OfferList = [
   }
 ];
 
-const getRandomArrayItem = (array) => {
-  const randomIndex = getRandomIntegerNumber(0, array.length);
-
-  return array[randomIndex];
-};
-
-const getRandomIntegerNumber = (min, max) => {
-  return min + Math.floor(Math.random() * (max - min));
-};
-
-const getRandomIntegers = (min, max, data) => {
-  const integers = new Set();
-  while (integers.size <= getRandomIntegerNumber(min, max)) {
-    integers.add(getRandomArrayItem(data));
-  }
-  return Array.from(integers);
-};
-
-
 const getTripOffer = (offer) => {
   return offer.map((it) => {
     return {
       type: it,
-      offers: Math.random() > 0.1 ? getRandomIntegers(0, OfferList.length, OfferList) : ``,
+      offers: OfferList,
     };
   });
 };
