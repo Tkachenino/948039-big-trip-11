@@ -146,6 +146,10 @@ export class PointController {
 
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
+      if (this._mode === Mode.ADDING) {
+        document.querySelector(`#control__new-event`).disabled = false;
+        this.destroy();
+      }
       this._hideMoreInfo();
     }
   }

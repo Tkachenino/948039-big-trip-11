@@ -128,6 +128,8 @@ export class TripController {
     const eventListElement = document.querySelector(`.trip-events__trip-sort`);
     this._creatingEvent = new PointController(eventListElement, this._onViewChange, this._onDataChange);
     this._creatingEvent.render(EmptyEvent, EventControllerMode.ADDING);
+    this._showedEventControllers = [].concat(this._creatingEvent, this._showedEventControllers);
+    this._creatingEvent = null;
   }
 
   _removeEvents() {
