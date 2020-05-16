@@ -1,8 +1,6 @@
 import {AbstractSmartComponent as SmartComponent} from "@/components/abstractSmartComponent.js";
 import {EventTransferList, EventActivityList, CityList} from "@/mock/eventData.js";
-
-import {DateDistantion} from "@/mock/eventDestination.js";
-import {DateOffers} from "@/mock/eventOffer.js";
+import {NameMap} from "@/const.js";
 
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
@@ -41,43 +39,66 @@ const getOfferList = (offerEvent, data) => {
     }
     return (
       `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${it.name}-${index}" type="checkbox" name="event-offer-${it.name}" ${IsChecked ? `checked` : ``} value="2">
-        <label class="event__offer-label" for="event-offer-${it.name}-${index}">
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${NameMap[`${it.title}`]}-${index}" type="checkbox" name="event-offer-${NameMap[`${it.title}`]}" ${IsChecked ? `checked` : ``}>
+        <label class="event__offer-label" for="event-offer-${NameMap[`${it.title}`]}-${index}">
           <span class="event__offer-title">${it.title}</span>
           &plus;
-          &euro;&nbsp;<span class="event__offer-price">${it.cost}</span>
+          &euro;&nbsp;<span class="event__offer-price">${it.price}</span>
         </label>
       </div>`
     );
   }).join(`\n`);
 };
 
+// const getOfferList = (offerEvent, data) => {
+//   let IsChecked = [];
+//   return offerEvent
+//   .map((it, index) => {
+//     if (data === []) {
+//       IsChecked = false;
+//     } else {
+//       IsChecked = data.some((item) => JSON.stringify(item) === JSON.stringify(it));
+//     }
+//     return (
+//       `<div class="event__offer-selector">
+//           <input class="event__offer-checkbox  visually-hidden" id="event-offer-${it.name}-${index}" type="checkbox" name="event-offer-${it.name}" ${IsChecked ? `checked` : ``}>
+//         <label class="event__offer-label" for="event-offer-${it.name}-${index}">
+//           <span class="event__offer-title">${it.title}</span>
+//           &plus;
+//           &euro;&nbsp;<span class="event__offer-price">${it.cost}</span>
+//         </label>
+//       </div>`
+//     );
+//   }).join(`\n`);
+// };
+
 const getPhotoList = (data) => {
   return data
   .map((it) => {
     return (
-      `<img class="event__photo" src="${it}" alt="Event photo">`
+      `<img class="event__photo" src="${it.src}" alt="${it.description}">`
     );
   }).join(`\n`);
 };
 
-export const createFormEditorTemplate = (data, option = {}) => {
+export const createFormEditorTemplate = (data, offersW, distantionsW, option = {}) => {
   const {offer, favoriteFlag} = data;
   const {eventType, eventCity, eventPrice} = option;
 
   const isDescription = (eventCity === ``) ? true : false;
 
-  const indexCIty = !isDescription ? DateDistantion.findIndex((it) => it.name === eventCity) : null;
-  const descriptionS = !isDescription ? DateDistantion[indexCIty].description : ``;
-  const photo = !isDescription ? DateDistantion[indexCIty].pictures : null;
+  const indexCIty = !isDescription ? distantionsW.findIndex((it) => it.name === eventCity) : null;
+  const descriptionS = !isDescription ? distantionsW[indexCIty].description : ``;
+  const photo = !isDescription ? distantionsW[indexCIty].pictures : null;
   const IsPhotoCheck = !!photo;
 
-  const indexOffer = DateOffers.findIndex((it) => it.type === eventType);
-  const offerEvent = DateOffers[indexOffer].offers;
+  const indexOffer = offersW.findIndex((it) => it.type === eventType);
+  const offerEvent = offersW[indexOffer].offers;
 
   const isFavorite = favoriteFlag ? `checked` : ``;
   const isMoveCheck = [`check-in`, `sightseeing`, `restaurant`].some((it) => it === eventType) ? `in` : `to`;
-  const isOffer = offerEvent !== `` ? true : false;
+  const isOffer = offerEvent.length !== 0 ? true : false;
+
   const getUpperLetter = (events) => events[0].toUpperCase() + events.slice(1);
 
   return (
@@ -177,7 +198,7 @@ export const createFormEditorTemplate = (data, option = {}) => {
   );
 };
 
-const parseFormData = (formData) => {
+const parseFormData = (formData, OFFERS) => {
   const getNamesCheckedOffers = () => {
     let offers = [];
     const subStrLength = `event-offer-`.length;
@@ -188,16 +209,19 @@ const parseFormData = (formData) => {
     }
     return offers;
   };
-
+  const entriesMap = Object.entries(NameMap);
   const getCheckedOffers = () => {
     const checkedOffers = [];
     const checkedOffersNames = getNamesCheckedOffers();
-    const currentOffersGroup = DateOffers.find((offerGroup) => {
+    const currentOffersGroup = OFFERS.find((offerGroup) => {
       return offerGroup.type === formData.get(`event-type`);
     });
+
     checkedOffersNames.forEach((checkedOfferName) => {
+      let currectItem = entriesMap.find((it) => it[1] === checkedOfferName);
       for (let offer of currentOffersGroup.offers) {
-        if (checkedOfferName === offer.name) {
+        if (currectItem[0] === offer.title) {
+
           checkedOffers.push(offer);
         }
       }
@@ -220,9 +244,11 @@ const parseFormData = (formData) => {
 };
 
 export class EventEditor extends SmartComponent {
-  constructor(event) {
+  constructor(event, offers, distantions) {
     super();
 
+    this._offers = offers;
+    this._distantions = distantions;
     this._event = event;
     this._favoriteHandler = null;
     this._sumbitHandler = null;
@@ -260,7 +286,7 @@ export class EventEditor extends SmartComponent {
   }
 
   getTemplate() {
-    return createFormEditorTemplate(this._event, {
+    return createFormEditorTemplate(this._event, this._offers, this._distantions, {
       eventType: this._eventType,
       eventCity: this._eventCity,
       eventPrice: this._eventPrice,
@@ -385,6 +411,6 @@ export class EventEditor extends SmartComponent {
   getData() {
     const form = this.getElement();
     const formData = new FormData(form);
-    return parseFormData(formData);
+    return parseFormData(formData, this._offers);
   }
 }

@@ -30,13 +30,13 @@ export class PointController {
     this._onEscKeyDowm = this._onEscKeyDowm.bind(this);
   }
 
-  render(event, mode) {
+  render(event, mode, offers, destinations) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditCompontent = this._eventEditorComponent;
     this._mode = mode;
 
     this._eventComponent = new EventComponent(event);
-    this._eventEditorComponent = new EventEditorComponent(event);
+    this._eventEditorComponent = new EventEditorComponent(event, offers, destinations);
 
     this._eventComponent.setMoreInfoButtonHandler(() => {
       this._showMoreInfo();

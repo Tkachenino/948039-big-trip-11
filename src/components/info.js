@@ -1,11 +1,11 @@
 import {formatMonth, formatDay, getGroupList} from "@/utils/common.js";
 import {AbstractComponent as Component} from "@/components/abstractComponent.js";
 
-const getCityList = (city) => {
+const getCityList = (city, data) => {
   if (city.length <= 3) {
     return city.join(` &mdash; `);
   } else {
-    return city[0] + ` &mdash; ... &mdash; ` + city[city.length - 1];
+    return data[0].city + ` &mdash; ... &mdash; ` + data[data.length - 1].city;
   }
 };
 
@@ -17,7 +17,7 @@ const createTripInfoTemplate = (data) => {
   }
 
   eventCityList = Array.from(eventCityList);
-  const cityList = getCityList(eventCityList);
+  const cityList = getCityList(eventCityList, data);
   const dateGroup = getGroupList(data);
 
   const monthStart = (dateGroup[0] === undefined) ? `` : formatMonth(dateGroup[0][0].startDate);

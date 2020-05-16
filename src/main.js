@@ -1,5 +1,3 @@
-// import {Info as InfoComponent} from "@/components/info.js";
-// import {Cost as CostComponent} from "@/components/cost.js";
 import {Menu as MenuComponent, MenuItem} from "@/components/menu.js";
 import {InfoWrapper as InfoWrapperComponent} from "@/components/infoWrapper.js";
 import {render, RenderPosition} from "@/utils/render.js";
@@ -7,14 +5,18 @@ import {TripController} from "@/controllers/board.js";
 import {FilterController} from "@/controllers/filter.js";
 import {CostController} from "@/controllers/cost.js";
 import {InfoController} from "@/controllers/info.js";
-import {generateTripPoints} from "@/mock/eventData.js";
 import {Points as PointsModel} from "@/models/points.js";
 import {Statistic as StatisticComponent} from "@/components/statistics.js";
+import API from "@/API/api.js";
+import OffersModel from "@/models/offers.js";
+import DestinationModel from "@/models/destinations.js";
 
-const POINT_COUNT = 5;
-const events = generateTripPoints(POINT_COUNT);
+const AUTHORIZATION = `Basic fdsOQml1Ck16zo2`;
+
+const api = new API(AUTHORIZATION);
+const offersModel = new OffersModel();
+const destinationModel = new DestinationModel();
 const pointsModel = new PointsModel();
-pointsModel.setPoints(events);
 
 const siteMainElement = document.querySelector(`.trip-main`);
 const infoWrapperComponent = new InfoWrapperComponent();
@@ -24,13 +26,8 @@ render(siteMainElement, infoWrapperComponent, RenderPosition.AFTERBEGIN);
 const infoWrapper = document.querySelector(`.trip-info`);
 
 const infoController = new InfoController(infoWrapper, pointsModel);
-infoController.render();
-// render(siteMainElement, new InfoComponent(pointsModel), RenderPosition.AFTERBEGIN);
 
 const costController = new CostController(infoWrapper, pointsModel);
-costController.render();
-
-// render(siteInfoTrip, new CostComponent(pointsModel), RenderPosition.BEFOREEND);
 
 const siteControls = siteMainElement.querySelector(`.trip-controls`);
 const siteMenu = siteControls.querySelector(`h2:nth-child(1)`);
@@ -43,9 +40,7 @@ const filterController = new FilterController(siteFilter, pointsModel);
 filterController.render();
 
 const siteBoardEvents = document.querySelector(`.trip-events`);
-const boardController = new TripController(siteBoardEvents, pointsModel);
-
-boardController.render();
+const boardController = new TripController(siteBoardEvents, pointsModel, offersModel, destinationModel);
 
 const statistics = new StatisticComponent(pointsModel);
 render(siteBoardEvents, statistics, RenderPosition.AFTEREND);
@@ -69,4 +64,14 @@ menuComponent.setOnChange((menuItem) => {
       statistics.hide();
       boardController.showBlock();
   }
+});
+
+Promise.all([api.getOffers(), api.getDestinations(), api.getPoints()])
+.then(([offers, destinations, events]) => {
+  offersModel.setOffers(offers);
+  destinationModel.setDestinations(destinations);
+  pointsModel.setPoints(events);
+  infoController.render();
+  costController.render();
+  boardController.render();
 });

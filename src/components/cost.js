@@ -6,7 +6,7 @@ export const createTripCostTemplate = (date) => {
 
     if (item.offer !== []) {
       totalOfferCost = item.offer.reduce((acc, i) => {
-        return acc + i.cost;
+        return acc + i.price;
       }, 0);
     }
     return accum + item.ownPrice + totalOfferCost;

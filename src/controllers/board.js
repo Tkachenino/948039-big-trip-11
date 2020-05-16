@@ -9,7 +9,7 @@ import {FilterType} from "@/const.js";
 
 import {render, RenderPosition} from "@/utils/render.js";
 
-const renderByGroup = (container, events, onViewChange, onDataChange) => {
+const renderByGroup = (container, events, offers, destinations, onViewChange, onDataChange) => {
   const groupEvent = getGroupList(events);
   const showingControllers = [];
   for (let i = 0; i < groupEvent.length; i++) {
@@ -23,7 +23,7 @@ const renderByGroup = (container, events, onViewChange, onDataChange) => {
 
     groupEvent[i].forEach((event) => {
       const pointController = new PointController(eventList, onViewChange, onDataChange);
-      pointController.render(event, EventControllerMode.DEFAULT);
+      pointController.render(event, EventControllerMode.DEFAULT, offers, destinations);
       showingControllers.push(pointController);
     });
   }
@@ -45,9 +45,11 @@ const getSortedEvent = (sortType, events) => {
 };
 
 export class TripController {
-  constructor(container, pointsModel) {
+  constructor(container, pointsModel, offersModel, destinationModel) {
     this._container = container;
     this._pointsModel = pointsModel;
+    this._offersModel = offersModel;
+    this._destinationModel = destinationModel;
     this._creatingEvent = null;
 
     this._showedEventControllers = [];
@@ -70,6 +72,8 @@ export class TripController {
 
   render() {
     const events = this._pointsModel.getPoints();
+    const offers = this._offersModel.getOffers();
+    const destinations = this._destinationModel.getDestinations();
 
     const IsHasEvent = (events.length === 0);
 
@@ -83,12 +87,15 @@ export class TripController {
 
     this._dayListComponent = this._dayListComponent.getElement();
 
-    const newEvent = renderByGroup(this._dayListComponent, events, this._onViewChange, this._onDataChange);
+    const newEvent = renderByGroup(this._dayListComponent, events, offers, destinations, this._onViewChange, this._onDataChange);
     this._showedEventControllers = this._showedEventControllers.concat(newEvent);
   }
 
   _onSortTypeChange(sortType) {
     const events = this._pointsModel.getPoints();
+    const offers = this._offersModel.getOffers();
+    const destinations = this._destinationModel.getDestinations();
+
     const showingControllers = [];
     this._showedEventControllers = [];
 
@@ -96,7 +103,7 @@ export class TripController {
     this._dayListComponent.innerHTML = ``;
     if (sortType === SortType.EVENT) {
       this._sortElement.querySelector(`.trip-sort__item--day`).innerHTML = `Day`;
-      const newEvent = renderByGroup(this._dayListComponent, events, this._onViewChange, this._onDataChange);
+      const newEvent = renderByGroup(this._dayListComponent, events, offers, destinations, this._onViewChange, this._onDataChange);
       this._showedEventControllers = this._showedEventControllers.concat(newEvent);
     }
 
@@ -111,7 +118,7 @@ export class TripController {
     const eventList = this._dayListComponent.querySelector(`.trip-events__list`);
     sortedEvents.forEach((event) => {
       const pointController = new PointController(eventList, this._onViewChange, this._onDataChange);
-      pointController.render(event, EventControllerMode.DEFAULT);
+      pointController.render(event, EventControllerMode.DEFAULT, offers, destinations);
       showingControllers.push(pointController);
     });
     this._showedEventControllers = this._showedEventControllers.concat(showingControllers);
@@ -127,7 +134,7 @@ export class TripController {
     this._onFilterChange();
     const eventListElement = document.querySelector(`.trip-events__trip-sort`);
     this._creatingEvent = new PointController(eventListElement, this._onViewChange, this._onDataChange);
-    this._creatingEvent.render(EmptyEvent, EventControllerMode.ADDING);
+    this._creatingEvent.render(EmptyEvent, EventControllerMode.ADDING, this._offersModel.getOffers(), this._destinationModel.getDestinations());
     this._showedEventControllers = [].concat(this._creatingEvent, this._showedEventControllers);
     this._creatingEvent = null;
   }
@@ -141,7 +148,7 @@ export class TripController {
 
   _updateEvents() {
     this._removeEvents();
-    const newEvent = renderByGroup(this._dayListComponent, this._pointsModel.getPoints(), this._onViewChange, this._onDataChange);
+    const newEvent = renderByGroup(this._dayListComponent, this._pointsModel.getPoints(), this._offersModel.getOffers(), this._destinationModel.getDestinations(), this._onViewChange, this._onDataChange);
     this._showedEventControllers = this._showedEventControllers.concat(newEvent);
   }
 
@@ -164,7 +171,7 @@ export class TripController {
     } else {
       const isSuccess = this._pointsModel.updateEvent(oldData.id, newData);
       if (isSuccess) {
-        eventController.render(newData, EventControllerMode.DEFAULT);
+        eventController.render(newData, EventControllerMode.DEFAULT, this._offersModel.getOffers(), this._destinationModel.getDestinations());
         this._updateEvents();
       }
     }

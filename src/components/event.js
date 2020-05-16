@@ -5,12 +5,12 @@ import {AbstractComponent as Component} from "@/components/abstractComponent.js"
 const getOfferList = (offer) => {
   return offer
   .map((it) => {
-    const {title, cost} = it;
+    const {title, price} = it;
     return (
       `<li class="event__offer">
             <span class="event__offer-title">${title}</span>
             &plus;
-            &euro;&nbsp;<span class="event__offer-price">${cost}</span>
+            &euro;&nbsp;<span class="event__offer-price">${price}</span>
            </li>`
     );
   }).slice(0, 3).join(`\n`);
