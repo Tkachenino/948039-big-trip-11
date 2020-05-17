@@ -1,6 +1,8 @@
 import {Event as EventComponent} from "@/components/event.js";
 import {EventEditor as EventEditorComponent} from "@/components/eventEditor.js";
 import {render, replace, remove, RenderPosition} from "@/utils/render.js";
+import {NameMap} from "@/const.js";
+import Point from "@/models/point.js";
 
 export const Mode = {
   ADDING: `adding`,
@@ -11,11 +13,60 @@ export const Mode = {
 export const EmptyEvent = {
   event: `taxi`,
   city: ``,
-  ownPrice: ``,
-  offer: ``,
+  ownPrice: 0,
+  offer: [],
   startDate: ``,
   finishDate: ``,
   favoriteFlag: false,
+};
+
+
+const parseFormData = (formData, OFFERS, DISTANTIONS) => {
+  const getNamesCheckedOffers = () => {
+    let offers = [];
+    const subStrLength = `event-offer-`.length;
+    for (let pairKeyValue of formData.entries()) {
+      if (pairKeyValue[0].indexOf(`event-offer-`) !== -1) {
+        offers.push(pairKeyValue[0].substring(subStrLength));
+      }
+    }
+    return offers;
+  };
+
+  const getCheckedOffers = () => {
+    const checkedOffers = [];
+    const checkedOffersNames = getNamesCheckedOffers();
+    const currentOffersGroup = OFFERS.find((offerGroup) => {
+      return offerGroup.type === formData.get(`event-type`);
+    });
+
+    const entriesMap = Object.entries(NameMap);
+
+    checkedOffersNames.forEach((checkedOfferName) => {
+      let currectItem = entriesMap.find((it) => it[1] === checkedOfferName);
+      for (let offer of currentOffersGroup.offers) {
+        if (currectItem[0] === offer.title) {
+
+          checkedOffers.push(offer);
+        }
+      }
+    });
+    return checkedOffers;
+  };
+
+  const startData = formData.get(`event-start-time`);
+  const endData = formData.get(`event-end-time`);
+  const destination = Object.assign({}, DISTANTIONS.find((distantion) => distantion.name === formData.get(`event-destination`)));
+
+  return new Point({
+    "base_price": Number(formData.get(`event-price`)),
+    "date_from": new Date(startData),
+    "date_to": new Date(endData),
+    "destination": destination,
+    "is_favorite": formData.get(`event-favorite`) === `on` ? true : false,
+    "offers": getCheckedOffers(),
+    "type": formData.get(`event-type`),
+  });
 };
 
 export class PointController {
@@ -30,13 +81,13 @@ export class PointController {
     this._onEscKeyDowm = this._onEscKeyDowm.bind(this);
   }
 
-  render(event, mode) {
+  render(event, mode, offers, destinations) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditCompontent = this._eventEditorComponent;
     this._mode = mode;
 
     this._eventComponent = new EventComponent(event);
-    this._eventEditorComponent = new EventEditorComponent(event);
+    this._eventEditorComponent = new EventEditorComponent(event, offers, destinations);
 
     this._eventComponent.setMoreInfoButtonHandler(() => {
       this._showMoreInfo();
@@ -46,7 +97,8 @@ export class PointController {
 
     this._eventEditorComponent.setSubmitFormHandler((evt) => {
       evt.preventDefault();
-      const data = this._eventEditorComponent.getData();
+      const formData = this._eventEditorComponent.getData();
+      const data = parseFormData(formData, offers, destinations);
       this._onDataChange(this, event, data);
       document.removeEventListener(`keydown`, this._onEscKeyDowm);
     });
@@ -146,6 +198,10 @@ export class PointController {
 
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
+      if (this._mode === Mode.ADDING) {
+        document.querySelector(`#control__new-event`).disabled = false;
+        this.destroy();
+      }
       this._hideMoreInfo();
     }
   }

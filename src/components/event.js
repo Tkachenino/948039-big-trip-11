@@ -1,33 +1,29 @@
 import {formatTime, formatDateTime, getDiffTime} from "@/utils/common.js";
 import {AbstractComponent as Component} from "@/components/abstractComponent.js";
 
-import {DateOffers} from "@/mock/eventOffer.js";
 
 const getOfferList = (offer) => {
   return offer
   .map((it) => {
-    const {title, cost} = it;
+    const {title, price} = it;
     return (
       `<li class="event__offer">
             <span class="event__offer-title">${title}</span>
             &plus;
-            &euro;&nbsp;<span class="event__offer-price">${cost}</span>
+            &euro;&nbsp;<span class="event__offer-price">${price}</span>
            </li>`
     );
   }).slice(0, 3).join(`\n`);
 };
 
 export const createPointEventTeplate = (trip) => {
-  const {event, city, ownPrice, startDate, finishDate} = trip;
+  const {offer, event, destination, ownPrice, startDate, finishDate} = trip;
+  const city = destination.name;
   const startTime = formatTime(startDate);
   const finishTime = formatTime(finishDate);
   const startDateTime = formatDateTime(startDate);
   const finishDateTime = formatDateTime(finishDate);
   const diffTime = getDiffTime(startDate, finishDate);
-
-  const indexOffer = DateOffers.findIndex((it) => it.type === event);
-  const offer = DateOffers[indexOffer].offers;
-
 
   const isMoveCheck = [`check-in`, `sightseeing`, `restaurant`].some((it) => it === event) ? `in` : `to`;
   const isOfferCheck = !!offer;

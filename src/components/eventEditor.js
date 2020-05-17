@@ -1,8 +1,6 @@
 import {AbstractSmartComponent as SmartComponent} from "@/components/abstractSmartComponent.js";
-import {EventTransferList, EventActivityList, CityList} from "@/mock/eventData.js";
-
-import {DateDistantion} from "@/mock/eventDestination.js";
-import {DateOffers} from "@/mock/eventOffer.js";
+import {EventTransferList, EventActivityList, CityList} from "@/const.js";
+import {NameMap} from "@/const.js";
 
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
@@ -30,19 +28,22 @@ const getCityList = (data) => {
   }).join(`\n`);
 };
 
-const getOfferList = (data) => {
-  if (data === ``) {
-    return ``;
-  }
-  return data
+const getOfferList = (offerEvent, data) => {
+  let IsChecked = [];
+  return offerEvent
   .map((it, index) => {
+    if (data === []) {
+      IsChecked = false;
+    } else {
+      IsChecked = data.some((item) => JSON.stringify(item) === JSON.stringify(it));
+    }
     return (
       `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${it.name}-${index}" type="checkbox" name="event-offer-${it.name}" checked>
-        <label class="event__offer-label" for="event-offer-${it.name}-${index}">
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${NameMap[`${it.title}`]}-${index}" type="checkbox" name="event-offer-${NameMap[`${it.title}`]}" ${IsChecked ? `checked` : ``}>
+        <label class="event__offer-label" for="event-offer-${NameMap[`${it.title}`]}-${index}">
           <span class="event__offer-title">${it.title}</span>
           &plus;
-          &euro;&nbsp;<span class="event__offer-price">${it.cost}</span>
+          &euro;&nbsp;<span class="event__offer-price">${it.price}</span>
         </label>
       </div>`
     );
@@ -53,31 +54,30 @@ const getPhotoList = (data) => {
   return data
   .map((it) => {
     return (
-      `<img class="event__photo" src="${it}" alt="Event photo">`
+      `<img class="event__photo" src="${it.src}" alt="${it.description}">`
     );
   }).join(`\n`);
 };
 
-export const createFormEditorTemplate = (data, option = {}) => {
-  const {favoriteFlag} = data;
+export const createFormEditorTemplate = (data, offersW, distantionsW, option = {}) => {
+  const {offer, favoriteFlag} = data;
   const {eventType, eventCity, eventPrice} = option;
 
   const isDescription = (eventCity === ``) ? true : false;
 
-  const indexCIty = !isDescription ? DateDistantion.findIndex((it) => it.name === eventCity) : null;
-  const descriptionS = !isDescription ? DateDistantion[indexCIty].description : ``;
-  const photo = !isDescription ? DateDistantion[indexCIty].pictures : null;
+  const indexCIty = !isDescription ? distantionsW.findIndex((it) => it.name === eventCity) : null;
+  const descriptionS = !isDescription ? distantionsW[indexCIty].description : ``;
+  const photo = !isDescription ? distantionsW[indexCIty].pictures : null;
   const IsPhotoCheck = !!photo;
 
-  const indexOffer = DateOffers.findIndex((it) => it.type === eventType);
-  const offer = DateOffers[indexOffer].offers;
-
+  const indexOffer = offersW.findIndex((it) => it.type === eventType);
+  const offerEvent = offersW[indexOffer].offers;
 
   const isFavorite = favoriteFlag ? `checked` : ``;
   const isMoveCheck = [`check-in`, `sightseeing`, `restaurant`].some((it) => it === eventType) ? `in` : `to`;
-  const isOffer = offer !== `` ? true : false;
-  const getUpperLetter = (events) => events[0].toUpperCase() + events.slice(1);
+  const isOffer = offerEvent.length !== 0 ? true : false;
 
+  const getUpperLetter = (events) => events[0].toUpperCase() + events.slice(1);
 
   return (
     `<form class="event  event--edit trip-events__item" action="#" method="post" autocomplete="off">
@@ -156,7 +156,7 @@ export const createFormEditorTemplate = (data, option = {}) => {
         ${isOffer ? `<section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
           <div class="event__available-offers">
-          ${getOfferList(offer)}
+          ${getOfferList(offerEvent, offer)}
           </div>
         </section>` : ``
     }
@@ -176,30 +176,19 @@ export const createFormEditorTemplate = (data, option = {}) => {
   );
 };
 
-const parseFormData = (formData) => {
-  const startData = formData.get(`event-start-time`);
-  const endData = formData.get(`event-end-time`);
-  return {
-    event: formData.get(`event-type`),
-    city: formData.get(`event-destination`),
-    startDate: new Date(startData),
-    finishDate: new Date(endData),
-    ownPrice: formData.get(`event-price`),
-    favoriteFlag: formData.get(`event-favorite`) === `on` ? true : false,
-  };
-};
-
 export class EventEditor extends SmartComponent {
-  constructor(event) {
+  constructor(event, offers, distantions) {
     super();
 
+    this._offers = offers;
+    this._distantions = distantions;
     this._event = event;
     this._favoriteHandler = null;
     this._sumbitHandler = null;
     this._deleteButtonClickHandler = null;
 
     this._eventType = event.event;
-    this._eventCity = event.city;
+    this._eventCity = event.destination.name;
     this._eventPrice = event.ownPrice;
     this._eventStartData = event.startDate;
     this._eventEndData = event.finishDate;
@@ -230,7 +219,7 @@ export class EventEditor extends SmartComponent {
   }
 
   getTemplate() {
-    return createFormEditorTemplate(this._event, {
+    return createFormEditorTemplate(this._event, this._offers, this._distantions, {
       eventType: this._eventType,
       eventCity: this._eventCity,
       eventPrice: this._eventPrice,
@@ -306,7 +295,13 @@ export class EventEditor extends SmartComponent {
     this.getElement()
     .querySelector(`.event__field-group`)
     .addEventListener(`change`, handler);
+
     const input = this.getElement().querySelector(`.event__input--destination`);
+
+    input.onclick = () => {
+      input.value = ``;
+    };
+
     if (CityList.find((it) => it === input.value)) {
       input.setCustomValidity(``);
     } else {
@@ -344,7 +339,7 @@ export class EventEditor extends SmartComponent {
     const event = this._event;
 
     this._eventType = event.event;
-    this._eventCity = event.city;
+    this._eventCity = event.destination.name;
     this._eventPrice = event.ownPrice;
     this._eventStartData = event.startDate;
     this._eventEndData = event.finishDate;
@@ -354,7 +349,6 @@ export class EventEditor extends SmartComponent {
 
   getData() {
     const form = this.getElement();
-    const formData = new FormData(form);
-    return parseFormData(formData);
+    return new FormData(form);
   }
 }
