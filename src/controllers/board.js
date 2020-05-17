@@ -170,8 +170,11 @@ export class TripController {
           });
       }
     } else if (newData === null) {
-      this._pointsModel.removeTask(oldData.id);
-      this._updateEvents();
+      this._api.deletePoint(oldData.id)
+        .then(() => {
+          this._pointsModel.removeTask(oldData.id);
+          this._updateEvents();
+        });
     } else {
       this._api.updatePoint(oldData.id, newData)
         .then((pointModel) =>{
