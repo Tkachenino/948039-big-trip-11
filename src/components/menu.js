@@ -39,9 +39,6 @@ export class Menu extends Component {
         statsBtn.classList.remove(`trip-tabs__btn--active`);
         break;
     }
-    // if (item) {
-    //   item.disabled = true;
-    // }
   }
 
   setOnChange(handler) {

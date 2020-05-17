@@ -3,15 +3,24 @@ export default class Point {
     this.id = data[`id`];
     this.event = data[`type`];
     this.destination = data[`destination`];
-    this.city = this.destination.name;
     this.ownPrice = data[`base_price`];
     this.offer = data[`offers`];
-    // this.offersBuff = this.offer.map((offerq) => Object.assign({}, offerq, {name: `meal`}));
-    // description: getDescriptionString(),
-    // photo: Math.random() > 0.1 ? getRandomIntegers(1, photos.length, photos) : null,
     this.startDate = new Date(data[`date_from`]);
     this.finishDate = new Date(data[`date_to`]);
     this.favoriteFlag = Boolean(data[`is_favorite`]);
+  }
+
+  toRAW() {
+    return {
+      "base_price": this.ownPrice,
+      "date_from": this.startDate.toISOString(),
+      "date_to": this.finishDate.toISOString(),
+      "destination": this.destination,
+      "id": this.id,
+      "is_favorite": this.favoriteFlag,
+      "offers": this.offer,
+      "type": this.event,
+    };
   }
 
   static parsePoint(data) {

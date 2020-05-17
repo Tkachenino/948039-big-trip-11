@@ -40,7 +40,7 @@ const filterController = new FilterController(siteFilter, pointsModel);
 filterController.render();
 
 const siteBoardEvents = document.querySelector(`.trip-events`);
-const boardController = new TripController(siteBoardEvents, pointsModel, offersModel, destinationModel);
+const boardController = new TripController(siteBoardEvents, pointsModel, offersModel, destinationModel, api);
 
 const statistics = new StatisticComponent(pointsModel);
 render(siteBoardEvents, statistics, RenderPosition.AFTEREND);
@@ -74,4 +74,5 @@ Promise.all([api.getOffers(), api.getDestinations(), api.getPoints()])
   infoController.render();
   costController.render();
   boardController.render();
-});
+})
+.catch();

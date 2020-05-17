@@ -45,11 +45,12 @@ const getSortedEvent = (sortType, events) => {
 };
 
 export class TripController {
-  constructor(container, pointsModel, offersModel, destinationModel) {
+  constructor(container, pointsModel, offersModel, destinationModel, api) {
     this._container = container;
     this._pointsModel = pointsModel;
     this._offersModel = offersModel;
     this._destinationModel = destinationModel;
+    this._api = api;
     this._creatingEvent = null;
 
     this._showedEventControllers = [];
@@ -169,11 +170,14 @@ export class TripController {
       this._pointsModel.removeTask(oldData.id);
       this._updateEvents();
     } else {
-      const isSuccess = this._pointsModel.updateEvent(oldData.id, newData);
-      if (isSuccess) {
-        eventController.render(newData, EventControllerMode.DEFAULT, this._offersModel.getOffers(), this._destinationModel.getDestinations());
-        this._updateEvents();
-      }
+      this._api.updatePoint(oldData.id, newData)
+        .then((pointModel) =>{
+          const isSuccess = this._pointsModel.updateEvent(oldData.id, pointModel);
+          if (isSuccess) {
+            eventController.render(pointModel, EventControllerMode.DEFAULT, this._offersModel.getOffers(), this._destinationModel.getDestinations());
+            this._updateEvents();
+          }
+        });
     }
   }
 

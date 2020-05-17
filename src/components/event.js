@@ -17,7 +17,8 @@ const getOfferList = (offer) => {
 };
 
 export const createPointEventTeplate = (trip) => {
-  const {offer, event, city, ownPrice, startDate, finishDate} = trip;
+  const {offer, event, destination, ownPrice, startDate, finishDate} = trip;
+  const city = destination.name;
   const startTime = formatTime(startDate);
   const finishTime = formatTime(finishDate);
   const startDateTime = formatDateTime(startDate);

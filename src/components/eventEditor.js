@@ -50,28 +50,6 @@ const getOfferList = (offerEvent, data) => {
   }).join(`\n`);
 };
 
-// const getOfferList = (offerEvent, data) => {
-//   let IsChecked = [];
-//   return offerEvent
-//   .map((it, index) => {
-//     if (data === []) {
-//       IsChecked = false;
-//     } else {
-//       IsChecked = data.some((item) => JSON.stringify(item) === JSON.stringify(it));
-//     }
-//     return (
-//       `<div class="event__offer-selector">
-//           <input class="event__offer-checkbox  visually-hidden" id="event-offer-${it.name}-${index}" type="checkbox" name="event-offer-${it.name}" ${IsChecked ? `checked` : ``}>
-//         <label class="event__offer-label" for="event-offer-${it.name}-${index}">
-//           <span class="event__offer-title">${it.title}</span>
-//           &plus;
-//           &euro;&nbsp;<span class="event__offer-price">${it.cost}</span>
-//         </label>
-//       </div>`
-//     );
-//   }).join(`\n`);
-// };
-
 const getPhotoList = (data) => {
   return data
   .map((it) => {
@@ -198,51 +176,6 @@ export const createFormEditorTemplate = (data, offersW, distantionsW, option = {
   );
 };
 
-const parseFormData = (formData, OFFERS) => {
-  const getNamesCheckedOffers = () => {
-    let offers = [];
-    const subStrLength = `event-offer-`.length;
-    for (let pairKeyValue of formData.entries()) {
-      if (pairKeyValue[0].indexOf(`event-offer-`) !== -1) {
-        offers.push(pairKeyValue[0].substring(subStrLength));
-      }
-    }
-    return offers;
-  };
-  const entriesMap = Object.entries(NameMap);
-  const getCheckedOffers = () => {
-    const checkedOffers = [];
-    const checkedOffersNames = getNamesCheckedOffers();
-    const currentOffersGroup = OFFERS.find((offerGroup) => {
-      return offerGroup.type === formData.get(`event-type`);
-    });
-
-    checkedOffersNames.forEach((checkedOfferName) => {
-      let currectItem = entriesMap.find((it) => it[1] === checkedOfferName);
-      for (let offer of currentOffersGroup.offers) {
-        if (currectItem[0] === offer.title) {
-
-          checkedOffers.push(offer);
-        }
-      }
-    });
-    return checkedOffers;
-  };
-
-  const startData = formData.get(`event-start-time`);
-  const endData = formData.get(`event-end-time`);
-
-  return {
-    event: formData.get(`event-type`),
-    city: formData.get(`event-destination`),
-    startDate: new Date(startData),
-    finishDate: new Date(endData),
-    ownPrice: Number(formData.get(`event-price`)),
-    favoriteFlag: formData.get(`event-favorite`) === `on` ? true : false,
-    offer: getCheckedOffers(),
-  };
-};
-
 export class EventEditor extends SmartComponent {
   constructor(event, offers, distantions) {
     super();
@@ -255,7 +188,7 @@ export class EventEditor extends SmartComponent {
     this._deleteButtonClickHandler = null;
 
     this._eventType = event.event;
-    this._eventCity = event.city;
+    this._eventCity = event.destination.name;
     this._eventPrice = event.ownPrice;
     this._eventStartData = event.startDate;
     this._eventEndData = event.finishDate;
@@ -400,7 +333,7 @@ export class EventEditor extends SmartComponent {
     const event = this._event;
 
     this._eventType = event.event;
-    this._eventCity = event.city;
+    this._eventCity = event.destination.name;
     this._eventPrice = event.ownPrice;
     this._eventStartData = event.startDate;
     this._eventEndData = event.finishDate;
@@ -410,7 +343,6 @@ export class EventEditor extends SmartComponent {
 
   getData() {
     const form = this.getElement();
-    const formData = new FormData(form);
-    return parseFormData(formData, this._offers);
+    return new FormData(form);
   }
 }

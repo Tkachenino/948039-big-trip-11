@@ -5,7 +5,7 @@ const getCityList = (city, data) => {
   if (city.length <= 3) {
     return city.join(` &mdash; `);
   } else {
-    return data[0].city + ` &mdash; ... &mdash; ` + data[data.length - 1].city;
+    return data[0].destination.name + ` &mdash; ... &mdash; ` + data[data.length - 1].destination.name;
   }
 };
 
@@ -13,7 +13,7 @@ const createTripInfoTemplate = (data) => {
   let eventCityList = new Set();
 
   for (const event of data) {
-    eventCityList.add(event.city);
+    eventCityList.add(event.destination.name);
   }
 
   eventCityList = Array.from(eventCityList);
