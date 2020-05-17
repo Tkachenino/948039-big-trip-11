@@ -4,6 +4,10 @@ export const FilterType = {
   PAST: `past`,
 };
 
+export const EventTransferList = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
+export const EventActivityList = [`check-in`, `sightseeing`, `restaurant`];
+export const CityList = [`Geneva`, `Paris`, `Nagasaki`, `Sochi`, `Oslo`, `Rotterdam`, `Kopenhagen`, `Milan`, `Hiroshima`, `Frankfurt`, `Naples`, `Kioto`];
+
 export const NameMap = {
   "Upgrade to a business class": `upgrade`,
   "Choose the radio station": `radio`,

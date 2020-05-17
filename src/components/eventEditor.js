@@ -1,5 +1,5 @@
 import {AbstractSmartComponent as SmartComponent} from "@/components/abstractSmartComponent.js";
-import {EventTransferList, EventActivityList, CityList} from "@/mock/eventData.js";
+import {EventTransferList, EventActivityList, CityList} from "@/const.js";
 import {NameMap} from "@/const.js";
 
 import flatpickr from "flatpickr";
@@ -295,7 +295,13 @@ export class EventEditor extends SmartComponent {
     this.getElement()
     .querySelector(`.event__field-group`)
     .addEventListener(`change`, handler);
+
     const input = this.getElement().querySelector(`.event__input--destination`);
+
+    input.onclick = () => {
+      input.value = ``;
+    };
+
     if (CityList.find((it) => it === input.value)) {
       input.setCustomValidity(``);
     } else {

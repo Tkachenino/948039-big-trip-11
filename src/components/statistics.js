@@ -1,4 +1,4 @@
-import {EventTransferList} from "@/mock/eventData.js";
+import {EventTransferList} from "@/const.js";
 import {AbstractSmartComponent} from "@/components/abstractSmartComponent.js";
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
