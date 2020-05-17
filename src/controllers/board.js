@@ -161,10 +161,13 @@ export class TripController {
         this._updateEvents();
         document.querySelector(`#control__new-event`).disabled = false;
       } else {
-        this._pointsModel.addEvent(newData);
-        this._showedEventControllers = [].concat(eventController, this._showedEventControllers);
-        this._updateEvents();
-        document.querySelector(`#control__new-event`).disabled = false;
+        this._api.createPoint(newData)
+          .then((pointModel) => {
+            this._pointsModel.addEvent(pointModel);
+            this._showedEventControllers = [].concat(eventController, this._showedEventControllers);
+            this._updateEvents();
+            document.querySelector(`#control__new-event`).disabled = false;
+          });
       }
     } else if (newData === null) {
       this._pointsModel.removeTask(oldData.id);

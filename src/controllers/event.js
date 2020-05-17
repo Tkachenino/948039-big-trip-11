@@ -12,7 +12,9 @@ export const Mode = {
 
 export const EmptyEvent = {
   event: `taxi`,
-  city: ``,
+  destination: {
+    name: ``,
+  },
   ownPrice: 0,
   offer: [],
   startDate: ``,
@@ -115,7 +117,6 @@ export class PointController {
     this._eventEditorComponent.setPriceHandler((evt) => {
       const price = evt.target.value;
       this._eventEditorComponent._eventPrice = price;
-      this._eventEditorComponent.rerender();
     });
 
     this._eventEditorComponent.setDataStartHandler((evt) => {
