@@ -236,4 +236,5 @@ export class PointController {
       });
     }, SHAKE_ANIMATION_TIMEOUT);
   }
+
 }
