@@ -133,12 +133,18 @@ export class PointController {
       const label = evt.target.value;
       this._eventEditorComponent._eventType = label;
       this._eventEditorComponent.rerender();
+      if (this._mode === Mode.ADDING) {
+        this._eventEditorComponent.setAddView();
+      }
     });
 
     this._eventEditorComponent.setCityHandler((evt) => {
       const city = evt.target.value;
       this._eventEditorComponent._eventCity = city;
       this._eventEditorComponent.rerender();
+      if (this._mode === Mode.ADDING) {
+        this._eventEditorComponent.setAddView();
+      }
     });
 
     this._eventEditorComponent.setDeleteButtonClickHandler((evt) => {
@@ -162,6 +168,7 @@ export class PointController {
           remove(oldEventEditCompontent);
         }
         this._onViewChange();
+        this._eventEditorComponent.setAddView();
         document.addEventListener(`keydown`, this._onEscKeyDowm);
         render(this._container, this._eventEditorComponent, RenderPosition.AFTEREND);
         break;

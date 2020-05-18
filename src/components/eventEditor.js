@@ -351,4 +351,10 @@ export class EventEditor extends SmartComponent {
     const form = this.getElement();
     return new FormData(form);
   }
+
+  setAddView() {
+    this.getElement().querySelector(`.event__favorite-btn`).classList.add(`visually-hidden`);
+    this.getElement().querySelector(`.event__rollup-btn`).remove();
+    this.getElement().querySelector(`.event__reset-btn`).innerHTML = `Cansel`;
+  }
 }
