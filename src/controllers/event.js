@@ -4,6 +4,8 @@ import {render, replace, remove, RenderPosition} from "@/utils/render.js";
 import {NameMap} from "@/const.js";
 import Point from "@/models/point.js";
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 export const Mode = {
   ADDING: `adding`,
   DEFAULT: `default`,
@@ -101,6 +103,9 @@ export class PointController {
       evt.preventDefault();
       const formData = this._eventEditorComponent.getData();
       const data = parseFormData(formData, offers, destinations);
+      this._eventEditorComponent.setData({
+        saveButtonText: `Saving...`,
+      });
       this._onDataChange(this, event, data);
       document.removeEventListener(`keydown`, this._onEscKeyDowm);
     });
@@ -149,6 +154,9 @@ export class PointController {
 
     this._eventEditorComponent.setDeleteButtonClickHandler((evt) => {
       evt.preventDefault();
+      this._eventEditorComponent.setData({
+        deleteButtonText: `Deleting...`,
+      });
       this._onDataChange(this, event, null);
     });
 
@@ -212,5 +220,20 @@ export class PointController {
       }
       this._hideMoreInfo();
     }
+  }
+
+  shake() {
+    this._eventEditorComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._eventComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._eventEditorComponent.getElement().style.animation = ``;
+      this._eventComponent.getElement().style.animation = ``;
+
+      this._eventEditorComponent.setData({
+        saveButtonText: `Save`,
+        deleteButtonText: `Delete`,
+      });
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }
