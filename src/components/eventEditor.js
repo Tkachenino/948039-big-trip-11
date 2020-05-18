@@ -5,6 +5,11 @@ import {NameMap} from "@/const.js";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 
+const DefaultData = {
+  deleteButtonText: `Delete`,
+  saveButtonText: `Save`,
+};
+
 
 const getSliderList = (data, event) => {
   return data
@@ -61,7 +66,7 @@ const getPhotoList = (data) => {
 
 export const createFormEditorTemplate = (data, offersW, distantionsW, option = {}) => {
   const {offer, favoriteFlag} = data;
-  const {eventType, eventCity, eventPrice} = option;
+  const {eventType, eventCity, eventPrice, externalData} = option;
 
   const isDescription = (eventCity === ``) ? true : false;
 
@@ -78,6 +83,9 @@ export const createFormEditorTemplate = (data, offersW, distantionsW, option = {
   const isOffer = offerEvent.length !== 0 ? true : false;
 
   const getUpperLetter = (events) => events[0].toUpperCase() + events.slice(1);
+
+  const deleteButtonText = externalData.deleteButtonText;
+  const saveButtonText = externalData.saveButtonText;
 
   return (
     `<form class="event  event--edit trip-events__item" action="#" method="post" autocomplete="off">
@@ -136,8 +144,8 @@ export const createFormEditorTemplate = (data, offersW, distantionsW, option = {
           <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${eventPrice}" pattern="^[ 0-9]+$">
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit">${saveButtonText}</button>
+        <button class="event__reset-btn" type="reset">${deleteButtonText}</button>
 
         <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite}>
         <label class="event__favorite-btn" for="event-favorite-1">
@@ -186,6 +194,7 @@ export class EventEditor extends SmartComponent {
     this._favoriteHandler = null;
     this._sumbitHandler = null;
     this._deleteButtonClickHandler = null;
+    this._externalData = DefaultData;
 
     this._eventType = event.event;
     this._eventCity = event.destination.name;
@@ -225,7 +234,13 @@ export class EventEditor extends SmartComponent {
       eventPrice: this._eventPrice,
       eventStartData: this._eventStartData,
       eventEndData: this._eventEndData,
+      externalData: this._externalData,
     });
+  }
+
+  setData(data) {
+    this._externalData = Object.assign({}, DefaultData, data);
+    this.rerender();
   }
 
   setSubmitFormHandler(handler) {
@@ -350,5 +365,11 @@ export class EventEditor extends SmartComponent {
   getData() {
     const form = this.getElement();
     return new FormData(form);
+  }
+
+  setAddView() {
+    this.getElement().querySelector(`.event__favorite-btn`).classList.add(`visually-hidden`);
+    this.getElement().querySelector(`.event__rollup-btn`).remove();
+    this.getElement().querySelector(`.event__reset-btn`).innerHTML = `Cansel`;
   }
 }

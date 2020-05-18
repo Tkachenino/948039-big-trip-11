@@ -4,6 +4,8 @@ import {render, replace, remove, RenderPosition} from "@/utils/render.js";
 import {NameMap} from "@/const.js";
 import Point from "@/models/point.js";
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 export const Mode = {
   ADDING: `adding`,
   DEFAULT: `default`,
@@ -12,7 +14,9 @@ export const Mode = {
 
 export const EmptyEvent = {
   event: `taxi`,
-  city: ``,
+  destination: {
+    name: ``,
+  },
   ownPrice: 0,
   offer: [],
   startDate: ``,
@@ -99,6 +103,9 @@ export class PointController {
       evt.preventDefault();
       const formData = this._eventEditorComponent.getData();
       const data = parseFormData(formData, offers, destinations);
+      this._eventEditorComponent.setData({
+        saveButtonText: `Saving...`,
+      });
       this._onDataChange(this, event, data);
       document.removeEventListener(`keydown`, this._onEscKeyDowm);
     });
@@ -115,7 +122,6 @@ export class PointController {
     this._eventEditorComponent.setPriceHandler((evt) => {
       const price = evt.target.value;
       this._eventEditorComponent._eventPrice = price;
-      this._eventEditorComponent.rerender();
     });
 
     this._eventEditorComponent.setDataStartHandler((evt) => {
@@ -132,16 +138,25 @@ export class PointController {
       const label = evt.target.value;
       this._eventEditorComponent._eventType = label;
       this._eventEditorComponent.rerender();
+      if (this._mode === Mode.ADDING) {
+        this._eventEditorComponent.setAddView();
+      }
     });
 
     this._eventEditorComponent.setCityHandler((evt) => {
       const city = evt.target.value;
       this._eventEditorComponent._eventCity = city;
       this._eventEditorComponent.rerender();
+      if (this._mode === Mode.ADDING) {
+        this._eventEditorComponent.setAddView();
+      }
     });
 
     this._eventEditorComponent.setDeleteButtonClickHandler((evt) => {
       evt.preventDefault();
+      this._eventEditorComponent.setData({
+        deleteButtonText: `Deleting...`,
+      });
       this._onDataChange(this, event, null);
     });
 
@@ -161,6 +176,7 @@ export class PointController {
           remove(oldEventEditCompontent);
         }
         this._onViewChange();
+        this._eventEditorComponent.setAddView();
         document.addEventListener(`keydown`, this._onEscKeyDowm);
         render(this._container, this._eventEditorComponent, RenderPosition.AFTEREND);
         break;
@@ -204,5 +220,20 @@ export class PointController {
       }
       this._hideMoreInfo();
     }
+  }
+
+  shake() {
+    this._eventEditorComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._eventComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._eventEditorComponent.getElement().style.animation = ``;
+      this._eventComponent.getElement().style.animation = ``;
+
+      this._eventEditorComponent.setData({
+        saveButtonText: `Save`,
+        deleteButtonText: `Delete`,
+      });
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }
