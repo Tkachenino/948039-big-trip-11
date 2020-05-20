@@ -1,0 +1,30 @@
+import Offer from "@/models/offer.js";
+
+
+const isOnline = () => {
+  return window.navigator.onLine;
+};
+
+
+export default class ProviderOffer {
+  constructor(api, store) {
+    this._api = api;
+    this._store = store;
+  }
+  getOffers() {
+    if (isOnline()) {
+      return this._api.getOffers()
+        .then((offers) => {
+          const items = offers;
+
+          this._store.setItem(0, items);
+
+          return offers;
+        });
+    }
+
+    const storeOffers = Object.values(this._store.getItems());
+
+    return Promise.resolve(Offer.parseOffers(storeOffers));
+  }
+}
