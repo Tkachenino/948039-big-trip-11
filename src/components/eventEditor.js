@@ -202,14 +202,21 @@ export class EventEditor extends SmartComponent {
     this._eventStartData = event.startDate;
     this._eventEndData = event.finishDate;
 
-    this._flatpickr = null;
+    this._flatpickrStart = null;
+    this._flatpickrEnd = null;
+
     this._applyFlatpickr();
   }
 
   removeElement() {
-    if (this._flatpickr) {
-      this._flatpickr.destroy();
-      this._flatpickr = null;
+    if (this._flatpickrStart) {
+      this._flatpickrStart.destroy();
+      this._flatpickrStart = null;
+    }
+
+    if (this._flatpickrEnd) {
+      this._flatpickrEnd.destroy();
+      this._flatpickrEnd = null;
     }
 
     super.removeElement();
@@ -326,22 +333,30 @@ export class EventEditor extends SmartComponent {
   }
 
   _applyFlatpickr() {
-    if (this._flatpickr) {
-      this._flatpickr.destroy();
-      this._flatpickr = null;
+    if (this._flatpickrStart) {
+      this._flatpickrStart.destroy();
+      this._flatpickrStart = null;
+    }
+
+    if (this._flatpickrEnd) {
+      this._flatpickrEnd.destroy();
+      this._flatpickrEnd = null;
     }
 
     const dateStartElement = this.getElement().querySelector(`input[name=event-start-time]`);
-    this._flatpickr = flatpickr(dateStartElement, {
+    this._flatpickrStart = flatpickr(dateStartElement, {
       altInput: true,
       enableTime: true,
       allowInput: true,
       altFormat: `d/m/y H:i`,
       defaultDate: this._eventStartData,
+      onChange: (selectedDates, dateStr) => {
+        this._flatpickrEnd.set(`minDate`, dateStr);
+      },
     });
 
     const dateEndElement = this.getElement().querySelector(`input[name=event-end-time]`);
-    this._flatpickr = flatpickr(dateEndElement, {
+    this._flatpickrEnd = flatpickr(dateEndElement, {
       altInput: true,
       enableTime: true,
       allowInput: true,
