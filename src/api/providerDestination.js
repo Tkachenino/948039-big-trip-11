@@ -24,7 +24,8 @@ export default class ProviderDestination {
     }
 
     const storeDestination = Object.values(this._store.getItems());
+    storeDestination[0].forEach((i) => Object.assign({}, i));
 
-    return Promise.resolve(Destination.parseDestinations(storeDestination));
+    return Promise.resolve(Destination.parseDestinations(storeDestination[0]));
   }
 }
