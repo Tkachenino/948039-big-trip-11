@@ -320,6 +320,10 @@ export class EventEditor extends SmartComponent {
       input.value = ``;
     };
 
+    input.onkeypress = () => {
+      return false;
+    };
+
 
     if (CityList.find((it) => it === input.value)) {
       input.setCustomValidity(``);
