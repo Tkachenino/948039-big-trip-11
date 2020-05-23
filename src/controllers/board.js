@@ -92,6 +92,39 @@ export default class TripController {
     this._showedEventControllers = this._showedEventControllers.concat(newEvent);
   }
 
+  createEvent() {
+    if (this._creatingEvent) {
+      return;
+    }
+
+    const events = this._pointsModel.getPoints();
+    const IsHasEvent = (events.length === 0);
+
+    if (IsHasEvent) {
+      remove(this._noEventComponent);
+      render(this._container, this._sortComponent, RenderPosition.BEFOREEND);
+      render(this._container, this._dayListComponent, RenderPosition.BEFOREEND);
+    } else {
+      this._pointsModel.setFilter(FilterType.EVERYTHING);
+      document.querySelector(`#filter-everything`).checked = true;
+      this._onFilterChange();
+    }
+
+    const eventListElement = document.querySelector(`.trip-events__trip-sort`);
+    this._creatingEvent = new PointController(eventListElement, this._onViewChange, this._onDataChange);
+    this._creatingEvent.render(EmptyEvent, EventControllerMode.ADDING, this._offersModel.getOffers(), this._destinationModel.getDestinations());
+    this._showedEventControllers = [].concat(this._creatingEvent, this._showedEventControllers);
+    this._creatingEvent = null;
+  }
+
+  hideBlock() {
+    this._container.classList.add(`visually-hidden`);
+  }
+
+  showBlock() {
+    this._container.classList.remove(`visually-hidden`);
+  }
+
   _onSortTypeChange(sortType) {
     const events = this._pointsModel.getPoints();
     const offers = this._offersModel.getOffers();
@@ -128,41 +161,8 @@ export default class TripController {
     this._showedEventControllers = this._showedEventControllers.concat(showingControllers);
   }
 
-  createEvent() {
-    if (this._creatingEvent) {
-      return;
-    }
-
-    const events = this._pointsModel.getPoints();
-
-    const IsHasEvent = (events.length === 0);
-
-    if (IsHasEvent) {
-      remove(this._noEventComponent);
-      render(this._container, this._sortComponent, RenderPosition.BEFOREEND);
-      render(this._container, this._dayListComponent, RenderPosition.BEFOREEND);
-
-      const eventListElement = document.querySelector(`.trip-events__trip-sort`);
-      this._creatingEvent = new PointController(eventListElement, this._onViewChange, this._onDataChange);
-      this._creatingEvent.render(EmptyEvent, EventControllerMode.ADDING, this._offersModel.getOffers(), this._destinationModel.getDestinations());
-      this._showedEventControllers = [].concat(this._creatingEvent, this._showedEventControllers);
-      this._creatingEvent = null;
-      return;
-    }
-
-    this._pointsModel.setFilter(FilterType.EVERYTHING);
-    document.querySelector(`#filter-everything`).checked = true;
-    this._onFilterChange();
-    const eventListElement = document.querySelector(`.trip-events__trip-sort`);
-    this._creatingEvent = new PointController(eventListElement, this._onViewChange, this._onDataChange);
-    this._creatingEvent.render(EmptyEvent, EventControllerMode.ADDING, this._offersModel.getOffers(), this._destinationModel.getDestinations());
-    this._showedEventControllers = [].concat(this._creatingEvent, this._showedEventControllers);
-    this._creatingEvent = null;
-  }
-
   _removeEvents() {
     const dayList = this._dayListComponent.getElement();
-
     const dayPoint = dayList.querySelectorAll(`.trip-days__item`);
     dayPoint.forEach((day) => day.remove());
     this._showedEventControllers.forEach((eventController) => eventController.destroy());
@@ -171,10 +171,9 @@ export default class TripController {
 
   _updateEvents() {
     const dayList = this._dayListComponent.getElement();
-
     const events = this._pointsModel.getPoints();
-
     const IsHasEvent = (events.length === 0);
+
     if (IsHasEvent) {
       remove(this._sortComponent);
       remove(this._dayListComponent);
@@ -185,7 +184,6 @@ export default class TripController {
     this._removeEvents();
     const newEvent = renderByGroup(dayList, this._pointsModel.getPoints(), this._offersModel.getOffers(), this._destinationModel.getDestinations(), this._onViewChange, this._onDataChange);
     this._showedEventControllers = this._showedEventControllers.concat(newEvent);
-
   }
 
   _onDataChange(eventController, oldData, newData) {
@@ -239,13 +237,5 @@ export default class TripController {
 
   _onViewChange() {
     this._showedEventControllers.forEach((controller) => controller.setDefaultView());
-  }
-
-  hideBlock() {
-    this._container.classList.add(`visually-hidden`);
-  }
-
-  showBlock() {
-    this._container.classList.remove(`visually-hidden`);
   }
 }

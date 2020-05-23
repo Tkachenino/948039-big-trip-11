@@ -201,29 +201,6 @@ export default class PointController {
     document.removeEventListener(`keydown`, this._onEscKeyDowm);
   }
 
-  _showMoreInfo() {
-    this._onViewChange();
-    replace(this._eventEditorComponent, this._eventComponent);
-    this._mode = Mode.EDIT;
-  }
-
-  _hideMoreInfo() {
-    this._eventEditorComponent.reset();
-    replace(this._eventComponent, this._eventEditorComponent);
-    this._mode = Mode.DEFAULT;
-  }
-
-  _onEscKeyDowm(evt) {
-    if (evt.key === `Escape`) {
-      if (this._mode === Mode.ADDING) {
-        this._onDataChange(this, EmptyEvent, null);
-      }
-
-      this._hideMoreInfo();
-      document.removeEventListener(`keydown`, this._onEscKeyDowm);
-    }
-  }
-
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
       if (this._mode === Mode.ADDING) {
@@ -251,5 +228,28 @@ export default class PointController {
       this._eventEditorComponent.getElement().classList.add(`red-shadow`);
 
     }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  _showMoreInfo() {
+    this._onViewChange();
+    replace(this._eventEditorComponent, this._eventComponent);
+    this._mode = Mode.EDIT;
+  }
+
+  _hideMoreInfo() {
+    this._eventEditorComponent.reset();
+    replace(this._eventComponent, this._eventEditorComponent);
+    this._mode = Mode.DEFAULT;
+  }
+
+  _onEscKeyDowm(evt) {
+    if (evt.key === `Escape`) {
+      if (this._mode === Mode.ADDING) {
+        this._onDataChange(this, EmptyEvent, null);
+      }
+
+      this._hideMoreInfo();
+      document.removeEventListener(`keydown`, this._onEscKeyDowm);
+    }
   }
 }

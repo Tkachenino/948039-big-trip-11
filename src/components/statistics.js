@@ -81,7 +81,6 @@ const renderMoneyChart = (moneyCtx, events) => {
       }
     }
   });
-
 };
 
 const renderTransportChart = (transportCtx, events) => {
@@ -243,9 +242,7 @@ const renderTimeSpendChart = (timeSpendCtx, events) => {
       }
     }
   });
-
 };
-
 
 export default class Statistic extends AbstractSmartComponent {
   constructor(pointsModel) {
