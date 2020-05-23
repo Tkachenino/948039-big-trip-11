@@ -101,6 +101,7 @@ export class PointController {
 
     this._eventEditorComponent.setSubmitFormHandler((evt) => {
       evt.preventDefault();
+      this._eventEditorComponent.getElement().classList.remove(`red-shadow`);
       const formData = this._eventEditorComponent.getData();
       const data = parseFormData(formData, offers, destinations);
       this._eventEditorComponent.setData({
@@ -117,6 +118,15 @@ export class PointController {
 
     this._eventEditorComponent.setFavoriteHandler(() => {
       event.favoriteFlag = !event.favoriteFlag;
+      this._eventEditorComponent.rerender();
+
+      const formData = this._eventEditorComponent.getData();
+      const data = parseFormData(formData, offers, destinations);
+      this._eventEditorComponent.setData({
+        saveButtonText: `Saving...`,
+      });
+      this._onDataChange(this, event, data);
+      document.removeEventListener(`keydown`, this._onEscKeyDowm);
     });
 
     this._eventEditorComponent.setPriceHandler((evt) => {
@@ -234,7 +244,8 @@ export class PointController {
         saveButtonText: `Save`,
         deleteButtonText: `Delete`,
       });
+      this._eventEditorComponent.getElement().classList.add(`red-shadow`);
+
     }, SHAKE_ANIMATION_TIMEOUT);
   }
-
 }
