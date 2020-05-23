@@ -205,7 +205,6 @@ export class TripController {
           })
           .catch(() => {
             eventController.shake();
-            eventController.showRedMessage();
           });
       }
     } else if (newData === null) {
@@ -216,7 +215,6 @@ export class TripController {
         })
         .catch(() => {
           eventController.shake();
-          eventController.showRedMessage();
         });
     } else {
       this._api.updatePoint(oldData.id, newData)

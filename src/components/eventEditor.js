@@ -249,6 +249,9 @@ export class EventEditor extends SmartComponent {
   setData(data) {
     this._externalData = Object.assign({}, DefaultData, data);
     this.rerender();
+
+
+    this.setDisabledForm();
   }
 
   setSubmitFormHandler(handler) {
@@ -393,5 +396,37 @@ export class EventEditor extends SmartComponent {
     this.getElement().querySelector(`.event__favorite-btn`).classList.add(`visually-hidden`);
     this.getElement().querySelector(`.event__rollup-btn`).remove();
     this.getElement().querySelector(`.event__reset-btn`).innerHTML = `Cansel`;
+  }
+
+  setDisabledForm() {
+    this.getElement().querySelector(`.event__save-btn`).disabled = true;
+    this.getElement().querySelector(`.event__reset-btn`).disabled = true;
+    this.getElement().querySelector(`.event__type-toggle`).disabled = true;
+    this.getElement().querySelector(`.event__input`).disabled = true;
+    this.getElement().querySelectorAll(`.event__input--time.form-control`).forEach((it) => {
+      it.disabled = true;
+    });
+    this.getElement().querySelectorAll(`.event__offer-checkbox`).forEach((it) => {
+      it.disabled = true;
+    });
+    this.getElement().querySelector(`.event__input--price`).disabled = true;
+    this.getElement().querySelector(`.event__favorite-checkbox`).disabled = true;
+    this.getElement().querySelector(`.event__rollup-btn`).disabled = true;
+  }
+
+  setUnlockForm() {
+    this.getElement().querySelector(`.event__save-btn`).disabled = false;
+    this.getElement().querySelector(`.event__reset-btn`).disabled = false;
+    this.getElement().querySelector(`.event__type-toggle`).disabled = false;
+    this.getElement().querySelector(`.event__input`).disabled = false;
+    this.getElement().querySelectorAll(`.event__input--time.form-control`).forEach((it) => {
+      it.disabled = false;
+    });
+    this.getElement().querySelectorAll(`.event__offer-checkbox`).forEach((it) => {
+      it.disabled = false;
+    });
+    this.getElement().querySelector(`.event__input--price`).disabled = false;
+    this.getElement().querySelector(`.event__favorite-checkbox`).disabled = false;
+    this.getElement().querySelector(`.event__rollup-btn`).disabled = false;
   }
 }

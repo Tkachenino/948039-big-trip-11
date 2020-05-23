@@ -104,6 +104,7 @@ export class PointController {
       this._eventEditorComponent.getElement().classList.remove(`red-shadow`);
       const formData = this._eventEditorComponent.getData();
       const data = parseFormData(formData, offers, destinations);
+
       this._eventEditorComponent.setData({
         saveButtonText: `Saving...`,
       });
@@ -122,6 +123,7 @@ export class PointController {
 
       const formData = this._eventEditorComponent.getData();
       const data = parseFormData(formData, offers, destinations);
+
       this._eventEditorComponent.setData({
         saveButtonText: `Saving...`,
       });
@@ -244,6 +246,8 @@ export class PointController {
         saveButtonText: `Save`,
         deleteButtonText: `Delete`,
       });
+      this._eventEditorComponent.setUnlockForm();
+      document.addEventListener(`keydown`, this._onEscKeyDowm);
       this._eventEditorComponent.getElement().classList.add(`red-shadow`);
 
     }, SHAKE_ANIMATION_TIMEOUT);
