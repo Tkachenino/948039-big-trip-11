@@ -1,5 +1,5 @@
 import {AbstractSmartComponent as SmartComponent} from "@/components/abstractSmartComponent.js";
-import {EventTransferList, EventActivityList, CityList} from "@/const.js";
+import {EventTransferList, EventActivityList} from "@/const.js";
 import {NameMap} from "@/const.js";
 
 import flatpickr from "flatpickr";
@@ -69,6 +69,7 @@ export const createFormEditorTemplate = (data, offersW, distantionsW, option = {
   const {eventType, eventCity, eventPrice, externalData} = option;
 
   const isDescription = (eventCity === ``) ? true : false;
+  const CityList = distantionsW.map((it) => it.name);
 
   const indexCIty = !isDescription ? distantionsW.findIndex((it) => it.name === eventCity) : null;
   const descriptionS = !isDescription ? distantionsW[indexCIty].description : ``;
@@ -118,7 +119,7 @@ export const createFormEditorTemplate = (data, offersW, distantionsW, option = {
           <label class="event__label  event__type-output" for="event-destination-1">
           ${getUpperLetter(eventType)}  ${isMoveCheck}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${eventCity ? eventCity : ``}" list="destination-list-1" required>
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${eventCity}" list="destination-list-1" required>
           <datalist id="destination-list-1">
             ${getCityList(CityList)}
           </datalist>
@@ -324,8 +325,7 @@ export class EventEditor extends SmartComponent {
       return false;
     };
 
-
-    if (CityList.find((it) => it === input.value)) {
+    if (this._distantions.map((it) => it.name).find((it) => it === input.value)) {
       input.setCustomValidity(``);
     } else {
       input.setCustomValidity(`Выберите город из списка предложенных`);

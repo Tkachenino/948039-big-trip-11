@@ -19,7 +19,7 @@ import OffersModel from "@/models/offers.js";
 import DestinationModel from "@/models/destinations.js";
 
 
-const AUTHORIZATION = `Basic fdsOQml21Ck16zo2`;
+const AUTHORIZATION = `Basic fdsOQml24Ck16zo2`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 const STORE_PREFIX = `bigtrip-localstorage`;
 const STORE_PREFIX_OFFER = `offer-localstorage`;
