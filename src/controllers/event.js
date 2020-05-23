@@ -1,5 +1,5 @@
-import {Event as EventComponent} from "@/components/event.js";
-import {EventEditor as EventEditorComponent} from "@/components/eventEditor.js";
+import EventComponent from "@/components/event.js";
+import EventEditorComponent from "@/components/eventEditor.js";
 import {render, replace, remove, RenderPosition} from "@/utils/render.js";
 import {NameMap} from "@/const.js";
 import Point from "@/models/point.js";
@@ -27,9 +27,9 @@ export const EmptyEvent = {
 
 const parseFormData = (formData, OFFERS, DISTANTIONS) => {
   const getNamesCheckedOffers = () => {
-    let offers = [];
+    const offers = [];
     const subStrLength = `event-offer-`.length;
-    for (let pairKeyValue of formData.entries()) {
+    for (const pairKeyValue of formData.entries()) {
       if (pairKeyValue[0].indexOf(`event-offer-`) !== -1) {
         offers.push(pairKeyValue[0].substring(subStrLength));
       }
@@ -47,8 +47,8 @@ const parseFormData = (formData, OFFERS, DISTANTIONS) => {
     const entriesMap = Object.entries(NameMap);
 
     checkedOffersNames.forEach((checkedOfferName) => {
-      let currectItem = entriesMap.find((it) => it[1] === checkedOfferName);
-      for (let offer of currentOffersGroup.offers) {
+      const currectItem = entriesMap.find((it) => it[1] === checkedOfferName);
+      for (const offer of currentOffersGroup.offers) {
         if (currectItem[0] === offer.title) {
 
           checkedOffers.push(offer);
@@ -73,7 +73,7 @@ const parseFormData = (formData, OFFERS, DISTANTIONS) => {
   });
 };
 
-export class PointController {
+export default class PointController {
   constructor(container, onViewChange, onDataChange) {
     this._container = container;
     this._onViewChange = onViewChange;

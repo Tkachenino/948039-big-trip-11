@@ -1,4 +1,4 @@
-import {AbstractComponent as Component} from "@/components/abstractComponent.js";
+import Component from "@/components/abstractComponent.js";
 
 export const SortType = {
   EVENT: `event`,
@@ -41,7 +41,7 @@ const createPointsSortElementTemplate = () => {
   );
 };
 
-export class Sort extends Component {
+export default class Sort extends Component {
   constructor() {
     super();
 

@@ -1,5 +1,5 @@
 import {formatTime, formatDateTime, getDiffTime} from "@/utils/common.js";
-import {AbstractComponent as Component} from "@/components/abstractComponent.js";
+import Component from "@/components/abstractComponent.js";
 
 
 const getOfferList = (offer) => {
@@ -16,7 +16,7 @@ const getOfferList = (offer) => {
   }).slice(0, 3).join(`\n`);
 };
 
-export const createPointEventTeplate = (trip) => {
+const createPointEventTeplate = (trip) => {
   const {offer, event, destination, ownPrice, startDate, finishDate} = trip;
   const city = destination.name;
   const startTime = formatTime(startDate);
@@ -64,7 +64,7 @@ export const createPointEventTeplate = (trip) => {
   );
 };
 
-export class Event extends Component {
+export default class Event extends Component {
   constructor(event) {
     super();
     this._event = event;

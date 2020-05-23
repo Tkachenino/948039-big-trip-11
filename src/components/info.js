@@ -1,5 +1,5 @@
 import {formatMonth, formatDay, getGroupList} from "@/utils/common.js";
-import {AbstractComponent as Component} from "@/components/abstractComponent.js";
+import Component from "@/components/abstractComponent.js";
 
 const getCityList = (city, data) => {
   if (city.length <= 3) {
@@ -35,7 +35,7 @@ const createTripInfoTemplate = (data) => {
   );
 };
 
-export class Info extends Component {
+export default class Info extends Component {
   constructor(pointsModel) {
     super();
     this._pointsModel = pointsModel;

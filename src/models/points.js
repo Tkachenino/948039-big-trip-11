@@ -1,7 +1,7 @@
 import {FilterType} from "@/const.js";
 import {getEventsByFilter} from "@/utils/filter.js";
 
-export class Points {
+export default class Points {
   constructor() {
     this._events = [];
     this._activeFilterType = FilterType.EVERYTHING;

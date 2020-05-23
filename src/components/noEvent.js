@@ -1,4 +1,4 @@
-import {AbstractComponent as Component} from "@/components/abstractComponent.js";
+import Component from "@/components/abstractComponent.js";
 
 const createNoEventTemplate = () => {
   return (
@@ -6,7 +6,7 @@ const createNoEventTemplate = () => {
   );
 };
 
-export class NoEvent extends Component {
+export default class NoEvent extends Component {
   getTemplate() {
     return createNoEventTemplate();
   }

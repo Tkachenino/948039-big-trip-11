@@ -1,4 +1,4 @@
-import {AbstractSmartComponent as SmartComponent} from "@/components/abstractSmartComponent.js";
+import SmartComponent from "@/components/abstractSmartComponent.js";
 import {EventTransferList, EventActivityList} from "@/const.js";
 import {NameMap} from "@/const.js";
 
@@ -64,7 +64,7 @@ const getPhotoList = (data) => {
   }).join(`\n`);
 };
 
-export const createFormEditorTemplate = (data, offersW, distantionsW, option = {}) => {
+const createFormEditorTemplate = (data, offersW, distantionsW, option = {}) => {
   const {offer, favoriteFlag} = data;
   const {eventType, eventCity, eventPrice, externalData} = option;
 
@@ -185,7 +185,7 @@ export const createFormEditorTemplate = (data, offersW, distantionsW, option = {
   );
 };
 
-export class EventEditor extends SmartComponent {
+export default class EventEditor extends SmartComponent {
   constructor(event, offers, distantions) {
     super();
 

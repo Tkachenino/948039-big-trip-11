@@ -1,13 +1,13 @@
-import {Menu as MenuComponent, MenuItem} from "@/components/menu.js";
-import {InfoWrapper as InfoWrapperComponent} from "@/components/infoWrapper.js";
+import MenuComponent, {MenuItem} from "@/components/menu.js";
+import InfoWrapperComponent from "@/components/infoWrapper.js";
 import {render, remove, RenderPosition} from "@/utils/render.js";
-import {TripController} from "@/controllers/board.js";
-import {FilterController} from "@/controllers/filter.js";
-import {CostController} from "@/controllers/cost.js";
-import {InfoController} from "@/controllers/info.js";
-import {Points as PointsModel} from "@/models/points.js";
-import {LoadMessage as LoadMessageComponent} from "@/components/loadMessage.js";
-import {Statistic as StatisticComponent} from "@/components/statistics.js";
+import TripController from "@/controllers/board.js";
+import FilterController from "@/controllers/filter.js";
+import CostController from "@/controllers/cost.js";
+import InfoController from "@/controllers/info.js";
+import PointsModel from "@/models/points.js";
+import LoadMessageComponent from "@/components/loadMessage.js";
+import StatisticComponent from "@/components/statistics.js";
 import API from "@/api/index.js";
 import Provider from "@/api/provider.js";
 

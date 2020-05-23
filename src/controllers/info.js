@@ -1,7 +1,7 @@
-import {Info as InfoComponent} from "@/components/info.js";
+import InfoComponent from "@/components/info.js";
 import {render, replace, RenderPosition} from "@/utils/render.js";
 
-export class InfoController {
+export default class InfoController {
   constructor(container, pointsModel) {
     this._container = container;
     this._pointsModel = pointsModel;

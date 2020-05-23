@@ -1,4 +1,4 @@
-import {AbstractComponent as Component} from "@/components/abstractComponent.js";
+import Component from "@/components/abstractComponent.js";
 import {FilterType} from "@/const.js";
 
 const createFilter = (filtersList) => {
@@ -13,7 +13,7 @@ const createFilter = (filtersList) => {
   }).join(`\n`);
 };
 
-export const createMenuFilterTemplate = () => {
+const createMenuFilterTemplate = () => {
   return (
     `<form class="trip-filters" action="#" method="get">
     ${createFilter(FilterType)}
@@ -22,7 +22,7 @@ export const createMenuFilterTemplate = () => {
   );
 };
 
-export class Filter extends Component {
+export default class Filter extends Component {
   getTemplate() {
     return createMenuFilterTemplate();
   }

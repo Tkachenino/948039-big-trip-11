@@ -1,6 +1,6 @@
-import {AbstractComponent as Component} from "@/components/abstractComponent.js";
+import Component from "@/components/abstractComponent.js";
 
-export const createTripCostTemplate = (date) => {
+const createTripCostTemplate = (date) => {
   const totalCost = date.reduce((accum, item) => {
     let totalOfferCost = 0;
 
@@ -18,7 +18,7 @@ export const createTripCostTemplate = (date) => {
   );
 };
 
-export class Cost extends Component {
+export default class Cost extends Component {
   constructor(pointsModel) {
     super();
     this._pointsModel = pointsModel;

@@ -1,5 +1,5 @@
 import {EventTransferList} from "@/const.js";
-import {AbstractSmartComponent} from "@/components/abstractSmartComponent.js";
+import AbstractSmartComponent from "@/components/abstractSmartComponent.js";
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import moment from "moment";
@@ -247,7 +247,7 @@ const renderTimeSpendChart = (timeSpendCtx, events) => {
 };
 
 
-export class Statistic extends AbstractSmartComponent {
+export default class Statistic extends AbstractSmartComponent {
   constructor(pointsModel) {
     super();
     this._pointsModel = pointsModel;

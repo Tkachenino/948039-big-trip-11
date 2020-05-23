@@ -1,4 +1,4 @@
-import {AbstractComponent as Component} from "@/components/abstractComponent.js";
+import Component from "@/components/abstractComponent.js";
 
 export const MenuItem = {
   NEW_EVENT: `control__new-event`,
@@ -6,7 +6,7 @@ export const MenuItem = {
   EVENTS: `control__events`,
 };
 
-export const createMenuBarTemplate = () => {
+const createMenuBarTemplate = () => {
   return (
     `<nav class="trip-controls__trip-tabs  trip-tabs">
     <a class="trip-tabs__btn  trip-tabs__btn--active" href="#" id="control__events">Table</a>
@@ -15,7 +15,7 @@ export const createMenuBarTemplate = () => {
   );
 };
 
-export class Menu extends Component {
+export default class Menu extends Component {
   getTemplate() {
     return createMenuBarTemplate();
   }

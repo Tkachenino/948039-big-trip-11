@@ -1,7 +1,7 @@
-import {AbstractComponent as Component} from "@/components/abstractComponent.js";
+import Component from "@/components/abstractComponent.js";
 import {formatMonthDay, formatDateTime} from "@/utils/common.js";
 
-export const createDayPointTemplate = (counter, date) => {
+const createDayPointTemplate = (counter, date) => {
   if (counter === undefined && date === undefined) {
     return (
       `<li class="trip-days__item  day">
@@ -23,7 +23,7 @@ export const createDayPointTemplate = (counter, date) => {
   );
 };
 
-export class DayCounter extends Component {
+export default class DayCounter extends Component {
   constructor(counter, event) {
     super();
     this._counter = counter;

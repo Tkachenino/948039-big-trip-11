@@ -1,12 +1,12 @@
-import {AbstractComponent as Component} from "@/components/abstractComponent.js";
+import Component from "@/components/abstractComponent.js";
 
-export const createDayListTemplate = () => {
+const createDayListTemplate = () => {
   return (
     `<ul class="trip-days"></ul>`
   );
 };
 
-export class DayList extends Component {
+export default class DayList extends Component {
   getTemplate() {
     return createDayListTemplate();
   }

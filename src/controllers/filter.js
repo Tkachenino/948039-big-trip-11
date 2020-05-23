@@ -1,8 +1,8 @@
-import {Filter as FilterComponent} from "@/components/filter.js";
+import FilterComponent from "@/components/filter.js";
 import {render, RenderPosition} from "@/utils/render.js";
 import {FilterType} from "@/const.js";
 
-export class FilterController {
+export default class FilterController {
   constructor(container, pointsModel) {
     this._container = container;
     this._pointsModel = pointsModel;

@@ -1,4 +1,4 @@
-import {AbstractComponent as Component} from "@/components/abstractComponent.js";
+import Component from "@/components/abstractComponent.js";
 
 const createLoadingMessageTemplate = () => {
   return (
@@ -6,7 +6,7 @@ const createLoadingMessageTemplate = () => {
   );
 };
 
-export class LoadMessage extends Component {
+export default class LoadMessage extends Component {
   getTemplate() {
     return createLoadingMessageTemplate();
   }

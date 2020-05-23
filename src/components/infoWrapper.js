@@ -1,4 +1,4 @@
-import {AbstractComponent as Component} from "@/components/abstractComponent.js";
+import Component from "@/components/abstractComponent.js";
 
 const createInfoWrapperTemplate = () => {
   return (
@@ -6,7 +6,7 @@ const createInfoWrapperTemplate = () => {
   );
 };
 
-export class InfoWrapper extends Component {
+export default class InfoWrapper extends Component {
   getTemplate() {
     return createInfoWrapperTemplate();
   }

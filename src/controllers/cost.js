@@ -1,7 +1,7 @@
-import {Cost as CostComponent} from "@/components/cost.js";
+import CostComponent from "@/components/cost.js";
 import {render, replace, RenderPosition} from "@/utils/render.js";
 
-export class CostController {
+export default class CostController {
   constructor(container, pointsModel) {
     this._container = container;
     this._pointsModel = pointsModel;

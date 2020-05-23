@@ -1,9 +1,9 @@
-import {NoEvent as NoEventComponent} from "@/components/noEvent.js";
-import {Sort as SortComponent, SortType} from "@/components/sort.js";
-import {DayList as DayListComponent} from "@/components/dayList.js";
-import {EventList as EventListComponent} from "@/components/eventList.js";
-import {DayCounter as DayCounterComponent} from "@/components/dayCounter.js";
-import {PointController, EmptyEvent, Mode as EventControllerMode} from "@/controllers/event.js";
+import NoEventComponent from "@/components/noEvent.js";
+import SortComponent, {SortType} from "@/components/sort.js";
+import DayListComponent from "@/components/dayList.js";
+import EventListComponent from "@/components/eventList.js";
+import DayCounterComponent from "@/components/dayCounter.js";
+import PointController, {EmptyEvent, Mode as EventControllerMode} from "@/controllers/event.js";
 import {getGroupList} from "@/utils/common.js";
 import {FilterType} from "@/const.js";
 
@@ -44,7 +44,7 @@ const getSortedEvent = (sortType, events) => {
   return sortedEvents;
 };
 
-export class TripController {
+export default class TripController {
   constructor(container, pointsModel, offersModel, destinationModel, api) {
     this._container = container;
     this._pointsModel = pointsModel;
