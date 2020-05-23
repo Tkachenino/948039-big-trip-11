@@ -1,5 +1,5 @@
 import {AbstractSmartComponent as SmartComponent} from "@/components/abstractSmartComponent.js";
-import {EventTransferList, EventActivityList, CityList} from "@/const.js";
+import {EventTransferList, EventActivityList} from "@/const.js";
 import {NameMap} from "@/const.js";
 
 import flatpickr from "flatpickr";
@@ -69,6 +69,7 @@ export const createFormEditorTemplate = (data, offersW, distantionsW, option = {
   const {eventType, eventCity, eventPrice, externalData} = option;
 
   const isDescription = (eventCity === ``) ? true : false;
+  const CityList = distantionsW.map((it) => it.name);
 
   const indexCIty = !isDescription ? distantionsW.findIndex((it) => it.name === eventCity) : null;
   const descriptionS = !isDescription ? distantionsW[indexCIty].description : ``;
@@ -118,7 +119,7 @@ export const createFormEditorTemplate = (data, offersW, distantionsW, option = {
           <label class="event__label  event__type-output" for="event-destination-1">
           ${getUpperLetter(eventType)}  ${isMoveCheck}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${eventCity}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${eventCity}" list="destination-list-1" required>
           <datalist id="destination-list-1">
             ${getCityList(CityList)}
           </datalist>
@@ -141,7 +142,7 @@ export const createFormEditorTemplate = (data, offersW, distantionsW, option = {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${eventPrice}" pattern="^[ 0-9]+$">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${eventPrice}" title="Введите целое число" pattern="^[ 0-9]+$">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">${saveButtonText}</button>
@@ -202,14 +203,21 @@ export class EventEditor extends SmartComponent {
     this._eventStartData = event.startDate;
     this._eventEndData = event.finishDate;
 
-    this._flatpickr = null;
+    this._flatpickrStart = null;
+    this._flatpickrEnd = null;
+
     this._applyFlatpickr();
   }
 
   removeElement() {
-    if (this._flatpickr) {
-      this._flatpickr.destroy();
-      this._flatpickr = null;
+    if (this._flatpickrStart) {
+      this._flatpickrStart.destroy();
+      this._flatpickrStart = null;
+    }
+
+    if (this._flatpickrEnd) {
+      this._flatpickrEnd.destroy();
+      this._flatpickrEnd = null;
     }
 
     super.removeElement();
@@ -241,6 +249,9 @@ export class EventEditor extends SmartComponent {
   setData(data) {
     this._externalData = Object.assign({}, DefaultData, data);
     this.rerender();
+
+
+    this.setDisabledForm();
   }
 
   setSubmitFormHandler(handler) {
@@ -307,41 +318,55 @@ export class EventEditor extends SmartComponent {
   }
 
   setCityHandler(handler) {
-    this.getElement()
-    .querySelector(`.event__field-group`)
-    .addEventListener(`change`, handler);
-
     const input = this.getElement().querySelector(`.event__input--destination`);
 
     input.onclick = () => {
       input.value = ``;
     };
 
-    if (CityList.find((it) => it === input.value)) {
+    input.onkeypress = () => {
+      return false;
+    };
+
+    if (this._distantions.map((it) => it.name).find((it) => it === input.value)) {
       input.setCustomValidity(``);
     } else {
       input.setCustomValidity(`Выберите город из списка предложенных`);
     }
+
+    this.getElement()
+    .querySelector(`.event__field-group`)
+    .addEventListener(`change`, handler);
+
+
     this._typeCityHandler = handler;
   }
 
   _applyFlatpickr() {
-    if (this._flatpickr) {
-      this._flatpickr.destroy();
-      this._flatpickr = null;
+    if (this._flatpickrStart) {
+      this._flatpickrStart.destroy();
+      this._flatpickrStart = null;
+    }
+
+    if (this._flatpickrEnd) {
+      this._flatpickrEnd.destroy();
+      this._flatpickrEnd = null;
     }
 
     const dateStartElement = this.getElement().querySelector(`input[name=event-start-time]`);
-    this._flatpickr = flatpickr(dateStartElement, {
+    this._flatpickrStart = flatpickr(dateStartElement, {
       altInput: true,
       enableTime: true,
       allowInput: true,
       altFormat: `d/m/y H:i`,
       defaultDate: this._eventStartData,
+      onChange: (selectedDates, dateStr) => {
+        this._flatpickrEnd.set(`minDate`, dateStr);
+      },
     });
 
     const dateEndElement = this.getElement().querySelector(`input[name=event-end-time]`);
-    this._flatpickr = flatpickr(dateEndElement, {
+    this._flatpickrEnd = flatpickr(dateEndElement, {
       altInput: true,
       enableTime: true,
       allowInput: true,
@@ -371,5 +396,37 @@ export class EventEditor extends SmartComponent {
     this.getElement().querySelector(`.event__favorite-btn`).classList.add(`visually-hidden`);
     this.getElement().querySelector(`.event__rollup-btn`).remove();
     this.getElement().querySelector(`.event__reset-btn`).innerHTML = `Cansel`;
+  }
+
+  setDisabledForm() {
+    this.getElement().querySelector(`.event__save-btn`).disabled = true;
+    this.getElement().querySelector(`.event__reset-btn`).disabled = true;
+    this.getElement().querySelector(`.event__type-toggle`).disabled = true;
+    this.getElement().querySelector(`.event__input`).disabled = true;
+    this.getElement().querySelectorAll(`.event__input--time.form-control`).forEach((it) => {
+      it.disabled = true;
+    });
+    this.getElement().querySelectorAll(`.event__offer-checkbox`).forEach((it) => {
+      it.disabled = true;
+    });
+    this.getElement().querySelector(`.event__input--price`).disabled = true;
+    this.getElement().querySelector(`.event__favorite-checkbox`).disabled = true;
+    this.getElement().querySelector(`.event__rollup-btn`).disabled = true;
+  }
+
+  setUnlockForm() {
+    this.getElement().querySelector(`.event__save-btn`).disabled = false;
+    this.getElement().querySelector(`.event__reset-btn`).disabled = false;
+    this.getElement().querySelector(`.event__type-toggle`).disabled = false;
+    this.getElement().querySelector(`.event__input`).disabled = false;
+    this.getElement().querySelectorAll(`.event__input--time.form-control`).forEach((it) => {
+      it.disabled = false;
+    });
+    this.getElement().querySelectorAll(`.event__offer-checkbox`).forEach((it) => {
+      it.disabled = false;
+    });
+    this.getElement().querySelector(`.event__input--price`).disabled = false;
+    this.getElement().querySelector(`.event__favorite-checkbox`).disabled = false;
+    this.getElement().querySelector(`.event__rollup-btn`).disabled = false;
   }
 }
