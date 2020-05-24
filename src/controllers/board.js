@@ -1,24 +1,21 @@
-import NoEventComponent from "@/components/noEvent.js";
+import NoEventComponent from "@/components/no-event.js";
 import SortComponent, {SortType} from "@/components/sort.js";
-import DayListComponent from "@/components/dayList.js";
-import EventListComponent from "@/components/eventList.js";
-import DayCounterComponent from "@/components/dayCounter.js";
+import DayListComponent from "@/components/day-list.js";
+import EventListComponent from "@/components/event-list.js";
+import DayCounterComponent from "@/components/day-counter.js";
 import PointController, {EmptyEvent, Mode as EventControllerMode} from "@/controllers/event.js";
 import {getGroupList} from "@/utils/common.js";
 import {FilterType} from "@/const.js";
-
 import {render, remove, RenderPosition} from "@/utils/render.js";
 
 const renderByGroup = (container, events, offers, destinations, onViewChange, onDataChange) => {
   const groupEvent = getGroupList(events);
   const showingControllers = [];
+
   for (let i = 0; i < groupEvent.length; i++) {
     render(container, new DayCounterComponent(i, groupEvent[i]), RenderPosition.BEFOREEND);
-
     const dayPoint = container.querySelectorAll(`.trip-days__item`)[i];
-
     render(dayPoint, new EventListComponent(), RenderPosition.BEFOREEND);
-
     const eventList = container.querySelectorAll(`.trip-events__list`)[i];
 
     groupEvent[i].forEach((event) => {
@@ -33,6 +30,7 @@ const renderByGroup = (container, events, offers, destinations, onViewChange, on
 const getSortedEvent = (sortType, events) => {
   let sortedEvents = [];
   const showingEvents = events.slice();
+
   switch (sortType) {
     case SortType.TIME:
       sortedEvents = showingEvents.sort((a, b) => (a.startDate - a.finishDate) - (b.startDate - b.finishDate));
@@ -41,10 +39,11 @@ const getSortedEvent = (sortType, events) => {
       sortedEvents = showingEvents.sort((a, b) => b.ownPrice - a.ownPrice);
       break;
   }
+
   return sortedEvents;
 };
 
-export default class TripController {
+export default class BoardController {
   constructor(container, pointsModel, offersModel, destinationModel, api) {
     this._container = container;
     this._pointsModel = pointsModel;
@@ -132,12 +131,12 @@ export default class TripController {
 
     const dayList = this._dayListComponent.getElement();
 
-
     const showingControllers = [];
     this._showedEventControllers = [];
 
     this._sortElement.querySelector(`.trip-sort__item--day`).innerHTML = ``;
     dayList.innerHTML = ``;
+
     if (sortType === SortType.EVENT) {
       this._sortElement.querySelector(`.trip-sort__item--day`).innerHTML = `Day`;
       const newEvent = renderByGroup(dayList, events, offers, destinations, this._onViewChange, this._onDataChange);
@@ -145,26 +144,25 @@ export default class TripController {
     }
 
     const sortedEvents = getSortedEvent(sortType, events);
-
     render(dayList, new DayCounterComponent(), RenderPosition.BEFOREEND);
-
     const dayPoint = dayList.querySelector(`.trip-days__item`);
-
     render(dayPoint, new EventListComponent(), RenderPosition.BEFOREEND);
 
     const eventList = dayList.querySelector(`.trip-events__list`);
+
     sortedEvents.forEach((event) => {
       const pointController = new PointController(eventList, this._onViewChange, this._onDataChange);
       pointController.render(event, EventControllerMode.DEFAULT, offers, destinations);
       showingControllers.push(pointController);
     });
+
     this._showedEventControllers = this._showedEventControllers.concat(showingControllers);
   }
 
   _removeEvents() {
     const dayList = this._dayListComponent.getElement();
-    const dayPoint = dayList.querySelectorAll(`.trip-days__item`);
-    dayPoint.forEach((day) => day.remove());
+    const dayPoints = dayList.querySelectorAll(`.trip-days__item`);
+    dayPoints.forEach((day) => day.remove());
     this._showedEventControllers.forEach((eventController) => eventController.destroy());
     this._showedEventControllers = [];
   }

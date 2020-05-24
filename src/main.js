@@ -1,39 +1,44 @@
 import MenuComponent, {MenuItem} from "@/components/menu.js";
-import InfoWrapperComponent from "@/components/infoWrapper.js";
-import {render, remove, RenderPosition} from "@/utils/render.js";
+import InfoWrapperComponent from "@/components/info-wrapper.js";
+import LoadMessageComponent from "@/components/load-message.js";
+import StatisticComponent from "@/components/statistics.js";
+
 import TripController from "@/controllers/board.js";
 import FilterController from "@/controllers/filter.js";
 import CostController from "@/controllers/cost.js";
 import InfoController from "@/controllers/info.js";
-import PointsModel from "@/models/points.js";
-import LoadMessageComponent from "@/components/loadMessage.js";
-import StatisticComponent from "@/components/statistics.js";
+
+import {render, remove, RenderPosition} from "@/utils/render.js";
+
 import API from "@/api/index.js";
 import Provider from "@/api/provider.js";
-
-import ProviderOffer from "@/api/providerOffer.js";
-import ProviderDestination from "@/api/providerDestination.js";
-
+import ProviderOffer from "@/api/provider-offer.js";
+import ProviderDestination from "@/api/provider-destination.js";
 import Store from "@/api/store.js";
+
+import PointsModel from "@/models/points.js";
 import OffersModel from "@/models/offers.js";
 import DestinationModel from "@/models/destinations.js";
 
-
-const AUTHORIZATION = `Basic fdsOQm224Ck16zo2`;
+const AUTHORIZATION = `Basic fdsOQm324Ck16zo2`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
+
 const STORE_PREFIX = `bigtrip-localstorage`;
 const STORE_PREFIX_OFFER = `offer-localstorage`;
 const STORE_PREFIX_DESTINATION = `ofestination-localstorage`;
 
 const STORE_VER = `v1`;
+
 const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 const STORE_NAME_OFFER = `${STORE_PREFIX_OFFER}-${STORE_VER}`;
 const STORE_NAME_DESTINATION = `${STORE_PREFIX_DESTINATION}-${STORE_VER}`;
 
 const api = new API(END_POINT, AUTHORIZATION);
+
 const storeOffer = new Store(STORE_NAME_OFFER, window.localStorage);
 const storeDestination = new Store(STORE_NAME_DESTINATION, window.localStorage);
 const store = new Store(STORE_NAME, window.localStorage);
+
 const apiWithProviderOffer = new ProviderOffer(api, storeOffer);
 const apiWithProviderDestination = new ProviderDestination(api, storeDestination);
 const apiWithProvider = new Provider(api, store);
@@ -47,51 +52,51 @@ const infoWrapperComponent = new InfoWrapperComponent();
 
 render(siteMainElement, infoWrapperComponent, RenderPosition.AFTERBEGIN);
 
-const infoWrapper = document.querySelector(`.trip-info`);
+const infoWrapperElement = document.querySelector(`.trip-info`);
 
-const infoController = new InfoController(infoWrapper, pointsModel);
-const costController = new CostController(infoWrapper, pointsModel);
+const infoController = new InfoController(infoWrapperElement, pointsModel);
+const costController = new CostController(infoWrapperElement, pointsModel);
 
 infoController.render();
 costController.render();
 
-const siteControls = siteMainElement.querySelector(`.trip-controls`);
-const siteMenu = siteControls.querySelector(`h2:nth-child(1)`);
-const siteFilter = siteControls.querySelector(`h2:nth-child(2)`);
+const siteControlsElement = siteMainElement.querySelector(`.trip-controls`);
+const siteMenuElement = siteControlsElement.querySelector(`h2:nth-child(1)`);
+const siteFilterElement = siteMenuElement.querySelector(`h2:nth-child(2)`);
 
 const menuComponent = new MenuComponent();
+render(siteMenuElement, menuComponent, RenderPosition.AFTEREND);
 
-render(siteMenu, menuComponent, RenderPosition.AFTEREND);
-const filterController = new FilterController(siteFilter, pointsModel);
+const filterController = new FilterController(siteFilterElement, pointsModel);
 filterController.render();
 
-const siteBoardEvents = document.querySelector(`.trip-events`);
+const siteBoardElement = document.querySelector(`.trip-events`);
 
 const loadMessageComponent = new LoadMessageComponent();
-render(siteBoardEvents, loadMessageComponent, RenderPosition.AFTEREND);
+render(siteBoardElement, loadMessageComponent, RenderPosition.AFTEREND);
 
-const boardController = new TripController(siteBoardEvents, pointsModel, offersModel, destinationModel, apiWithProvider);
+const boardController = new TripController(siteBoardElement, pointsModel, offersModel, destinationModel, apiWithProvider);
 
-const statistics = new StatisticComponent(pointsModel);
-render(siteBoardEvents, statistics, RenderPosition.AFTEREND);
-statistics.hide();
+const statisticsComponent = new StatisticComponent(pointsModel);
+render(siteBoardElement, statisticsComponent, RenderPosition.AFTEREND);
+statisticsComponent.hide();
 
 menuComponent.setOnChange((menuItem) => {
   switch (menuItem) {
     case MenuItem.NEW_EVENT:
       menuComponent.setActiveItem(MenuItem.NEW_EVENT);
       boardController.showBlock();
-      statistics.hide();
+      statisticsComponent.hide();
       boardController.createEvent();
       break;
     case MenuItem.STATISTICS:
       menuComponent.setActiveItem(MenuItem.STATISTICS);
       boardController.hideBlock();
-      statistics.show();
+      statisticsComponent.show();
       break;
     case MenuItem.EVENTS:
       menuComponent.setActiveItem(MenuItem.EVENTS);
-      statistics.hide();
+      statisticsComponent.hide();
       boardController.showBlock();
   }
 });
@@ -103,7 +108,6 @@ Promise.all([apiWithProviderOffer.getOffers(), apiWithProviderDestination.getDes
   pointsModel.setPoints(events);
   boardController.render();
   remove(loadMessageComponent);
-
 })
 .catch();
 

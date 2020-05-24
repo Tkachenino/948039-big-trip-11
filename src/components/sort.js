@@ -1,4 +1,4 @@
-import Component from "@/components/abstractComponent.js";
+import Component from "@/components/abstract-component.js";
 
 export const SortType = {
   EVENT: `event`,
@@ -58,6 +58,7 @@ export default class Sort extends Component {
 
   setTypeSortHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
+
       if (evt.target.tagName !== `LABEL`) {
         return;
       }

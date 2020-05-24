@@ -16,7 +16,6 @@ export default class ProviderOffer {
       return this._api.getOffers()
         .then((offers) => {
           const items = offers;
-
           this._store.setItem(0, items);
 
           return offers;
@@ -24,7 +23,7 @@ export default class ProviderOffer {
     }
 
     const storeOffers = Object.values(this._store.getItems());
-    storeOffers[0].forEach((i) => Object.assign({}, i));
+    storeOffers[0].forEach((item) => Object.assign({}, item));
 
     return Promise.resolve(Offer.parseOffers(storeOffers[0]));
   }

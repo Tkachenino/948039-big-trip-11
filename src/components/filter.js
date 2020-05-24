@@ -1,8 +1,8 @@
-import Component from "@/components/abstractComponent.js";
+import Component from "@/components/abstract-component.js";
 import {FilterType} from "@/const.js";
 
-const createFilter = (filtersList) => {
-  return Object.values(filtersList).map((filter) => {
+const createFilter = (filters) => {
+  return Object.values(filters).map((filter) => {
     const isChecked = filter === `everything` ? `checked` : ``;
     return (
       `<div class="trip-filters__filter">
@@ -13,7 +13,7 @@ const createFilter = (filtersList) => {
   }).join(`\n`);
 };
 
-const createMenuFilterTemplate = () => {
+const createFilterTemplate = () => {
   return (
     `<form class="trip-filters" action="#" method="get">
     ${createFilter(FilterType)}
@@ -24,7 +24,7 @@ const createMenuFilterTemplate = () => {
 
 export default class Filter extends Component {
   getTemplate() {
-    return createMenuFilterTemplate();
+    return createFilterTemplate();
   }
 
   setFilterChangeHandler(handler) {

@@ -1,12 +1,14 @@
 import {formatMonth, formatDay, getGroupList} from "@/utils/common.js";
-import Component from "@/components/abstractComponent.js";
+import Component from "@/components/abstract-component.js";
 
-const getCityList = (city, data) => {
-  if (city.length <= 3) {
-    return city.join(` &mdash; `);
-  } else {
-    return data[0].destination.name + ` &mdash; ... &mdash; ` + data[data.length - 1].destination.name;
+const MAX_SHOWING_CITIES = 3;
+
+const getCityList = (cities, data) => {
+  if (cities.length <= MAX_SHOWING_CITIES) {
+    return cities.join(` &mdash; `);
   }
+
+  return data[0].destination.name + ` &mdash; ... &mdash; ` + data[data.length - 1].destination.name;
 };
 
 const createTripInfoTemplate = (data) => {

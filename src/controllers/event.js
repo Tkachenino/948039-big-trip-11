@@ -1,5 +1,5 @@
 import EventComponent from "@/components/event.js";
-import EventEditorComponent from "@/components/eventEditor.js";
+import EventEditorComponent from "@/components/event-editor.js";
 import {render, replace, remove, RenderPosition} from "@/utils/render.js";
 import {NameMap} from "@/const.js";
 import Point from "@/models/point.js";
@@ -17,7 +17,7 @@ export const EmptyEvent = {
   destination: {
     name: ``,
   },
-  ownPrice: 0,
+  ownPrice: ``,
   offer: [],
   startDate: ``,
   finishDate: ``,
@@ -29,11 +29,15 @@ const parseFormData = (formData, OFFERS, DISTANTIONS) => {
   const getNamesCheckedOffers = () => {
     const offers = [];
     const subStrLength = `event-offer-`.length;
+
     for (const pairKeyValue of formData.entries()) {
+
       if (pairKeyValue[0].indexOf(`event-offer-`) !== -1) {
         offers.push(pairKeyValue[0].substring(subStrLength));
       }
+
     }
+
     return offers;
   };
 
@@ -41,20 +45,25 @@ const parseFormData = (formData, OFFERS, DISTANTIONS) => {
     const checkedOffers = [];
     const checkedOffersNames = getNamesCheckedOffers();
     const currentOffersGroup = OFFERS.find((offerGroup) => {
+
       return offerGroup.type === formData.get(`event-type`);
     });
 
     const entriesMap = Object.entries(NameMap);
 
     checkedOffersNames.forEach((checkedOfferName) => {
-      const currectItem = entriesMap.find((it) => it[1] === checkedOfferName);
-      for (const offer of currentOffersGroup.offers) {
-        if (currectItem[0] === offer.title) {
+      const currectItem = entriesMap.find((entry) => entry[1] === checkedOfferName);
 
+      for (const offer of currentOffersGroup.offers) {
+
+        if (currectItem[0] === offer.title) {
           checkedOffers.push(offer);
         }
+
       }
+
     });
+
     return checkedOffers;
   };
 
@@ -67,13 +76,13 @@ const parseFormData = (formData, OFFERS, DISTANTIONS) => {
     "date_from": new Date(startData),
     "date_to": new Date(endData),
     "destination": destination,
-    "is_favorite": formData.get(`event-favorite`) === `on` ? true : false,
+    "is_favorite": formData.get(`event-favorite`) === `on` ? false : true,
     "offers": getCheckedOffers(),
     "type": formData.get(`event-type`),
   });
 };
 
-export default class PointController {
+export default class EventController {
   constructor(container, onViewChange, onDataChange) {
     this._container = container;
     this._onViewChange = onViewChange;
@@ -119,7 +128,6 @@ export default class PointController {
 
     this._eventEditorComponent.setFavoriteHandler(() => {
       event.favoriteFlag = !event.favoriteFlag;
-      this._eventEditorComponent.rerender();
 
       const formData = this._eventEditorComponent.getData();
       const data = parseFormData(formData, offers, destinations);
@@ -150,18 +158,22 @@ export default class PointController {
       const label = evt.target.value;
       this._eventEditorComponent._eventType = label;
       this._eventEditorComponent.rerender();
+
       if (this._mode === Mode.ADDING) {
         this._eventEditorComponent.setAddView();
       }
+
     });
 
     this._eventEditorComponent.setCityHandler((evt) => {
       const city = evt.target.value;
       this._eventEditorComponent._eventCity = city;
       this._eventEditorComponent.rerender();
+
       if (this._mode === Mode.ADDING) {
         this._eventEditorComponent.setAddView();
       }
+
     });
 
     this._eventEditorComponent.setDeleteButtonClickHandler((evt) => {
@@ -203,10 +215,12 @@ export default class PointController {
 
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
+
       if (this._mode === Mode.ADDING) {
         document.querySelector(`#control__new-event`).disabled = false;
         this.destroy();
       }
+
       this._hideMoreInfo();
     }
   }
@@ -244,6 +258,7 @@ export default class PointController {
 
   _onEscKeyDowm(evt) {
     if (evt.key === `Escape`) {
+
       if (this._mode === Mode.ADDING) {
         this._onDataChange(this, EmptyEvent, null);
       }

@@ -16,7 +16,6 @@ export default class ProviderDestination {
       return this._api.getDestinations()
         .then((destinations) => {
           const items = destinations;
-
           this._store.setItem(0, items);
 
           return destinations;
@@ -24,7 +23,7 @@ export default class ProviderDestination {
     }
 
     const storeDestination = Object.values(this._store.getItems());
-    storeDestination[0].forEach((i) => Object.assign({}, i));
+    storeDestination[0].forEach((item) => Object.assign({}, item));
 
     return Promise.resolve(Destination.parseDestinations(storeDestination[0]));
   }

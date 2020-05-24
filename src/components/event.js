@@ -1,11 +1,12 @@
 import {formatTime, formatDateTime, getDiffTime} from "@/utils/common.js";
-import Component from "@/components/abstractComponent.js";
+import Component from "@/components/abstract-component.js";
 
+const SHOWING_OFFERS = 3;
 
-const getOfferList = (offer) => {
-  return offer
-  .map((it) => {
-    const {title, price} = it;
+const getOffersList = (offers) => {
+  return offers
+  .map((offer) => {
+    const {title, price} = offer;
     return (
       `<li class="event__offer">
             <span class="event__offer-title">${title}</span>
@@ -13,11 +14,11 @@ const getOfferList = (offer) => {
             &euro;&nbsp;<span class="event__offer-price">${price}</span>
            </li>`
     );
-  }).slice(0, 3).join(`\n`);
+  }).slice(0, SHOWING_OFFERS).join(`\n`);
 };
 
-const createPointEventTeplate = (trip) => {
-  const {offer, event, destination, ownPrice, startDate, finishDate} = trip;
+const createEventTeplate = (data) => {
+  const {offer, event, destination, ownPrice, startDate, finishDate} = data;
   const city = destination.name;
   const startTime = formatTime(startDate);
   const finishTime = formatTime(finishDate);
@@ -25,9 +26,9 @@ const createPointEventTeplate = (trip) => {
   const finishDateTime = formatDateTime(finishDate);
   const diffTime = getDiffTime(startDate, finishDate);
 
-  const isMoveCheck = [`check-in`, `sightseeing`, `restaurant`].some((it) => it === event) ? `in` : `to`;
+  const isMoveCheck = [`check-in`, `sightseeing`, `restaurant`].some((place) => place === event) ? `in` : `to`;
   const isOfferCheck = !!offer;
-  const getUpperLetter = (events) => events[0].toUpperCase() + events.slice(1);
+  const getUpperLetter = (word) => word[0].toUpperCase() + word.slice(1);
 
   return (
     `<li class="trip-events__item">
@@ -52,7 +53,7 @@ const createPointEventTeplate = (trip) => {
       ${isOfferCheck ?
       `<h4 class="visually-hidden">Offers:</h4>
           <ul class="event__selected-offers">
-          ${getOfferList(offer)}
+          ${getOffersList(offer)}
           </ul>`
       : ``
     }
@@ -71,7 +72,7 @@ export default class Event extends Component {
   }
 
   getTemplate() {
-    return createPointEventTeplate(this._event);
+    return createEventTeplate(this._event);
   }
 
   setMoreInfoButtonHandler(handler) {

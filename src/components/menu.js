@@ -1,4 +1,4 @@
-import Component from "@/components/abstractComponent.js";
+import Component from "@/components/abstract-component.js";
 
 export const MenuItem = {
   NEW_EVENT: `control__new-event`,

@@ -1,15 +1,15 @@
-import Component from "@/components/abstractComponent.js";
+import Component from "@/components/abstract-component.js";
 
-const createTripCostTemplate = (date) => {
-  const totalCost = date.reduce((accum, item) => {
+const createCostTemplate = (data) => {
+  const totalCost = data.reduce((accumulator, item) => {
     let totalOfferCost = 0;
 
     if (item.offer !== []) {
-      totalOfferCost = item.offer.reduce((acc, i) => {
-        return acc + i.price;
+      totalOfferCost = item.offer.reduce((offerAccumulator, offerItem) => {
+        return offerAccumulator + offerItem.price;
       }, 0);
     }
-    return accum + item.ownPrice + totalOfferCost;
+    return accumulator + item.ownPrice + totalOfferCost;
   }, 0);
   return (
     `<p class="trip-info__cost">
@@ -26,6 +26,6 @@ export default class Cost extends Component {
 
   getTemplate() {
     const events = this._pointsModel.getPoints();
-    return createTripCostTemplate(events);
+    return createCostTemplate(events);
   }
 }

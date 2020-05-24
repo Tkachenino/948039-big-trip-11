@@ -25,7 +25,7 @@ export const getDiffTime = (dateStart, dateFinish) => {
   const dayF = moment(dateFinish);
 
   if (dateFinish - dateStart < 0) {
-    return `Машина времени еще не изобретена, пожалуйста скорректируйте время`;
+    return `Time machine not found`;
   }
 
   const diffDate = moment.duration(dayF.diff(dayS));
@@ -34,21 +34,21 @@ export const getDiffTime = (dateStart, dateFinish) => {
     return `${diffDate.days()}D ${diffDate.hours()}H ${diffDate.minutes()}M`;
   } else if (diffDate.hours() !== 0) {
     return `${diffDate.hours()}H ${diffDate.minutes()}M`;
-  } else {
-    return `${diffDate.minutes()}M`;
   }
+
+  return `${diffDate.minutes()}M`;
 };
 
 export const getGroupList = (items) => {
-  const groupList = items.reduce(function (obj, event) {
+  const groupList = items.reduce(function (container, event) {
     const day = event.startDate.getDate();
 
-    if (!obj.hasOwnProperty(day)) {
-      obj[day] = [];
+    if (!container.hasOwnProperty(day)) {
+      container[day] = [];
     }
 
-    obj[day].push(event);
-    return obj;
+    container[day].push(event);
+    return container;
   }, {});
 
   return Object.values(groupList).sort((a, b) => a[0].startDate - b[0].startDate);

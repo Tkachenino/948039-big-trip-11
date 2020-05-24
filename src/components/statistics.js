@@ -1,18 +1,18 @@
 import {EventTransferList} from "@/const.js";
-import AbstractSmartComponent from "@/components/abstractSmartComponent.js";
+import AbstractSmartComponent from "@/components/abstract-smart-component.js";
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import moment from "moment";
 
 const renderMoneyChart = (moneyCtx, events) => {
 
-  const types = Array.from(new Set(events.map((it) => it.event.toUpperCase())));
+  const types = Array.from(new Set(events.map((event) => event.event.toUpperCase())));
 
   const money = types
   .map((type) => events
   .filter((event) => event.event === type.toLowerCase())
   .map((event) => event.ownPrice)
-  .reduce((acc, cost) => acc + cost));
+  .reduce((accumulator, cost) => accumulator + cost));
 
   const BAR_HEIGHT = 55;
   moneyCtx.height = BAR_HEIGHT * types.length;
@@ -166,14 +166,14 @@ const renderTransportChart = (transportCtx, events) => {
 
 const renderTimeSpendChart = (timeSpendCtx, events) => {
 
-  const types = Array.from(new Set(events.map((it) => it.event.toUpperCase())));
+  const types = Array.from(new Set(events.map((event) => event.event.toUpperCase())));
 
   const difTime = types
   .map((type) => events
   .filter((event) => event.event === type.toLowerCase())
   .map((event) => moment(event.finishDate)
   .diff(moment(event.startDate), `hours`))
-  .reduce((acc, time) => acc + time));
+  .reduce((accumulator, time) => accumulator + time));
 
   const BAR_HEIGHT = 55;
   timeSpendCtx.height = BAR_HEIGHT * types.length;

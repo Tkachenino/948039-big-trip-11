@@ -1,4 +1,4 @@
-import Component from "@/components/abstractComponent.js";
+import Component from "@/components/abstract-component.js";
 
 const createLoadingMessageTemplate = () => {
   return (

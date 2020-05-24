@@ -1,8 +1,8 @@
-import Component from "@/components/abstractComponent.js";
+import Component from "@/components/abstract-component.js";
 import {formatMonthDay, formatDateTime} from "@/utils/common.js";
 
-const createDayPointTemplate = (counter, date) => {
-  if (counter === undefined && date === undefined) {
+const createDayCounterTemplate = (counter, data) => {
+  if (counter === undefined && data === undefined) {
     return (
       `<li class="trip-days__item  day">
         <div class="day__info">
@@ -10,14 +10,14 @@ const createDayPointTemplate = (counter, date) => {
       </li>`
     );
   }
-  const data = formatMonthDay(date[0].startDate);
-  const datetime = formatDateTime(data[0].startDate);
+  const day = formatMonthDay(data[0].startDate);
+  const dateTime = formatDateTime(day[0].startDate);
 
   return (
     `<li class="trip-days__item  day">
       <div class="day__info">
         <span class="day__counter">${counter + 1}</span>
-        <time class="day__date" datetime="${datetime}">${data}</time>
+        <time class="day__date" datetime="${dateTime}">${day}</time>
       </div>
     </li>`
   );
@@ -31,6 +31,6 @@ export default class DayCounter extends Component {
   }
 
   getTemplate() {
-    return createDayPointTemplate(this._counter, this._event);
+    return createDayCounterTemplate(this._counter, this._event);
   }
 }

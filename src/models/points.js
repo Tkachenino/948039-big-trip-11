@@ -25,7 +25,7 @@ export default class Points {
   }
 
   updateEvent(id, event) {
-    const index = this._events.findIndex((it) => it.id === id);
+    const index = this._events.findIndex((item) => item.id === id);
 
     if (index === -1) {
       return false;
@@ -38,7 +38,7 @@ export default class Points {
   }
 
   removeTask(id) {
-    const index = this._events.findIndex((it) => it.id === id);
+    const index = this._events.findIndex((item) => item.id === id);
 
     if (index === -1) {
       return false;
