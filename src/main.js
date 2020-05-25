@@ -1,6 +1,7 @@
 import MenuComponent, {MenuItem} from "@/components/menu.js";
 import InfoWrapperComponent from "@/components/info-wrapper.js";
 import LoadMessageComponent from "@/components/load-message.js";
+import ErrorMessageComponent from "@/components/error-message.js";
 import StatisticComponent from "@/components/statistics.js";
 
 import TripController from "@/controllers/board.js";
@@ -20,7 +21,7 @@ import PointsModel from "@/models/points.js";
 import OffersModel from "@/models/offers.js";
 import DestinationModel from "@/models/destinations.js";
 
-const AUTHORIZATION = `Basic fdsOQm324Ck16zo2`;
+const AUTHORIZATION = `Basic fdAOQm124Ck16zo2`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 const STORE_PREFIX = `bigtrip-localstorage`;
@@ -62,7 +63,7 @@ costController.render();
 
 const siteControlsElement = siteMainElement.querySelector(`.trip-controls`);
 const siteMenuElement = siteControlsElement.querySelector(`h2:nth-child(1)`);
-const siteFilterElement = siteMenuElement.querySelector(`h2:nth-child(2)`);
+const siteFilterElement = siteControlsElement.querySelector(`h2:nth-child(2)`);
 
 const menuComponent = new MenuComponent();
 render(siteMenuElement, menuComponent, RenderPosition.AFTEREND);
@@ -109,7 +110,11 @@ Promise.all([apiWithProviderOffer.getOffers(), apiWithProviderDestination.getDes
   boardController.render();
   remove(loadMessageComponent);
 })
-.catch();
+.catch(() => {
+  remove(loadMessageComponent);
+  const errorMessageComponent = new ErrorMessageComponent();
+  render(siteBoardElement, errorMessageComponent, RenderPosition.AFTEREND);
+});
 
 
 window.addEventListener(`load`, () => {

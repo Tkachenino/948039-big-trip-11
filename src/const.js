@@ -19,7 +19,7 @@ export const NameMap = {
   "Book a taxi at the arrival point": `taxi`,
   "Order a breakfast": `breakfast`,
   "Wake up at a certain time": `wakeUp`,
-  "Choose meal": `meal`,
+  "Choose meal": `choose-meal`,
   "Upgrade to comfort class": `comfort`,
   "Upgrade to business class": `business`,
   "Add luggage": `add`,

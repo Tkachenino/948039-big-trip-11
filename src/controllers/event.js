@@ -3,6 +3,8 @@ import EventEditorComponent from "@/components/event-editor.js";
 import {render, replace, remove, RenderPosition} from "@/utils/render.js";
 import {NameMap} from "@/const.js";
 import Point from "@/models/point.js";
+import {getCheckedOffers} from "@/utils/common.js";
+
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
@@ -22,51 +24,11 @@ export const EmptyEvent = {
   startDate: ``,
   finishDate: ``,
   favoriteFlag: false,
+  newEventFlag: true,
 };
 
 
 const parseFormData = (formData, OFFERS, DISTANTIONS) => {
-  const getNamesCheckedOffers = () => {
-    const offers = [];
-    const subStrLength = `event-offer-`.length;
-
-    for (const pairKeyValue of formData.entries()) {
-
-      if (pairKeyValue[0].indexOf(`event-offer-`) !== -1) {
-        offers.push(pairKeyValue[0].substring(subStrLength));
-      }
-
-    }
-
-    return offers;
-  };
-
-  const getCheckedOffers = () => {
-    const checkedOffers = [];
-    const checkedOffersNames = getNamesCheckedOffers();
-    const currentOffersGroup = OFFERS.find((offerGroup) => {
-
-      return offerGroup.type === formData.get(`event-type`);
-    });
-
-    const entriesMap = Object.entries(NameMap);
-
-    checkedOffersNames.forEach((checkedOfferName) => {
-      const currectItem = entriesMap.find((entry) => entry[1] === checkedOfferName);
-
-      for (const offer of currentOffersGroup.offers) {
-
-        if (currectItem[0] === offer.title) {
-          checkedOffers.push(offer);
-        }
-
-      }
-
-    });
-
-    return checkedOffers;
-  };
-
   const startData = formData.get(`event-start-time`);
   const endData = formData.get(`event-end-time`);
   const destination = Object.assign({}, DISTANTIONS.find((distantion) => distantion.name === formData.get(`event-destination`)));
@@ -77,7 +39,7 @@ const parseFormData = (formData, OFFERS, DISTANTIONS) => {
     "date_to": new Date(endData),
     "destination": destination,
     "is_favorite": formData.get(`event-favorite`) === `on` ? false : true,
-    "offers": getCheckedOffers(),
+    "offers": getCheckedOffers(OFFERS, formData, NameMap),
     "type": formData.get(`event-type`),
   });
 };
@@ -128,52 +90,7 @@ export default class EventController {
 
     this._eventEditorComponent.setFavoriteHandler(() => {
       event.favoriteFlag = !event.favoriteFlag;
-
-      const formData = this._eventEditorComponent.getData();
-      const data = parseFormData(formData, offers, destinations);
-
-      this._eventEditorComponent.setData({
-        saveButtonText: `Saving...`,
-      });
-      this._onDataChange(this, event, data);
-      document.removeEventListener(`keydown`, this._onEscKeyDowm);
-    });
-
-    this._eventEditorComponent.setPriceHandler((evt) => {
-      const price = evt.target.value;
-      this._eventEditorComponent._eventPrice = price;
-    });
-
-    this._eventEditorComponent.setDataStartHandler((evt) => {
-      const dataStart = evt.target.value;
-      this._eventEditorComponent._eventStartData = new Date(dataStart);
-    });
-
-    this._eventEditorComponent.setDataEndHandler((evt) => {
-      const dataEnd = evt.target.value;
-      this._eventEditorComponent._eventEndData = new Date(dataEnd);
-    });
-
-    this._eventEditorComponent.setTypeEventHandler((evt) => {
-      const label = evt.target.value;
-      this._eventEditorComponent._eventType = label;
-      this._eventEditorComponent.rerender();
-
-      if (this._mode === Mode.ADDING) {
-        this._eventEditorComponent.setAddView();
-      }
-
-    });
-
-    this._eventEditorComponent.setCityHandler((evt) => {
-      const city = evt.target.value;
-      this._eventEditorComponent._eventCity = city;
-      this._eventEditorComponent.rerender();
-
-      if (this._mode === Mode.ADDING) {
-        this._eventEditorComponent.setAddView();
-      }
-
+      this._onDataChange(this, event, event);
     });
 
     this._eventEditorComponent.setDeleteButtonClickHandler((evt) => {
@@ -200,7 +117,6 @@ export default class EventController {
           remove(oldEventEditCompontent);
         }
         this._onViewChange();
-        this._eventEditorComponent.setAddView();
         document.addEventListener(`keydown`, this._onEscKeyDowm);
         render(this._container, this._eventEditorComponent, RenderPosition.AFTEREND);
         break;

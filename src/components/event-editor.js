@@ -1,6 +1,6 @@
 import SmartComponent from "@/components/abstract-smart-component.js";
-import {EventTransferList, EventActivityList} from "@/const.js";
-import {NameMap} from "@/const.js";
+import {EventTransferList, EventActivityList, NameMap} from "@/const.js";
+import {getCheckedOffers} from "@/utils/common.js";
 
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
@@ -65,8 +65,8 @@ const getPhotosList = (photos) => {
 };
 
 const createEventEditorTemplate = (data, allOffers, allDestinations, option = {}) => {
-  const {offer, favoriteFlag} = data;
-  const {eventType, eventCity, eventPrice, externalData} = option;
+  const {favoriteFlag, newEventFlag} = data;
+  const {eventType, eventCity, eventPrice, eventOffers, externalData} = option;
 
   const isDescription = (eventCity === ``) ? true : false;
   const cityList = allDestinations.map((distantion) => distantion.name);
@@ -147,8 +147,7 @@ const createEventEditorTemplate = (data, allOffers, allDestinations, option = {}
 
         <button class="event__save-btn  btn  btn--blue" type="submit">${saveButtonText}</button>
         <button class="event__reset-btn" type="reset">${deleteButtonText}</button>
-
-        <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite}>
+        ${newEventFlag ? `` : `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite}>
         <label class="event__favorite-btn" for="event-favorite-1">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -158,14 +157,14 @@ const createEventEditorTemplate = (data, allOffers, allDestinations, option = {}
 
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
-        </button>
-      </header>
+        </button>`}
 
+        </header>
       <section class="event__details">
         ${isOffer ? `<section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
           <div class="event__available-offers">
-          ${getOfferList(allEventOffers, offer)}
+          ${getOfferList(allEventOffers, eventOffers)}
           </div>
         </section>` : ``
     }
@@ -202,11 +201,17 @@ export default class EventEditor extends SmartComponent {
     this._eventPrice = event.ownPrice;
     this._eventStartData = event.startDate;
     this._eventEndData = event.finishDate;
+    this._eventOffers = event.offer;
 
     this._flatpickrStart = null;
     this._flatpickrEnd = null;
 
     this._applyFlatpickr();
+
+    this.setPriceHandler();
+    this.setTypeEventHandler();
+    this.setCityHandler();
+    this.setCheckedOffersHandler();
   }
 
   removeElement() {
@@ -227,12 +232,11 @@ export default class EventEditor extends SmartComponent {
     this.setFavoriteHandler(this._favoriteHandler);
     this.setSubmitFormHandler(this._sumbitHandler);
     this.setLessInfoButtonHandler(this._lessInfoHandler);
-    this.setTypeEventHandler(this._typeEventHandler);
-    this.setCityHandler(this._typeCityHandler);
-    this.setPriceHandler(this._priceHandler);
-    this.setDataStartHandler(this._dataStartHandler);
-    this.setDataEndHandler(this._dataEndHandler);
     this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
+    this.setTypeEventHandler();
+    this.setCityHandler();
+    this.setPriceHandler();
+    this.setCheckedOffersHandler();
   }
 
   getTemplate() {
@@ -242,6 +246,7 @@ export default class EventEditor extends SmartComponent {
       eventPrice: this._eventPrice,
       eventStartData: this._eventStartData,
       eventEndData: this._eventEndData,
+      eventOffers: this._eventOffers,
       externalData: this._externalData,
     });
   }
@@ -249,7 +254,6 @@ export default class EventEditor extends SmartComponent {
   setData(data) {
     this._externalData = Object.assign({}, DefaultData, data);
     this.rerender();
-
 
     this.setDisabledForm();
   }
@@ -270,76 +274,76 @@ export default class EventEditor extends SmartComponent {
   }
 
   setLessInfoButtonHandler(handler) {
-    this.getElement()
-    .querySelector(`.event__rollup-btn`)
-    .addEventListener(`click`, handler);
+    const lesInfoButton = this.getElement().querySelector(`.event__rollup-btn`);
 
-    this._lessInfoHandler = handler;
+    if (lesInfoButton) {
+      lesInfoButton.addEventListener(`click`, handler);
+      this._lessInfoHandler = handler;
+    }
   }
 
   setFavoriteHandler(handler) {
-    this.getElement()
-    .querySelector(`.event__favorite-btn`)
-    .addEventListener(`click`, handler);
+    const favoriteBtn = this.getElement().querySelector(`.event__favorite-btn`);
 
-    this._favoriteHandler = handler;
+    if (favoriteBtn) {
+      favoriteBtn.addEventListener(`click`, handler);
+      this._favoriteHandler = handler;
+    }
   }
 
-  setDataEndHandler(handler) {
-    this.getElement()
-    .querySelector(`input[name="event-end-time"]`)
-    .addEventListener(`change`, handler);
-
-    this._dataEndHandler = handler;
+  setPriceHandler() {
+    this.getElement().querySelector(`.event__input--price`)
+    .addEventListener(`change`, () => {
+      const price = this.getElement().querySelector(`.event__input--price`).value;
+      this._eventPrice = price;
+    });
   }
 
-  setDataStartHandler(handler) {
-    this.getElement()
-    .querySelector(`input[name="event-start-time"]`)
-    .addEventListener(`change`, handler);
-
-    this._dataStartHandler = handler;
-  }
-
-  setPriceHandler(handler) {
-    this.getElement()
-    .querySelector(`.event__input--price`)
-    .addEventListener(`change`, handler);
-
-    this._priceHandler = handler;
-  }
-
-  setTypeEventHandler(handler) {
+  setTypeEventHandler() {
     this.getElement()
     .querySelector(`.event__type-list`)
-    .addEventListener(`change`, handler);
-
-    this._typeEventHandler = handler;
+    .addEventListener(`change`, (evt) => {
+      const label = evt.target.value;
+      this._eventType = label;
+      this.rerender();
+    });
   }
 
-  setCityHandler(handler) {
-    const input = this.getElement().querySelector(`.event__input--destination`);
+  setCityHandler() {
+    const inputForCity = this.getElement().querySelector(`.event__input--destination`);
 
-    input.onclick = () => {
-      input.value = ``;
+    inputForCity.onclick = () => {
+      inputForCity.value = ``;
     };
 
-    input.onkeypress = () => {
+    inputForCity.onkeypress = () => {
       return false;
     };
 
-    if (this._distantions.map((it) => it.name).find((it) => it === input.value)) {
-      input.setCustomValidity(``);
+    if (this._distantions.map((it) => it.name).find((it) => it === inputForCity.value)) {
+      inputForCity.setCustomValidity(``);
     } else {
-      input.setCustomValidity(`Choose a city from the list`);
+      inputForCity.setCustomValidity(`Choose a city from the list`);
     }
 
-    this.getElement()
-    .querySelector(`.event__field-group`)
-    .addEventListener(`change`, handler);
+    inputForCity.addEventListener(`change`, (evt) => {
+      const city = evt.target.value;
+      this._eventCity = city;
+      this.rerender();
+    });
+  }
 
+  setCheckedOffersHandler() {
+    const offersField = this.getElement().querySelector(`.event__available-offers`);
 
-    this._typeCityHandler = handler;
+    if (offersField) {
+      offersField.addEventListener(`change`, (evt) => {
+        if (evt.target.tagName === `INPUT`) {
+          const checkedOffers = getCheckedOffers(this._offers, this.getData(), NameMap);
+          this._eventOffers = checkedOffers;
+        }
+      });
+    }
   }
 
   _applyFlatpickr() {
@@ -361,6 +365,7 @@ export default class EventEditor extends SmartComponent {
       altFormat: `d/m/y H:i`,
       defaultDate: this._eventStartData,
       onClose: (selectedDates, dateStr) => {
+        this._eventStartData = dateStr;
         this._flatpickrEnd.set(`minDate`, dateStr);
         this._flatpickrEnd.open();
       },
@@ -372,7 +377,11 @@ export default class EventEditor extends SmartComponent {
       enableTime: true,
       allowInput: true,
       altFormat: `d/m/y H:i`,
+      minDate: this._eventStartData,
       defaultDate: this._eventEndData,
+      onClose: (selectedDates, dateStr) => {
+        this._eventEndData = dateStr;
+      },
     });
   }
 
@@ -384,6 +393,7 @@ export default class EventEditor extends SmartComponent {
     this._eventPrice = event.ownPrice;
     this._eventStartData = event.startDate;
     this._eventEndData = event.finishDate;
+    this._eventOffers = event.offer;
 
     this.rerender();
   }
@@ -393,41 +403,21 @@ export default class EventEditor extends SmartComponent {
     return new FormData(form);
   }
 
-  setAddView() {
-    this.getElement().querySelector(`.event__favorite-btn`).classList.add(`visually-hidden`);
-    this.getElement().querySelector(`.event__rollup-btn`).remove();
-    this.getElement().querySelector(`.event__reset-btn`).innerHTML = `Cansel`;
-  }
-
   setDisabledForm() {
-    this.getElement().querySelector(`.event__save-btn`).disabled = true;
-    this.getElement().querySelector(`.event__reset-btn`).disabled = true;
-    this.getElement().querySelector(`.event__type-toggle`).disabled = true;
-    this.getElement().querySelector(`.event__input`).disabled = true;
-    this.getElement().querySelectorAll(`.event__input--time.form-control`).forEach((it) => {
+    this.getElement().querySelectorAll(`input`).forEach((it) => {
       it.disabled = true;
     });
-    this.getElement().querySelectorAll(`.event__offer-checkbox`).forEach((it) => {
+    this.getElement().querySelectorAll(`button`).forEach((it) => {
       it.disabled = true;
     });
-    this.getElement().querySelector(`.event__input--price`).disabled = true;
-    this.getElement().querySelector(`.event__favorite-checkbox`).disabled = true;
-    this.getElement().querySelector(`.event__rollup-btn`).disabled = true;
   }
 
   setUnlockForm() {
-    this.getElement().querySelector(`.event__save-btn`).disabled = false;
-    this.getElement().querySelector(`.event__reset-btn`).disabled = false;
-    this.getElement().querySelector(`.event__type-toggle`).disabled = false;
-    this.getElement().querySelector(`.event__input`).disabled = false;
-    this.getElement().querySelectorAll(`.event__input--time.form-control`).forEach((it) => {
-      it.disabled = false;
+    this.getElement().querySelectorAll(`input`).forEach((it) => {
+      it.disabled = true;
     });
-    this.getElement().querySelectorAll(`.event__offer-checkbox`).forEach((it) => {
-      it.disabled = false;
+    this.getElement().querySelectorAll(`button`).forEach((it) => {
+      it.disabled = true;
     });
-    this.getElement().querySelector(`.event__input--price`).disabled = false;
-    this.getElement().querySelector(`.event__favorite-checkbox`).disabled = false;
-    this.getElement().querySelector(`.event__rollup-btn`).disabled = false;
   }
 }

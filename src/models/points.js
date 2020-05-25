@@ -14,6 +14,10 @@ export default class Points {
     return getEventsByFilter(this._events, this._activeFilterType);
   }
 
+  getAllPoints() {
+    return this._events;
+  }
+
   setPoints(events) {
     this._events = Array.from(events);
     this._callHandlers(this._dataChangeHandlers);

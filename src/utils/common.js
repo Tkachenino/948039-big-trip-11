@@ -53,3 +53,41 @@ export const getGroupList = (items) => {
 
   return Object.values(groupList).sort((a, b) => a[0].startDate - b[0].startDate);
 };
+
+
+export const getCheckedOffers = (OFFERS, formData, NameMap) => {
+  const offers = [];
+  const subStrLength = `event-offer-`.length;
+
+  for (const pairKeyValue of formData.entries()) {
+
+    if (pairKeyValue[0].indexOf(`event-offer-`) !== -1) {
+      offers.push(pairKeyValue[0].substring(subStrLength));
+    }
+
+  }
+
+  const checkedOffers = [];
+  const checkedOffersNames = offers;
+  const currentOffersGroup = OFFERS.find((offerGroup) => {
+
+    return offerGroup.type === formData.get(`event-type`);
+  });
+
+  const entriesMap = Object.entries(NameMap);
+
+  checkedOffersNames.forEach((checkedOfferName) => {
+    const currectItem = entriesMap.find((entry) => entry[1] === checkedOfferName);
+
+    for (const offer of currentOffersGroup.offers) {
+
+      if (currectItem[0] === offer.title) {
+        checkedOffers.push(offer);
+      }
+
+    }
+
+  });
+
+  return checkedOffers;
+};

@@ -212,6 +212,14 @@ export default class BoardController {
         .catch(() => {
           eventController.shake();
         });
+    } else if (newData === oldData) {
+      this._api.updatePoint(oldData.id, newData)
+        .then((pointModel) =>{
+          this._pointsModel.updateEvent(oldData.id, pointModel);
+        })
+        .catch(() => {
+          eventController.shake();
+        });
     } else {
       this._api.updatePoint(oldData.id, newData)
         .then((pointModel) =>{
