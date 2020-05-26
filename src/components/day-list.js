@@ -10,4 +10,8 @@ export default class DayList extends Component {
   getTemplate() {
     return createDayListTemplate();
   }
+
+  clear() {
+    this.getElement().innerHTML = ``;
+  }
 }

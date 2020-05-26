@@ -25,7 +25,7 @@ export default class Cost extends Component {
   }
 
   getTemplate() {
-    const events = this._pointsModel.getPoints();
+    const events = this._pointsModel.getAllPoints();
     return createCostTemplate(events);
   }
 }

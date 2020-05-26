@@ -33,4 +33,12 @@ export default class Filter extends Component {
       handler(filterName);
     });
   }
+
+  setDisabledType(name) {
+    this.getElement().querySelector(`#filter-${name}`).disabled = true;
+  }
+
+  setActiveType(name) {
+    this.getElement().querySelector(`#filter-${name}`).disabled = false;
+  }
 }

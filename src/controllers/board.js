@@ -97,9 +97,9 @@ export default class BoardController {
     }
 
     const events = this._pointsModel.getPoints();
-    const IsHasEvent = (events.length === 0);
+    const IsHasEvent = (events.length !== 0);
 
-    if (IsHasEvent) {
+    if (!IsHasEvent) {
       remove(this._noEventComponent);
       render(this._container, this._sortComponent, RenderPosition.BEFOREEND);
       render(this._container, this._dayListComponent, RenderPosition.BEFOREEND);
@@ -129,16 +129,16 @@ export default class BoardController {
     const offers = this._offersModel.getOffers();
     const destinations = this._destinationModel.getDestinations();
 
-    const dayList = this._dayListComponent.getElement();
-
     const showingControllers = [];
     this._showedEventControllers = [];
 
-    this._sortElement.querySelector(`.trip-sort__item--day`).innerHTML = ``;
-    dayList.innerHTML = ``;
+    this._sortComponent.hideDay();
+    this._dayListComponent.clear();
+
+    const dayList = this._dayListComponent.getElement();
 
     if (sortType === SortType.EVENT) {
-      this._sortElement.querySelector(`.trip-sort__item--day`).innerHTML = `Day`;
+      this._sortComponent.showDay();
       const newEvent = renderByGroup(dayList, events, offers, destinations, this._onViewChange, this._onDataChange);
       this._showedEventControllers = this._showedEventControllers.concat(newEvent);
     }
@@ -160,9 +160,7 @@ export default class BoardController {
   }
 
   _removeEvents() {
-    const dayList = this._dayListComponent.getElement();
-    const dayPoints = dayList.querySelectorAll(`.trip-days__item`);
-    dayPoints.forEach((day) => day.remove());
+    this._dayListComponent.clear();
     this._showedEventControllers.forEach((eventController) => eventController.destroy());
     this._showedEventControllers = [];
   }
@@ -170,9 +168,9 @@ export default class BoardController {
   _updateEvents() {
     const dayList = this._dayListComponent.getElement();
     const events = this._pointsModel.getPoints();
-    const IsHasEvent = (events.length === 0);
+    const IsHasEvent = (events.length !== 0);
 
-    if (IsHasEvent) {
+    if (!IsHasEvent) {
       remove(this._sortComponent);
       remove(this._dayListComponent);
       render(this._container, this._noEventComponent, RenderPosition.BEFOREEND);
@@ -236,6 +234,15 @@ export default class BoardController {
   }
 
   _onFilterChange() {
+    const events = this._pointsModel.getPoints();
+    const IsHasEvent = (events.length !== 0);
+
+    if (IsHasEvent) {
+      remove(this._noEventComponent);
+      render(this._container, this._sortComponent, RenderPosition.BEFOREEND);
+      render(this._container, this._dayListComponent, RenderPosition.BEFOREEND);
+    }
+
     this._onSortTypeChange(SortType.EVENT);
     document.querySelector(`#sort-event`).checked = true;
     this._updateEvents();

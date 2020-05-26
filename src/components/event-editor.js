@@ -403,6 +403,14 @@ export default class EventEditor extends SmartComponent {
     return new FormData(form);
   }
 
+  setErrorStyle() {
+    this.getElement().classList.add(`red-shadow`);
+  }
+
+  removeErrorStyle() {
+    this.getElement().classList.remove(`red-shadow`);
+  }
+
   setDisabledForm() {
     this.getElement().querySelectorAll(`input`).forEach((it) => {
       it.disabled = true;
@@ -414,10 +422,10 @@ export default class EventEditor extends SmartComponent {
 
   setUnlockForm() {
     this.getElement().querySelectorAll(`input`).forEach((it) => {
-      it.disabled = true;
+      it.disabled = false;
     });
     this.getElement().querySelectorAll(`button`).forEach((it) => {
-      it.disabled = true;
+      it.disabled = false;
     });
   }
 }

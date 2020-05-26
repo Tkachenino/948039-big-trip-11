@@ -56,6 +56,14 @@ export default class Sort extends Component {
     return this._currentSortType;
   }
 
+  showDay() {
+    this.getElement().querySelector(`.trip-sort__item--day`).innerHTML = `Day`;
+  }
+
+  hideDay() {
+    this.getElement().querySelector(`.trip-sort__item--day`).innerHTML = ``;
+  }
+
   setTypeSortHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
 

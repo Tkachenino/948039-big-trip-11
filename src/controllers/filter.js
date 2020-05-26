@@ -1,6 +1,8 @@
 import FilterComponent from "@/components/filter.js";
 import {render, RenderPosition} from "@/utils/render.js";
 import {FilterType} from "@/const.js";
+import {getEventsByFilter} from "@/utils/filter.js";
+
 
 export default class FilterController {
   constructor(container, pointsModel) {
@@ -10,7 +12,11 @@ export default class FilterController {
     this._filterComponent = null;
 
     this._onFilterChange = this._onFilterChange.bind(this);
+    this._onDataChange = this._onDataChange.bind(this);
+
+    this._pointsModel.setDataChangeHandler(this._onDataChange);
   }
+
 
   render() {
     this._filterComponent = new FilterComponent();
@@ -20,5 +26,17 @@ export default class FilterController {
 
   _onFilterChange(filterType) {
     this._pointsModel.setFilter(filterType);
+  }
+
+  _onDataChange() {
+    const AllPoints = this._pointsModel.getAllPoints();
+    const types = Object.values(FilterType);
+    types.forEach((type) => {
+      if (getEventsByFilter(AllPoints, type).length === 0) {
+        this._filterComponent.setDisabledType(type);
+      } else {
+        this._filterComponent.setActiveType(type);
+      }
+    });
   }
 }

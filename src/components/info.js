@@ -44,7 +44,7 @@ export default class Info extends Component {
   }
 
   getTemplate() {
-    const events = this._pointsModel.getPoints();
+    const events = this._pointsModel.getAllPoints();
     return createTripInfoTemplate(events);
   }
 }

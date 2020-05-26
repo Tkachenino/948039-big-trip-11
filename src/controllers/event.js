@@ -72,7 +72,7 @@ export default class EventController {
 
     this._eventEditorComponent.setSubmitFormHandler((evt) => {
       evt.preventDefault();
-      this._eventEditorComponent.getElement().classList.remove(`red-shadow`);
+      this._eventEditorComponent.removeErrorStyle();
       const formData = this._eventEditorComponent.getData();
       const data = parseFormData(formData, offers, destinations);
 
@@ -153,9 +153,9 @@ export default class EventController {
         saveButtonText: `Save`,
         deleteButtonText: `Delete`,
       });
-      this._eventEditorComponent.setUnlockForm();
       document.addEventListener(`keydown`, this._onEscKeyDowm);
-      this._eventEditorComponent.getElement().classList.add(`red-shadow`);
+      this._eventEditorComponent.setErrorStyle();
+      this._eventEditorComponent.setUnlockForm();
 
     }, SHAKE_ANIMATION_TIMEOUT);
   }
