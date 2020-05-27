@@ -5,7 +5,6 @@ import EventListComponent from "@/components/event-list.js";
 import DayCounterComponent from "@/components/day-counter.js";
 import PointController, {EmptyEvent, Mode as EventControllerMode} from "@/controllers/event.js";
 import {getGroupList} from "@/utils/common.js";
-import {FilterType} from "@/const.js";
 import {render, remove, RenderPosition} from "@/utils/render.js";
 
 const renderByGroup = (container, events, offers, destinations, onViewChange, onDataChange) => {
@@ -13,13 +12,19 @@ const renderByGroup = (container, events, offers, destinations, onViewChange, on
   const showingControllers = [];
 
   for (let i = 0; i < groupEvent.length; i++) {
-    render(container, new DayCounterComponent(i, groupEvent[i]), RenderPosition.BEFOREEND);
-    const dayPoint = container.querySelectorAll(`.trip-days__item`)[i];
-    render(dayPoint, new EventListComponent(), RenderPosition.BEFOREEND);
-    const eventList = container.querySelectorAll(`.trip-events__list`)[i];
+    const dayCounterComponent = new DayCounterComponent(i, groupEvent[i]);
+
+    render(container, dayCounterComponent, RenderPosition.BEFOREEND);
+
+    const dayCounterElement = dayCounterComponent.getElement();
+    const eventListComponent = new EventListComponent();
+
+    render(dayCounterElement, eventListComponent, RenderPosition.BEFOREEND);
+
+    const eventListElement = eventListComponent.getElement();
 
     groupEvent[i].forEach((event) => {
-      const pointController = new PointController(eventList, onViewChange, onDataChange);
+      const pointController = new PointController(eventListElement, onViewChange, onDataChange);
       pointController.render(event, EventControllerMode.DEFAULT, offers, destinations);
       showingControllers.push(pointController);
     });
@@ -75,9 +80,9 @@ export default class BoardController {
     const offers = this._offersModel.getOffers();
     const destinations = this._destinationModel.getDestinations();
 
-    const IsHasEvent = (events.length === 0);
+    const IsHasEvent = (events.length !== 0);
 
-    if (IsHasEvent) {
+    if (!IsHasEvent) {
       render(this._container, this._noEventComponent, RenderPosition.BEFOREEND);
       return;
     }
@@ -85,9 +90,9 @@ export default class BoardController {
     render(this._container, this._sortComponent, RenderPosition.BEFOREEND);
     render(this._container, this._dayListComponent, RenderPosition.BEFOREEND);
 
-    const dayList = this._dayListComponent.getElement();
+    const dayListElement = this._dayListComponent.getElement();
 
-    const newEvent = renderByGroup(dayList, events, offers, destinations, this._onViewChange, this._onDataChange);
+    const newEvent = renderByGroup(dayListElement, events, offers, destinations, this._onViewChange, this._onDataChange);
     this._showedEventControllers = this._showedEventControllers.concat(newEvent);
   }
 
@@ -103,13 +108,10 @@ export default class BoardController {
       remove(this._noEventComponent);
       render(this._container, this._sortComponent, RenderPosition.BEFOREEND);
       render(this._container, this._dayListComponent, RenderPosition.BEFOREEND);
-    } else {
-      this._pointsModel.setFilter(FilterType.EVERYTHING);
-      document.querySelector(`#filter-everything`).checked = true;
-      this._onFilterChange();
     }
 
-    const eventListElement = document.querySelector(`.trip-events__trip-sort`);
+    const eventListElement = this._sortComponent.getElement();
+
     this._creatingEvent = new PointController(eventListElement, this._onViewChange, this._onDataChange);
     this._creatingEvent.render(EmptyEvent, EventControllerMode.ADDING, this._offersModel.getOffers(), this._destinationModel.getDestinations());
     this._showedEventControllers = [].concat(this._creatingEvent, this._showedEventControllers);
@@ -135,23 +137,29 @@ export default class BoardController {
     this._sortComponent.hideDay();
     this._dayListComponent.clear();
 
-    const dayList = this._dayListComponent.getElement();
+    const dayListElement = this._dayListComponent.getElement();
 
     if (sortType === SortType.EVENT) {
       this._sortComponent.showDay();
-      const newEvent = renderByGroup(dayList, events, offers, destinations, this._onViewChange, this._onDataChange);
+      this._sortComponent.setActiveEvent();
+      const newEvent = renderByGroup(dayListElement, events, offers, destinations, this._onViewChange, this._onDataChange);
       this._showedEventControllers = this._showedEventControllers.concat(newEvent);
     }
 
     const sortedEvents = getSortedEvent(sortType, events);
-    render(dayList, new DayCounterComponent(), RenderPosition.BEFOREEND);
-    const dayPoint = dayList.querySelector(`.trip-days__item`);
-    render(dayPoint, new EventListComponent(), RenderPosition.BEFOREEND);
+    const dayCounterComponent = new DayCounterComponent();
 
-    const eventList = dayList.querySelector(`.trip-events__list`);
+    render(dayListElement, dayCounterComponent, RenderPosition.BEFOREEND);
+
+    const dayCounterElement = dayCounterComponent.getElement();
+    const eventListComponent = new EventListComponent();
+
+    render(dayCounterElement, eventListComponent, RenderPosition.BEFOREEND);
+
+    const eventListElement = eventListComponent.getElement();
 
     sortedEvents.forEach((event) => {
-      const pointController = new PointController(eventList, this._onViewChange, this._onDataChange);
+      const pointController = new PointController(eventListElement, this._onViewChange, this._onDataChange);
       pointController.render(event, EventControllerMode.DEFAULT, offers, destinations);
       showingControllers.push(pointController);
     });
@@ -166,7 +174,7 @@ export default class BoardController {
   }
 
   _updateEvents() {
-    const dayList = this._dayListComponent.getElement();
+    const dayListElement = this._dayListComponent.getElement();
     const events = this._pointsModel.getPoints();
     const IsHasEvent = (events.length !== 0);
 
@@ -178,7 +186,7 @@ export default class BoardController {
     }
 
     this._removeEvents();
-    const newEvent = renderByGroup(dayList, this._pointsModel.getPoints(), this._offersModel.getOffers(), this._destinationModel.getDestinations(), this._onViewChange, this._onDataChange);
+    const newEvent = renderByGroup(dayListElement, this._pointsModel.getPoints(), this._offersModel.getOffers(), this._destinationModel.getDestinations(), this._onViewChange, this._onDataChange);
     this._showedEventControllers = this._showedEventControllers.concat(newEvent);
   }
 
@@ -244,7 +252,6 @@ export default class BoardController {
     }
 
     this._onSortTypeChange(SortType.EVENT);
-    document.querySelector(`#sort-event`).checked = true;
     this._updateEvents();
   }
 

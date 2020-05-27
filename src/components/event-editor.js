@@ -320,7 +320,7 @@ export default class EventEditor extends SmartComponent {
       return false;
     };
 
-    if (this._distantions.map((it) => it.name).find((it) => it === inputForCity.value)) {
+    if (this._distantions.map((distantion) => distantion.name).find((city) => city === inputForCity.value)) {
       inputForCity.setCustomValidity(``);
     } else {
       inputForCity.setCustomValidity(`Choose a city from the list`);
@@ -412,20 +412,20 @@ export default class EventEditor extends SmartComponent {
   }
 
   setDisabledForm() {
-    this.getElement().querySelectorAll(`input`).forEach((it) => {
-      it.disabled = true;
+    this.getElement().querySelectorAll(`input`).forEach((input) => {
+      input.disabled = true;
     });
-    this.getElement().querySelectorAll(`button`).forEach((it) => {
-      it.disabled = true;
+    this.getElement().querySelectorAll(`button`).forEach((button) => {
+      button.disabled = true;
     });
   }
 
   setUnlockForm() {
-    this.getElement().querySelectorAll(`input`).forEach((it) => {
-      it.disabled = false;
+    this.getElement().querySelectorAll(`input`).forEach((input) => {
+      input.disabled = false;
     });
-    this.getElement().querySelectorAll(`button`).forEach((it) => {
-      it.disabled = false;
+    this.getElement().querySelectorAll(`button`).forEach((button) => {
+      button.disabled = false;
     });
   }
 }

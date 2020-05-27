@@ -21,7 +21,7 @@ import PointsModel from "@/models/points.js";
 import OffersModel from "@/models/offers.js";
 import DestinationModel from "@/models/destinations.js";
 
-const AUTHORIZATION = `Basic 1f32AOQm124Ck16zo2`;
+const AUTHORIZATION = `Basic 1f42AOQm124Ck16zo2`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 const STORE_PREFIX = `bigtrip-localstorage`;
@@ -52,8 +52,7 @@ const siteMainElement = document.querySelector(`.trip-main`);
 const infoWrapperComponent = new InfoWrapperComponent();
 
 render(siteMainElement, infoWrapperComponent, RenderPosition.AFTERBEGIN);
-
-const infoWrapperElement = document.querySelector(`.trip-info`);
+const infoWrapperElement = infoWrapperComponent.getElement();
 
 const infoController = new InfoController(infoWrapperElement, pointsModel);
 const costController = new CostController(infoWrapperElement, pointsModel);

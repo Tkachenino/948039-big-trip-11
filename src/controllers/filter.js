@@ -21,10 +21,14 @@ export default class FilterController {
   render() {
     this._filterComponent = new FilterComponent();
     this._filterComponent.setFilterChangeHandler(this._onFilterChange);
+    document.querySelector(`#control__new-event`).addEventListener(`click`, () => {
+      this._onFilterChange(FilterType.EVERYTHING);
+    });
     render(this._container, this._filterComponent, RenderPosition.AFTEREND);
   }
 
   _onFilterChange(filterType) {
+    this._filterComponent.setActiveFilter(filterType);
     this._pointsModel.setFilter(filterType);
   }
 

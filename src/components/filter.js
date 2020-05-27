@@ -34,6 +34,10 @@ export default class Filter extends Component {
     });
   }
 
+  setActiveFilter(name) {
+    this.getElement().querySelector(`#filter-${name}`).checked = true;
+  }
+
   setDisabledType(name) {
     this.getElement().querySelector(`#filter-${name}`).disabled = true;
   }

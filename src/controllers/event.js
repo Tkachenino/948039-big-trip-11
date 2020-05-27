@@ -38,7 +38,7 @@ const parseFormData = (formData, OFFERS, DISTANTIONS) => {
     "date_from": new Date(startData),
     "date_to": new Date(endData),
     "destination": destination,
-    "is_favorite": formData.get(`event-favorite`) === `on` ? false : true,
+    "is_favorite": formData.get(`event-favorite`) === `on` ? true : false,
     "offers": getCheckedOffers(OFFERS, formData, NameMap),
     "type": formData.get(`event-type`),
   });
