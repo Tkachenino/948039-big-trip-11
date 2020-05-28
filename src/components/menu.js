@@ -21,22 +21,22 @@ export default class Menu extends Component {
   }
 
   setActiveItem(menuItem) {
-    const newEventBtn = document.querySelector(`#control__new-event`);
-    const tableBtn = document.querySelector(`#control__events`);
-    const statsBtn = document.querySelector(`#control__statistic`);
+    const newEventBtnElement = document.querySelector(`#control__new-event`);
+    const tableBtnElement = document.querySelector(`#control__events`);
+    const statsBtnElement = document.querySelector(`#control__statistic`);
     switch (menuItem) {
       case MenuItem.NEW_EVENT:
-        newEventBtn.disabled = true;
-        tableBtn.classList.add(`trip-tabs__btn--active`);
-        statsBtn.classList.remove(`trip-tabs__btn--active`);
+        newEventBtnElement.disabled = true;
+        tableBtnElement.classList.add(`trip-tabs__btn--active`);
+        statsBtnElement.classList.remove(`trip-tabs__btn--active`);
         break;
       case MenuItem.STATISTICS:
-        tableBtn.classList.remove(`trip-tabs__btn--active`);
-        statsBtn.classList.add(`trip-tabs__btn--active`);
+        tableBtnElement.classList.remove(`trip-tabs__btn--active`);
+        statsBtnElement.classList.add(`trip-tabs__btn--active`);
         break;
       case MenuItem.EVENTS:
-        tableBtn.classList.add(`trip-tabs__btn--active`);
-        statsBtn.classList.remove(`trip-tabs__btn--active`);
+        tableBtnElement.classList.add(`trip-tabs__btn--active`);
+        statsBtnElement.classList.remove(`trip-tabs__btn--active`);
         break;
     }
   }

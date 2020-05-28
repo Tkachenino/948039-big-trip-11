@@ -49,8 +49,8 @@ const destinationModel = new DestinationModel();
 const pointsModel = new PointsModel();
 
 const siteMainElement = document.querySelector(`.trip-main`);
-const newEventBtn = document.querySelector(`#control__new-event`);
-newEventBtn.disabled = true;
+const newEventBtnElement = document.querySelector(`#control__new-event`);
+newEventBtnElement.disabled = true;
 
 const infoWrapperComponent = new InfoWrapperComponent();
 
@@ -106,7 +106,7 @@ menuComponent.setOnChange((menuItem) => {
 
 Promise.all([apiWithProviderOffer.getOffers(), apiWithProviderDestination.getDestinations(), apiWithProvider.getPoints()])
 .then(([offers, destinations, events]) => {
-  newEventBtn.disabled = false;
+  newEventBtnElement.disabled = false;
 
   offersModel.setOffers(offers);
   destinationModel.setDestinations(destinations);
