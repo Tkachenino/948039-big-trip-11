@@ -64,8 +64,8 @@ export default class Sort extends Component {
     this.getElement().querySelector(`.trip-sort__item--day`).innerHTML = ``;
   }
 
-  setActiveEvent() {
-    this.getElement().querySelector(`#sort-event`).checked = true;
+  setActiveSort(name) {
+    this.getElement().querySelector(`#sort-${name}`).checked = true;
   }
 
   setTypeSortHandler(handler) {

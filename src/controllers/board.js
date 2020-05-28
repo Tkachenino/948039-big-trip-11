@@ -138,10 +138,10 @@ export default class BoardController {
     this._dayListComponent.clear();
 
     const dayListElement = this._dayListComponent.getElement();
+    this._sortComponent.setActiveSort(sortType);
 
     if (sortType === SortType.EVENT) {
       this._sortComponent.showDay();
-      this._sortComponent.setActiveEvent();
       const newEvent = renderByGroup(dayListElement, events, offers, destinations, this._onViewChange, this._onDataChange);
       this._showedEventControllers = this._showedEventControllers.concat(newEvent);
     }

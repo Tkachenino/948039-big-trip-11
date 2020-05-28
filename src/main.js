@@ -21,7 +21,7 @@ import PointsModel from "@/models/points.js";
 import OffersModel from "@/models/offers.js";
 import DestinationModel from "@/models/destinations.js";
 
-const AUTHORIZATION = `Basic 1f42AOQm124Ck16zo2`;
+const AUTHORIZATION = `Basic 1f31AOQm124Ck16zo2`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 const STORE_PREFIX = `bigtrip-localstorage`;
